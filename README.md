@@ -53,8 +53,8 @@ Este repositório por si só **é um pack de skills**, não exige Delphi instala
 | Toolchain | Quando | Caminho padrão |
 |---|---|---|
 | **RAD Studio Delphi 12+** (`dcc32` / `dcc64`) | projetos VCL/FMX | `C:\Program Files (x86)\Embarcadero\Studio\23.0` |
-| **Free Pascal Compiler** | projetos LCL / cross-compile | `D:\fpc\fpc` |
-| **Lazarus IDE** | projetos LCL | `D:\fpc\lazarus` |
+| **Free Pascal Compiler** | projetos LCL / cross-compile | `C:\lazarus\fpc` |
+| **Lazarus IDE** | projetos LCL | `C:\lazarus` |
 
 Os caminhos são configuráveis via parâmetros do `bootstrap-build-config.ps1` ou via `.workspace/context.json`.
 
