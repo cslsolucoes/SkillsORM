@@ -36,6 +36,17 @@ Esta skill cria o scaffold inicial de pastas e arquivos de documentação em um 
    - `Regras de Negocio` (módulos iniciais)
    - `Esboco_Telas`
    - `Analise` (itens de lacunas, inventários)
+3. `<output_path>` (opcional) — caminho da pasta documental.
+   Default: `Documentation/` (raiz). Aceita subcaminhos como `src.py/docs/Documentation/` ou `backend/docs/Documentation/`.
+   ⚠️ Quando subpasta, **detectar pastas-irmãs** (ex.: `Amostras XML/`, `SITFIS/`, `Assets/`) e registrar em `Decisions/COEXISTENCE_NOTES.md`.
+4. `<structure_mode>` (opcional) — `canonical` | `thematic`
+   - **canonical** (default): 13 subpastas oficiais (`Arquitetura/`, `BancoDados/`, `Contratos/`, etc.).
+   - **thematic**: estrutura numerada `NN_Tema/` (apropriada para engenharia reversa de projetos legados onde a divisão temática é mais legível).
+   Quando `thematic`, gerar `Decisions/STRUCTURE_MAPPING.md` cruzando temas ↔ subpastas canônicas.
+5. `<portal_html>` (opcional) — `generate` | `skip` | `deferred`
+   - **generate** (default): falha o bootstrap se templates `TEMPLATE_Docs_html_*` ausentes em `.cursor/Templates/`.
+   - **skip**: não cria `html/`. Registra decisão em `Decisions/PORTAL_DECISION.md`.
+   - **deferred**: cria placeholder `html/README.md` indicando geração futura.
 
 ## Outputs esperados
 
@@ -108,10 +119,20 @@ Esta skill cria o scaffold inicial de pastas e arquivos de documentação em um 
    - buscar documentos existentes (mesmo que fora de `Documentation/`)
    - detectar o que já existe vs. o que o template espera
    - produzir lista de lacunas com prioridade/impacto/dependência (ou delegar para `documentation-roadmap-from-docs` para montar o roadmap)
+5. **Criar `Documentation/Decisions/` e popular arquivos canônicos** (V2.2.0+):
+   - `IGNORED_PATHS.md` — pastas vazias (`.gitkeep`), artefatos transitórios (`*.bak`, `*.v1`)
+   - `NAMING_CONFLICTS.md` — conflitos de casing (ex.: `Docs/` vs `docs/`) detectados durante a varredura
+   - `STRUCTURE_MODE.md` — registra `canonical` ou `thematic` (com mapeamento se thematic)
+   - `PORTAL_DECISION.md` — registra `generate` / `skip` / `deferred` + motivo
+   - `COEXISTENCE_NOTES.md` — pastas-irmãs detectadas quando `<output_path>` é não-raiz
+   - `AGGREGATION_RATIONALE.md` — vazio inicialmente; será preenchido na fase de geração de conteúdo
+   - `DEPENDENCY_GAPS.md` — populado pelo `documentation-project-scan` (cruzamento imports vs manifesto)
 
 ## Dependências (skills prévias)
 
 Nenhuma dependência obrigatória — esta skill é o primeiro passo do ecossistema documental.
+
+> Recomendação V2.2.0+: invocar `documentation-project-scan` ANTES (gate de inventário do workflow obrigatório de 5 fases — ver `documentation-master-orchestrator`).
 
 ## Anti-padrões
 
@@ -119,7 +140,10 @@ Nenhuma dependência obrigatória — esta skill é o primeiro passo do ecossist
 | --- | --- | --- |
 | Criar `Documentation/` manualmente sem esta skill | Gera estrutura inconsistente — subpastas faltando, naming divergente, sem hub e sem changelog | Usar esta skill com os inputs corretos para garantir as 13 subpastas e templates canônicos |
 | Usar esta skill em projeto que já tem `Documentation/` estruturado | Risco de sobrescrever conteúdo existente e perder artefatos válidos | Executar `documentation-project-scan` primeiro para inventariar; só depois fazer bootstrap complementar |
-| Pular criação do portal HTML | Portal `html/` é obrigatório; omiti-lo quebra a navegação estática do ecossistema | Sempre copiar templates `TEMPLATE_Docs_html_*` e criar `html/index.html`, `docs-data.js` e `README.md` |
+| Pular criação do portal HTML | Portal `html/` é obrigatório (ou explicitamente `skip`/`deferred`); omiti-lo silenciosamente quebra a navegação estática | Sempre copiar templates `TEMPLATE_Docs_html_*` e criar `html/index.html`, `docs-data.js` e `README.md`. Se ausentes ou indesejados, definir `<portal_html>: skip\|deferred` e registrar em `Decisions/PORTAL_DECISION.md` |
+| Usar `<output_path>` em subpasta sem registrar coexistência | Documentação acaba misturada com pastas de domínio (amostras, assets, anexos) sem nota explícita | Sempre detectar pastas-irmãs e gravar em `Decisions/COEXISTENCE_NOTES.md` |
+| Adotar `structure_mode: thematic` sem cruzamento canônico | Perde rastreabilidade entre temas locais e padrão do pack | Gerar `Decisions/STRUCTURE_MAPPING.md` mapeando `NN_Tema/` ↔ subpasta canônica equivalente |
+| Avançar para escrita de conteúdo sem coverage-plan | Resulta em docs agregadas indevidamente e lacunas silenciosas | Após bootstrap, invocar `documentation-project-feature` em modo `coverage-plan` antes da geração (fase 3 do workflow obrigatório) |
 
 ## Métricas de sucesso
 
@@ -135,6 +159,10 @@ Nenhuma dependência obrigatória — esta skill é o primeiro passo do ecossist
 - [ ] `ROTEIROS_CONSOLIDADO.md` e `LOGICA_DATABASE.md` na raiz documental: **opcionais por decisão do projecto** — se omitidos, registar a decisão no hub ou changelog.
 - [ ] Existe um backlog inicial (mesmo que em texto) apontando o que falta.
 - [ ] Se havia documentos pré-existentes fora do padrão, eles foram inventariados no scan inicial (não ignorados).
+- [ ] **`Documentation/Decisions/` criado** com os 7 arquivos canônicos: `IGNORED_PATHS.md`, `NAMING_CONFLICTS.md`, `STRUCTURE_MODE.md`, `PORTAL_DECISION.md`, `COEXISTENCE_NOTES.md`, `AGGREGATION_RATIONALE.md`, `DEPENDENCY_GAPS.md`.
+- [ ] Se `<output_path>` for não-raiz: `COEXISTENCE_NOTES.md` lista pastas-irmãs detectadas.
+- [ ] Se `<structure_mode>` = `thematic`: `STRUCTURE_MAPPING.md` cruza temas locais ↔ subpastas canônicas.
+- [ ] `<portal_html>` registrado em `PORTAL_DECISION.md` quando `skip` ou `deferred`.
 
 ## Responsável principal
 
@@ -153,6 +181,7 @@ Nenhuma dependência obrigatória — esta skill é o primeiro passo do ecossist
 
 **Changelog (este arquivo):**
 
+- 2.2.0 (26/04/2026): Novos parâmetros opcionais `<output_path>` (aceita subpastas como `src.py/docs/Documentation/`), `<structure_mode>` (`canonical`/`thematic`) e `<portal_html>` (`generate`/`skip`/`deferred`); novo passo 5 cria `Documentation/Decisions/` com 7 arquivos canônicos (`IGNORED_PATHS`, `NAMING_CONFLICTS`, `STRUCTURE_MODE`, `PORTAL_DECISION`, `COEXISTENCE_NOTES`, `AGGREGATION_RATIONALE`, `DEPENDENCY_GAPS`); 4 novos anti-padrões (output_path sem coexistence, thematic sem mapping, pular coverage-plan, portal omitido sem decisão); 4 novos critérios de aceite. Recomendação de invocar `documentation-project-scan` antes (gate de inventário do workflow obrigatório de 5 fases).
 - 2.0.0 (04/04/2026): 13 subpastas obrigatórias (adicionadas BancoDados, Contratos, Estrutura, Mapeamento, Planejamento); `html/` promovido de opcional a obrigatório; `ROTEIROS_CONSOLIDADO.md` e `LOGICA_DATABASE.md` reclassificados como opcionais por decisão do projecto; diagrama de estrutura alvo no procedimento; critérios de aceite actualizados.
 - 1.3.2 (27/03/2026): Entrada 1.2.0 clarificada — destino canónico **`Documentation/html/`** para o portal opcional.
 - 1.3.1 (27/03/2026): Sem ficheiro de manifesto na raiz; índice de skills em **`.cursor/README.md`**.
@@ -167,11 +196,12 @@ Nenhuma dependência obrigatória — esta skill é o primeiro passo do ecossist
 
 | Campo | Valor |
 |-------|-------|
-| **FileVersion** | 2.1.0 |
+| **FileVersion** | 2.2.0 |
 | **Política** | `.cursor/VERSION.md` |
 
 ## Changelog (este arquivo)
 
+- 2.2.0 (26/04/2026): Parâmetros `<output_path>`, `<structure_mode>`, `<portal_html>`; novo passo 5 cria `Documentation/Decisions/` (7 arquivos canônicos); 4 novos anti-padrões; 4 novos critérios de aceite; integração com workflow obrigatório de 5 fases (`documentation-master-orchestrator` V1.2.0).
 - 2.1.0 (08/04/2026): Migração V2 — adicionadas seções Responsabilidade única, When NOT to use, Dependências, Anti-padrões, Métricas de sucesso, Responsável principal; frontmatter com thinking e category.
 - 2.0.0 (04/04/2026): 13 subpastas obrigatórias; `html/` obrigatório; `ROTEIROS_CONSOLIDADO.md` e `LOGICA_DATABASE.md` opcionais; estrutura alvo no procedimento.
 - 1.0.1 (30/03/2026): Rubrica de versionamento interno (política: `.cursor/VERSION.md`).

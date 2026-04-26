@@ -115,6 +115,58 @@ PORTAL COMPLETO:
   documentation-readme-hub → documentation-portal-html → documentation-roadmap-from-docs
 ```
 
+## Workflow obrigatório (gates de qualidade)
+
+Para qualquer trabalho de documentação não-trivial (≥ 5 arquivos a documentar), seguir esta sequência sem pular fases:
+
+### Fase 1 — INVENTÁRIO (gate de entrada)
+
+→ `documentation-project-scan`
+
+Saída obrigatória: lista de unidades de código + manifesto de dependências + `DEPENDENCY_GAPS.md`.
+
+### Fase 2 — ESTRUTURA
+
+→ `documentation-project-bootstrap`
+
+Cria scaffold + decisões registradas em `Documentation/Decisions/` (ver `documentation-general_rules`).
+
+### Fase 3 — COBERTURA PLANEJADA (gate antes de escrever)
+
+→ `documentation-project-feature` em modo **coverage-plan**
+
+Gera matriz: cada unidade de código → 1 arquivo `.md` previsto + justificativa.
+
+❌ **BLOQUEIO:** avançar para fase 4 sem 100% das unidades planejadas. Whitelist explícita permitida em `Decisions/AGGREGATION_RATIONALE.md`.
+
+### Fase 4 — GERAÇÃO DE CONTEÚDO
+
+→ `documentation-class-analysis-generator` (1 arquivo `.md` por unidade)
+
+Threshold: README de pasta com ≥ 5 unidades exige doc individual de cada. Agregação só com justificativa em `AGGREGATION_RATIONALE.md`.
+
+### Fase 5 — VERIFICAÇÃO (gate de saída)
+
+→ `documentation-project-feature` em modo **coverage-final**
+
+Compara plano (fase 3) com realizado (fase 4). Reporta deltas em `Analise/COVERAGE_DELTA.md`.
+
+## Decisões obrigatórias
+
+Toda execução deste orquestrador deve produzir, em `Documentation/Decisions/`:
+
+| Arquivo | Conteúdo |
+| --- | --- |
+| `IGNORED_PATHS.md` | Pastas vazias (`.gitkeep`), artefatos transitórios (`*.bak`, `*.v1`) — com motivo + decisão de origem |
+| `NAMING_CONFLICTS.md` | Conflitos de casing/naming (ex.: `Docs/` vs `docs/`, `src/` vs `src.py/`) detectados durante o bootstrap |
+| `AGGREGATION_RATIONALE.md` | Casos onde 1 `.md` cobre múltiplos arquivos (com lista e justificativa) |
+| `STRUCTURE_MODE.md` | `canonical` (13 subpastas oficiais) ou `thematic` (numerada `NN_Tema/`) — com mapeamento se thematic |
+| `PORTAL_DECISION.md` | `generate` / `skip` / `deferred` + motivo |
+| `COEXISTENCE_NOTES.md` | Pastas-irmãs detectadas quando `output_path` é subpasta não-raiz |
+| `DEPENDENCY_GAPS.md` | Imports sem entrada no manifesto de dependências (do scan da fase 1) |
+
+Regra absoluta: nenhum desses arquivos é opcional para projetos não-triviais — ausência = falha do bootstrap.
+
 ## Matriz de decisão
 
 | Cenário | Skill |
@@ -132,6 +184,7 @@ PORTAL COMPLETO:
 | Criar rules `.cursor/` a partir de normas | `documentation-rules_creator` |
 | Gerar spec OpenAPI | `documentation-api-openapi` |
 | Atualizar docs após mudança de código | `documentation-project-update` |
+| ≥ 5 arquivos para documentar em mesma pasta | OBRIGATÓRIO: `documentation-class-analysis-generator` (1 doc por arquivo) |
 
 ## Anti-padrões
 
@@ -142,6 +195,9 @@ PORTAL COMPLETO:
 | Migrar sem backup | `documentation-migration-backup` é obrigatório antes de qualquer reorganização |
 | Criar `{ClassName}.md` manualmente sem scaffold | Usar `documentation-paste_analysis_unit_class_method` para garantir template correto |
 | Gerar portal sem atualizar README hub | Sempre `documentation-readme-hub` antes de `documentation-portal-html` |
+| Pular o gate de **coverage-plan** (fase 3) e ir direto para escrever conteúdo | Sempre invocar `documentation-project-feature` em modo `coverage-plan` antes da geração — sem isso ocorre agregação indevida e lacunas silenciosas |
+| Criar README agregado para ≥ 5 unidades sem justificativa registrada | Registrar a agregação em `Decisions/AGGREGATION_RATIONALE.md` ou criar 1 doc por unidade |
+| Usar `output_path` em subpasta sem detectar pastas-irmãs | Registrar coexistência em `Decisions/COEXISTENCE_NOTES.md` (ex.: `docs/Documentation/` ao lado de `docs/Amostras/`) |
 
 ---
 
@@ -149,11 +205,12 @@ PORTAL COMPLETO:
 
 | Campo | Valor |
 |-------|-------|
-| **FileVersion** | 1.1.0 |
+| **FileVersion** | 1.2.0 |
 | **Política** | `.cursor/VERSION.md` |
 
 ## Changelog
 
+- 1.2.0 (26/04/2026): Adicionado **Workflow obrigatório de 5 fases** com gates de qualidade (scan → bootstrap → coverage-plan → geração → coverage-final); nova seção **Decisões obrigatórias** listando 7 arquivos canônicos em `Documentation/Decisions/` (`IGNORED_PATHS`, `NAMING_CONFLICTS`, `AGGREGATION_RATIONALE`, `STRUCTURE_MODE`, `PORTAL_DECISION`, `COEXISTENCE_NOTES`, `DEPENDENCY_GAPS`); 3 novos anti-padrões (pular gate coverage-plan, agregar ≥5 sem justificativa, output_path em subpasta sem coexistence); nova entrada na matriz (≥5 arquivos = doc individual obrigatória).
 - 1.1.0 (13/04/2026): Adicionada `documentation-oop-first` em NÍVEL 0 — Bootstrap (24 → 25 skills); nova sequência canônica "NOVO PROJETO SEM CÓDIGO"; nova entrada na matriz de decisão; novo anti-padrão "documentar sem design OOP".
 - 1.0.0 (11/04/2026): Criação — skill orquestradora da família `documentation-*` (24 skills, 5 níveis).
 - 1.2.0 (24/04/2026): Rename E5a — `documentation-master-orchestrator` -> `documentation-master-orchestrator`. Motivo: diferenciar master-orchestrator de sub-orchestrators (regra N3 do plano de refactor).

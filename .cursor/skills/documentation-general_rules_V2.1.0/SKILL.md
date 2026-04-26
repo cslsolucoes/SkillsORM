@@ -92,12 +92,29 @@ Ajustar conforme o pedido: nem todos os passos são obrigatórios.
 | Orientação de fluxo | Resposta ao usuário | Texto + tabela de ordem de invocação |
 | Changelog portátil (quando pedido) | Final do documento alterado | Markdown |
 
+## Decisões obrigatórias (V2.1.0+)
+
+Toda documentação iniciada via `documentation-project-bootstrap` deve produzir, em `Documentation/Decisions/`, os 7 arquivos canônicos abaixo. **Nenhum é opcional para projetos não-triviais** — ausência = falha do bootstrap.
+
+| Arquivo | Conteúdo | Origem |
+| --- | --- | --- |
+| `IGNORED_PATHS.md` | Pastas vazias (apenas `.gitkeep`), artefatos transitórios (`*.bak`, `*.bak.fase_*`, `*.v1`), pastas runtime (`venv/`, `__pycache__/`, `node_modules/`, `logs/`) — com motivo + decisão de origem (briefing/usuário/skill) | `documentation-project-bootstrap` |
+| `NAMING_CONFLICTS.md` | Conflitos de casing/naming detectados durante a varredura (ex.: `Docs/` vs `docs/` em SO case-insensitive; `src/` vs `src.py/`; `Documentation/` vs `documentation/`) | `documentation-project-bootstrap` + `documentation-project-scan` |
+| `AGGREGATION_RATIONALE.md` | Casos onde 1 `.md` cobre múltiplos arquivos de código (com lista das unidades agregadas + justificativa). Vazio inicialmente; preenchido pela fase 4 do workflow obrigatório | `documentation-class-analysis-generator` |
+| `STRUCTURE_MODE.md` | Registra o modo escolhido: `canonical` (13 subpastas oficiais) ou `thematic` (numerada `NN_Tema/`). Quando `thematic`, anexar `STRUCTURE_MAPPING.md` cruzando temas locais ↔ subpastas canônicas | `documentation-project-bootstrap` |
+| `PORTAL_DECISION.md` | Registra `<portal_html>` escolhido: `generate` / `skip` / `deferred` + motivo | `documentation-project-bootstrap` |
+| `COEXISTENCE_NOTES.md` | Pastas-irmãs detectadas quando `<output_path>` é não-raiz (ex.: pastas de domínio como `Amostras XML/`, `SITFIS/` ao lado da pasta documental) | `documentation-project-bootstrap` |
+| `DEPENDENCY_GAPS.md` | Imports do código sem entrada no manifesto de dependências. Vazio = manifesto completo | `documentation-project-scan` (passo 4) |
+
+**Regra absoluta:** estes arquivos devem existir mesmo que vazios — vazio é resposta válida (significa "nada a registrar nesta categoria").
+
 ## Checklist de validação
 
 - [ ] Ordem de invocação correta (paste → feature/scan → migration → rules)
 - [ ] Changelog portátil usa formato `- X.Y.Z (DD/MM/AAAA): descrição` ao final do arquivo
 - [ ] Transporte do pack lista no mínimo as 2 skills obrigatórias (paste + project-feature)
 - [ ] Nenhuma regra de `documentation-rules_creator` ou `documentation-paste_analysis` duplicada aqui
+- [ ] **V2.1.0+:** `Documentation/Decisions/` contém os 7 arquivos canônicos (mesmo que vazios)
 
 ## Anti-padrões
 
@@ -106,6 +123,8 @@ Ajustar conforme o pedido: nem todos os passos são obrigatórios.
 | Usar esta skill para documentar classes ou criar `{ClassName}.md` | Fora do escopo — cria duplicidade e conflito com `documentation-paste_analysis` | Redirecionar para `documentation-paste_analysis_unit_class_method` |
 | Replicar a política de rules (`.cursor/rules`) nesta skill | `documentation-rules_creator` é a dona; duplicar gera inconsistência | Remover e referenciar `documentation-rules_creator` |
 | Invocar esta skill como único passo de documentação | É uma skill de alinhamento, não de geração; não produz artefatos diretamente | Usar esta skill para definir o fluxo e invocar as skills específicas |
+| Pular criação de `Documentation/Decisions/` (V2.1.0+) | Decisões implícitas (pastas vazias ignoradas, conflitos de naming, agregação de docs) ficam invisíveis e impossíveis de auditar | Garantir que o bootstrap crie os 7 arquivos canônicos, mesmo que vazios |
+| Aplicar decisão de ignorar/agregar sem registrar em `Decisions/` (V2.1.0+) | Próximo agente/desenvolvedor não tem como reconstituir o raciocínio | Toda decisão de exclusão ou agregação deve ter linha em `IGNORED_PATHS.md` ou `AGGREGATION_RATIONALE.md` |
 
 ## Avaliação de risco
 
@@ -288,11 +307,12 @@ Conteúdo anteriormente em `.cursor/Constitution/constitution-naming-conventions
 
 | Campo | Valor |
 |-------|-------|
-| **FileVersion** | 2.0.0 |
+| **FileVersion** | 2.1.0 |
 | **Política** | `.cursor/VERSION.md` |
 
 ## Changelog (este arquivo)
 
+- 2.1.0 (26/04/2026): Nova seção **Decisões obrigatórias** — formaliza os 7 arquivos canônicos em `Documentation/Decisions/` (`IGNORED_PATHS`, `NAMING_CONFLICTS`, `AGGREGATION_RATIONALE`, `STRUCTURE_MODE`, `PORTAL_DECISION`, `COEXISTENCE_NOTES`, `DEPENDENCY_GAPS`) com origem por skill; novo critério de validação; 2 novos anti-padrões (pular Decisions; aplicar decisão sem registrar). Integra com `documentation-master-orchestrator` V1.2.0, `documentation-project-bootstrap` V2.2.0 e `documentation-project-scan` V1.2.0.
 - 2.0.0 (08/04/2026): Migração V2 — adicionadas seções Categoria, Responsabilidade única,
   When NOT to use, Dependências, Anti-padrões, Métricas de sucesso, Responsável principal;
   thinking: normal; frontmatter expandido com category.

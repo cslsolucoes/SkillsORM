@@ -264,6 +264,25 @@ Esta skill e a **referencia unica** para a geracao de **conteudo completo** de d
 - README.md raiz tem links validos para todos os docs gerados.
 - FLOWCHART.md renderiza corretamente em Mermaid.
 - Operacao e replicavel em qualquer projeto sem ajustes manuais alem de inputs.
+- **V1.2.0+:** Threshold de agregação respeitado (ver seção abaixo).
+
+## Threshold de agregação (regra dura, V1.2.0+)
+
+A skill recusa criar README agregado para muitas unidades — força a granularidade adequada.
+
+| Quantidade de unidades em mesma pasta/módulo | Política |
+| --- | --- |
+| **≥ 5 unidades** | Cada unidade EXIGE `{ClassName}.md` individual. Agregação em README de pasta NÃO é permitida |
+| **2–4 unidades** | Agregação permitida apenas se houver justificativa em `Documentation/Decisions/AGGREGATION_RATIONALE.md` |
+| **1 unidade** | Doc individual sempre obrigatório (não cabe agregar consigo mesmo) |
+
+**Pré-condição:** antes de aceitar agregação para 2–4 unidades, a skill exige que `documentation-project-feature` em modo `coverage-plan` (fase 3 do workflow obrigatório do `documentation-master-orchestrator`) tenha registrado a justificativa em `AGGREGATION_RATIONALE.md` com:
+- lista das unidades agregadas
+- motivo (ex.: "scripts triviais de investigação ad-hoc, lógica < 30 linhas cada")
+- quem aprovou a agregação
+- data
+
+**Sem o registro, a skill aborta com erro** e instrui o invocador a executar o gate de coverage-plan primeiro.
 
 ## Anti-padrões
 
@@ -273,6 +292,8 @@ Esta skill e a **referencia unica** para a geracao de **conteudo completo** de d
 | Inventar assinaturas de métodos sem ler o código-fonte | Documentação falsa que diverge do código real e engana consumidores da API | O `doc-agent-class-scanner` deve sempre extrair assinaturas diretamente dos ficheiros `.pas`/`.cs`/etc. |
 | Sobrescrever ficheiros já preenchidos em modo `sync` | Apaga documentação corrigida manualmente ou enriquecida com contexto não inferível do código | Respeitar o modo `sync`: ignorar ficheiros com conteúdo real, somente atualizar placeholders |
 | Documentar classes de `Views/` ou formulários de teste | Polui a análise técnica com código de UI sem lógica de negócio relevante | Incluir `Views/` em `<excluir_pastas>` ao invocar a skill |
+| Criar README agregado para ≥ 5 unidades sem registrar (V1.2.0+) | Mascara cobertura insuficiente; futuras manutenções não sabem o que está documentado de fato | Sempre criar 1 `{ClassName}.md` por unidade quando ≥ 5 — a agregação é proibida nesta faixa |
+| Agregar 2–4 unidades sem justificativa em `AGGREGATION_RATIONALE.md` (V1.2.0+) | Decisão implícita de cobertura sem trilha de auditoria | Executar `documentation-project-feature` em modo `coverage-plan` primeiro para registrar a justificativa |
 
 ## Métricas de sucesso
 
@@ -303,11 +324,12 @@ Esta skill e a **referencia unica** para a geracao de **conteudo completo** de d
 
 | Campo | Valor |
 | --- | --- |
-| **FileVersion** | 1.1.0 |
+| **FileVersion** | 1.2.0 |
 | **Política** | `.cursor/VERSION.md` |
 
 ## Changelog (este arquivo)
 
+- 1.2.0 (26/04/2026): Nova seção **Threshold de agregação (regra dura)** — ≥5 unidades exige doc individual obrigatória; 2–4 unidades exigem registro em `Documentation/Decisions/AGGREGATION_RATIONALE.md` (gate via `documentation-project-feature` em modo `coverage-plan`); skill aborta sem o registro. Novo critério de aceite + 2 anti-padrões. Integra com workflow obrigatório de 5 fases do `documentation-master-orchestrator` V1.2.0.
 - 1.1.0 (09/04/2026): Migração V2 — adicionadas seções Responsabilidade única, When NOT to use, Dependências (skills prévias), Anti-padrões, Métricas de sucesso, Responsável principal; frontmatter expandido com thinking e category.
 - 1.0.2 (01/04/2026): Referencias aos agentes `doc-agent-class-*_V1.0.1.md`.
 - 1.0.1 (01/04/2026): Criacao da skill no pack versionado; espelho semantico ProvidersORM com fronteiras explicitas e agentes `_V1.0.1.md`.

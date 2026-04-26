@@ -16,7 +16,7 @@ author: "Claiton de Souza Linhares"
 
 | Campo           | Valor |
 | --------------- | ----- |
-| **FileVersion** | 1.1.0 |
+| **FileVersion** | 1.2.0 |
 | **Política**    | `.cursor/VERSION.md` |
 
 ## Responsabilidade única
@@ -70,6 +70,14 @@ Esta skill executa uma varredura sistêmica do ecossistema documental do projeto
    - critérios de aceite testáveis
 3. **Lista de conflitos de destino**:
    - destino canônico → origens que competem
+4. **Inventário de unidades de código** (V1.2.0+) — base para o gate de coverage-plan do `documentation-master-orchestrator`:
+   - path do arquivo-fonte
+   - linguagem
+   - classe/módulo principal
+   - declarado em manifesto de dependências? (sim/não)
+5. **`DEPENDENCY_GAPS.md`** (V1.2.0+) — cruzamento imports vs manifesto, persistido em `Documentation/Decisions/`:
+   - dependências importadas no código sem entrada no manifesto
+   - sugestão de versão (quando inferível pelo lock file)
 
 ## Passos executíveis
 
@@ -104,11 +112,33 @@ Quando `<escopo>` incluir **`Analise/`**:
   - sugerir ação `criar` vs `revisar/consolidar` vs "superseded → Backup"
   - garantir critérios de aceite testáveis
 
+### 4) Cruzamento dependências vs imports (V1.2.0+, stack-aware)
+
+Para cada stack detectada no projeto, comparar imports do código com o manifesto de dependências:
+
+| Stack | Manifesto de dependências | Fonte de imports |
+| --- | --- | --- |
+| Python | `requirements.txt`, `pyproject.toml`, `setup.py`, `Pipfile` | `import X` / `from X import` em `*.py` |
+| Node.js | `package.json` (`dependencies` + `devDependencies`) | `require()` / `import` em `*.js`/`*.ts`/`*.jsx`/`*.tsx` |
+| Pascal (Delphi/FPC) | `*.dpk` / `*.dproj` (Requires), `*.lpk` / `*.lpi` (RequiredPackages) | cláusula `uses` em `*.pas` / `*.dpr` / `*.lpr` |
+| Rust | `Cargo.toml` (`[dependencies]`) | `use` / `extern crate` em `*.rs` |
+| Go | `go.mod` (`require`) | `import` em `*.go` |
+| Java/Kotlin | `pom.xml` / `build.gradle` | `import` em `*.java`/`*.kt` |
+
+Saída obrigatória: `Documentation/Decisions/DEPENDENCY_GAPS.md` listando:
+- módulos importados mas ausentes do manifesto
+- sugestão de versão (quando lock file disponível)
+- evidência (arquivo + linha)
+
+> Nota: imports de stdlib/built-in não devem entrar como gap (manter lista de exclusão por stack).
+
 ## Critérios de aceite da skill
 
 - O relatório inclui todos os campos obrigatórios do output.
 - Conflitos de destino são explicitamente listados (destino → origens).
 - O backlog é acionável: cada item tem critérios de aceite (não genérico).
+- **V1.2.0+:** Inventário de unidades de código produzido (base para gate de coverage-plan).
+- **V1.2.0+:** `DEPENDENCY_GAPS.md` gerado em `Documentation/Decisions/` com cruzamento imports vs manifesto (vazio é resposta válida — significa "manifesto completo").
 
 ## Regras transversais
 
@@ -137,6 +167,8 @@ O relatório deve conter ao menos:
 | Usar este scan para criar ou scaffold de documentos | Mistura responsabilidades; cria arquivos sem estrutura correta | Usar `documentation-paste_analysis_unit_class_method` para criação; este scan apenas classifica |
 | Não listar conflitos de destino quando há duplicação | Deixa ambiguidade sobre qual documento é canônico | Sempre gerar seção "Conflitos de destino" mesmo que vazia |
 | Classificar documentos sem evidência no corpo | Rótulo arbitrário que muda a cada scan | Incluir evidência (citação do cabeçalho ou metadado) para cada classificação |
+| Pular cruzamento de dependências vs imports (V1.2.0+) | Manifesto fica desalinhado do código real; build em outra máquina falha por dependência ausente | Sempre executar passo 4 e gerar `DEPENDENCY_GAPS.md`, mesmo se o resultado for vazio |
+| Inventariar unidades de código sem registrar manifesto declarado (V1.2.0+) | Coverage-plan posterior fica cego à origem da dependência | Marcar cada unidade com flag `declarado em manifesto?` no inventário |
 
 ## Métricas de sucesso
 
@@ -156,6 +188,7 @@ O relatório deve conter ao menos:
 
 ## Changelog (este arquivo)
 
+- 1.2.0 (26/04/2026): Novo passo 4 — **cruzamento dependências vs imports** (stack-aware: Python, Node.js, Pascal, Rust, Go, Java/Kotlin); novo output **inventário de unidades de código** (base para gate de coverage-plan do `documentation-master-orchestrator` V1.2.0); novo output `DEPENDENCY_GAPS.md` em `Documentation/Decisions/`; 2 novos critérios de aceite; 2 novos anti-padrões.
 - 1.1.0 (09/04/2026): Migração V2 — `thinking: extended`, `category: documentation`, Responsabilidade única, When NOT to use, Dependências, Anti-padrões, Métricas de sucesso, Responsável principal adicionados.
 - 1.0.4 (28/03/2026): **ProvidersORM** — redirects `Analise/Providers.Database/` e `Analise/Providers.Databases/` removidos; nota de scan actualizada.
 - 1.0.3 (28/03/2026): Passo **2b** — verificação de pastas `Analise/` vs domínios (órfãs, em falta; nota ProvidersORM **`Database/`**).
