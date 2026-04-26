@@ -1,5 +1,5 @@
 # .cursor — SkillsORM
-<!-- internal_file_version: 1.3.0 -->
+<!-- internal_file_version: 1.4.0 -->
 
 ---
 
@@ -16,7 +16,7 @@
 
 | Área | Manifesto | FolderVersion | Data |
 | ---- | --------- | :-----------: | ---- |
-| **Skills** | `skills/skills-pack-manifest_V1.24.0.md` | 1.24.0 | 25/04/2026 |
+| **Skills** | `skills/skills-pack-manifest_V1.25.0.md` | 1.25.0 | 26/04/2026 |
 | **Agents** | `agents/agents-pack-manifest_V1.7.1.md` | 1.7.1 | 24/04/2026 |
 | **Rules** | `rules/rules-pack-manifest_V1.6.3.md` | 1.6.3 | 24/04/2026 |
 | **Templates** | `Templates/templates-pack-manifest_V1.1.0.md` | 1.1.0 | 16/04/2026 |
@@ -75,12 +75,12 @@ Schema com FTS5 + índices multi-coluna. Updates incrementais por hash SHA-256. 
 | ----------------- | ----------- |
 | **Templates/** | Ficheiros-modelo **`TEMPLATE_*.md`** (e HTML/JS) para criar documentação em **`Analise/`** e **`Documentation/`** — índice **[Templates/README.md](Templates/README.md)**; manifesto de área **`Templates/templates-pack-manifest_V1.1.0.md`**. Base obrigatória para as skills `documentation-*` ao gerar novos artefactos. |
 | **rules/** | Rules activas (todas com FileVersion V2): `project-autostart-bootstrap_V1.0.1.mdc` (1.1.0), `project-documentacao_V1.0.1.mdc` (1.1.0), `documentation-migration-plan-mode_V1.0.0.mdc` (1.1.0). Política: skill **`documentation-rules_creator`**. |
-| **skills/** | Skills `developer-*`, `governance-*`, `project-*`, `documentation-*` — manifesto: `skills/skills-pack-manifest_V1.24.0.md`. |
+| **skills/** | Skills `developer-*`, `governance-*`, `project-*`, `documentation-*` — manifesto: `skills/skills-pack-manifest_V1.25.0.md`. |
 | **agents/** | Agentes com convenção `{domínio}-agent-{papel}_V*.md` — manifesto: `agents/agents-pack-manifest_V1.7.1.md`. |
 | **commands/** | Comandos slash — manifesto: `commands/commands-pack-manifest_V1.8.0.md`. |
 | **plans/** | Planos de execução — convenção `<nome>_<hash>.plan.md` (sem espaços). |
 | **scripts/** | Scripts de automação (Python + PowerShell) — manifesto: `scripts/scripts-pack-manifest_V1.4.0.md`. |
-| **[VERSION.md](VERSION.md)** | Stub → skill **`governance-pack-versioning-policy`** (política de versionamento). Cada área usa *manifest* `*-pack-manifest_V{SemVer}.md` (ex.: `agents/agents-pack-manifest_V1.7.1.md`, `skills/skills-pack-manifest_V1.24.0.md`, `rules/rules-pack-manifest_V1.6.3.md`, `Templates/templates-pack-manifest_V1.1.0.md`). |
+| **[VERSION.md](VERSION.md)** | Stub → skill **`governance-pack-versioning-policy`** (política de versionamento). Cada área usa *manifest* `*-pack-manifest_V{SemVer}.md` (ex.: `agents/agents-pack-manifest_V1.7.1.md`, `skills/skills-pack-manifest_V1.25.0.md`, `rules/rules-pack-manifest_V1.6.3.md`, `Templates/templates-pack-manifest_V1.1.0.md`). |
 
 ---
 
@@ -432,6 +432,7 @@ Cada agent e skill declara `model:` no frontmatter para o Claude Code escolher a
 
 **Changelog (este arquivo):**
 
+- 4.2.0 (26/04/2026): **E13 — Documentation Quality Gates**: tabela de manifestos atualizada para `skills/skills-pack-manifest_V1.25.0.md` (FolderVersion 1.25.0, 26/04/2026); 5 skills da família `documentation-*` bumpadas in-place — `documentation-master-orchestrator` V1.1→V1.2 (workflow obrigatório de 5 fases), `documentation-project-bootstrap` V2.1→V2.2 (parâmetros `<output_path>`, `<structure_mode>`, `<portal_html>` + `Documentation/Decisions/`), `documentation-project-scan` V1.1→V1.2 (cruzamento dependências vs imports stack-aware), `documentation-general_rules` V2.0→V2.1 (formaliza 7 arquivos canônicos em `Decisions/`), `documentation-class-analysis-generator` V1.1→V1.2 (threshold ≥5 unidades = doc individual obrigatória).
 - 4.1.0 (11/04/2026): Auditoria de coerência — corrigidos nomes de agentes Vue/ORM/Views (V1.0.2→V1.1.0, V1.1.1→V1.2.0); Commands e Scripts adicionados à tabela de manifestos; `pack-versioning-policy` renomeado para `governance-pack-versioning-policy` em todos os ponteiros; `documentation-sdlc-lifecycle` (fictício) substituído por `governance-sdlc-lifecycle`; `templates-pack-manifest` corrigido para V1.0.7; contagem de skills corrigida para 142; inventário do pack regenerado (JSON on-demand).
 - 4.0.0 (04/04/2026): Migração Fases 3-7 — secções "Workflow de Geração Documental" (sequência 0-7), "Formatos Mandatórios" (GestorDoc + `{ClassName}.md`), "Estrutura final `.cursor/`"; skill `documentation-project-update` e pasta `commands/` na estrutura; tabela de skills actualizada.
 - 3.0.0 (04/04/2026): Migração Fase 1 — absorvido conteúdo de `BASE_STRUCTURE.md` (secção "Estado após reset") e `SKILLS_DOCUMENTATION_v3.0.8.md` (secção "Hub de Skills"); tabela de skills actualizada com renomeações e novas skills.

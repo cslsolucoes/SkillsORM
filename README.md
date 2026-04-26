@@ -10,7 +10,7 @@
 | Commands | 14 (7 Workflow + 7 Execution) |
 | Rules `.mdc` | 12 |
 | Scripts (PS1 + Python) | 24 |
-| Manifesto | V1.24.0 · Config 2.0.0 |
+| Manifesto | V1.25.0 · Config 2.0.0 |
 
 Apresentação completa interativa: [`.cursor/ApresentationSkillsORM.html`](.cursor/ApresentationSkillsORM.html).
 
@@ -232,3 +232,11 @@ Detalhes em [`CLAUDE.md`](CLAUDE.md) §"Áreas protegidas".
 ## Licença
 
 [MIT](LICENSE) — Copyright (c) 2026 CSL Tech Solutions.
+
+---
+
+## Changelog (este arquivo)
+
+- 1.2.0 (26/04/2026): Manifesto bumped V1.24.0 → V1.25.0 (E13 — Documentation Quality Gates: 5 skills da família `documentation-*` bumpadas in-place com workflow obrigatório de 5 fases, parâmetros opcionais para subpastas/modos/portal, cruzamento deps↔imports stack-aware, decisões obrigatórias em `Documentation/Decisions/`, threshold de agregação dura).
+- 1.1.0 (25/04/2026): Manifesto V1.24.0 (E12 — Indy Completion: HTTP/Email enriquecidos, +2 skills indy-ftp/indy-tcp).
+- 1.0.0 (anterior): Versão inicial do README do repositório SkillsORM.
