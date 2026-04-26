@@ -1,0 +1,91 @@
+# ==============================================================================
+# fpc64.opts - {PROJECT_NAME} (x86_64-win64)
+# Uso: fpc @fpc64.opts {PROJECT_DPR}  (ou .lpi na IDE)
+# Executar a partir da raiz do projeto: {REPO_ROOT}
+# ==============================================================================
+# BASE FPC: {FPC_ROOT}
+# Com USE_SQLDB: units SQLdb em {FPC_ROOT}\units\x86_64-win64\fcl-db
+# Com USE_ZEOS: units Zeos em {FPC_OPM_ROOT}\zeosdbo\...
+# Placeholders: substituir todos os {PLACEHOLDER} antes de usar.
+# ==============================================================================
+
+-Mdelphi
+-Twin64
+-Px86_64
+
+# Include (ORM.Defines.inc, etc.)
+-Fi.
+-Fisrc
+
+# Units do projeto — estrutura real (src, Modulos, Main, Views)
+-Fusrc
+-Fusrc\Commons
+-Fusrc\Attributers
+-Fusrc\Main
+-Fusrc\Views
+-Fusrc\Modulos\Connections
+-Fusrc\Modulos\PoolConnections
+-Fusrc\Modulos\Database
+-Fusrc\Modulos\Database\Fields
+-Fusrc\Modulos\Database\Tables
+-Fusrc\Modulos\Database\Schemas
+-Fusrc\Modulos\Database\EntityManager
+-Fusrc\Modulos\Database\QueryBuilder
+-Fusrc\Modulos\Database\IdentityMap
+-Fusrc\Modulos\Database\UnitOfWork
+-Fusrc\Modulos\Database\TypeDatabase
+-Fusrc\Modulos\Parameters
+-Fusrc\Modulos\Parameters\Database
+-Fusrc\Modulos\Parameters\IniFiles
+-Fusrc\Modulos\Parameters\JsonObject
+-Fusrc\Modulos\Parameters\Attributes
+-Fusrc\Modulos\Loggers
+-Fusrc\Modulos\Loggers\Commons
+-Fusrc\Modulos\Loggers\Attributes
+-Fusrc\Modulos\Loggers\Paramenters
+-Fusrc\Modulos\Loggers\Databases
+-Fusrc\Modulos\Loggers\WebSocket
+-Fusrc\Modulos\Loggers\CSV
+-Fusrc\Modulos\Loggers\TextFiles
+-Fusrc\Modulos\Loggers\Https
+-Fusrc\Modulos\Loggers\Https\Engines
+-Fusrc\Modulos\Loggers\XML
+-Fusrc\Modulos\Loggers\Emails
+-Fusrc\Modulos\Loggers\Emails\Engines
+-Fusrc\Modulos\Loggers\Events
+-Fusrc\Modulos\Loggers\EventLogs
+-Fusrc\Modulos\Loggers\JsonObject
+-Fusrc\Modulos\Exceptions
+
+# DataSet.Serialize (obrigatorio quando Parameters.Database usa)
+-Fu{DATASET_SERIALIZE_ROOT}\src
+
+# SQLdb (USE_SQLDB) - FCL do FPC
+-Fu{FPC_ROOT}\units\x86_64-win64\fcl-db
+
+# Zeos (USE_ZEOS)
+-Fu{FPC_OPM_ROOT}\zeosdbo\src\component
+-Fu{FPC_OPM_ROOT}\zeosdbo\src\core
+-Fu{FPC_OPM_ROOT}\zeosdbo\src\dbc
+-Fu{FPC_OPM_ROOT}\zeosdbo\src\parsesql
+-Fu{FPC_OPM_ROOT}\zeosdbo\src\plain
+
+# LCL e dependencias (GUI) - BASE {LAZARUS_ROOT}
+-Fu{LAZARUS_ROOT}\lcl\units\x86_64-win64
+-Fu{LAZARUS_ROOT}\lcl\units\x86_64-win64\win32
+-Fu{LAZARUS_ROOT}\components\lazutils\lib\x86_64-win64
+-Fu{LAZARUS_ROOT}\packager\units\x86_64-win64
+-Fu{LAZARUS_ROOT}\components\codetools\lib\x86_64-win64
+-Fu{LAZARUS_ROOT}\components\freetype\lib\x86_64-win64
+-Fu{LAZARUS_ROOT}\components\lazcontrols\lib\x86_64-win64
+-Fu{LAZARUS_ROOT}\components\buildintf\lib\x86_64-win64
+-Fu{LAZARUS_ROOT}\components\ideintf\lib\x86_64-win64
+
+# Saida
+-FECompiled\EXE\Default\win64
+-FUCompiled\DCU\Default\win64
+
+# Opcoes
+-V0
+-WB
+-l

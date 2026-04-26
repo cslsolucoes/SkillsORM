@@ -1,0 +1,144 @@
+---
+alwaysApply: true
+description: "Classificação obrigatória ao criar/editar skill, rule, agent, template ou documentação técnica — genérico vai para .cursor/ (propagado via sync); específico do clone vai para .workspace/ (ignorado); documentação técnica offline (Delphi, Assembly, LDAP) vai para .docs/ na raiz (ignorado). Inclui regra offline-first de consulta ao pack_index_db antes de pesquisa externa."
+---
+
+# Artifact Placement Policy — `.cursor/` vs `.workspace/` vs `.docs/`
+
+## Escopo
+
+Aplica-se **sempre** que a IA (Claude, Cursor, Continue) **cria**, **edita** ou **move** um dos seguintes tipos de ficheiro:
+
+- Skills (`SKILL.md` dentro de pasta versionada)
+- Rules (`*.mdc`)
+- Agents (`*.md` com frontmatter de agent)
+- Templates (dentro de `Templates/`)
+- Documentação de referência técnica (fora do repo em `E:\.docs\` — ignorado pelo git, indexado em `E:\.docs\index.db` via scope `project`)
+
+## Skills e scripts referenciados
+
+| Recurso | Tipo | Quando referenciado |
+|---------|------|---------------------|
+| `pack_index_db.py` | script | Antes de qualquer pesquisa externa — consulta local obrigatória |
+| `/syncdb` | command | Após criar/editar/mover qualquer artefacto |
+| `project-init-rules-generator` | skill | Para materializar artefactos em `.workspace/` |
+| `validate_pack.py` | script | Gate de validação (`--no-instance-strings`, `--indexes-fresh`) |
+
+## Regra 1 — Classificação antes de escrever
+
+Antes de criar o ficheiro, a IA **deve** classificar em uma das categorias:
+
+### Categoria A · Framework ou padrão reutilizável → `.cursor/`
+
+Vai para `.cursor/{skills,rules,agents,Templates}/` se descreve:
+
+- Um framework reutilizável (ORMs Delphi, servidores HTTP Delphi, stacks frontend, etc. — independentes de qualquer projeto).
+- Um padrão de programação universal (OOP fluente, naming, directivas condicionais).
+- Uma ferramenta de toolchain (`dcc32`, `fpc`, `sqlite3` CLI).
+- Documentação genérica de tecnologia (Delphi 12, Assembly, LDAP).
+- Workflow de documentação/governança que se aplica a qualquer projeto.
+
+### Categoria B · Instância deste clone → `.workspace/`
+
+Vai para `.workspace/{rules,skills,agents,Templates}/` se contém:
+
+- **Convenção de módulos concretos** (ex.: M01, M02, …, AD-01, AD-02 com nomes específicos do clone).
+- Nomes de units/classes específicos deste projecto (ex.: `ActiveDirectory.Service.*`, `<Project>.Controller.*`).
+- Paths absolutos do filesystem deste clone (`<drive>:/<ProjectName>/...` — qualquer path começando com drive letter).
+- Mapa concreto de módulos, endereços de produção, credenciais.
+- Versão instalada de pacote num path fixo deste repositório.
+- Cabeçalhos de fontes com nome deste projeto.
+- Configuração `dcc32.cfg` / `fpc32.opts` desta instalação.
+
+**Nota crítica:** prefixos de módulo (M01, AD-01, etc.) **não são framework** — são decomposição funcional do clone. Qualquer conteúdo específico do clone vai para `.workspace/`.
+
+### Categoria C · Caso duvidoso → perguntar
+
+Se a IA **não consegue classificar** com confiança (`> 80 %`), deve perguntar via `AskUserQuestion` com duas opções:
+
+1. "Genérico — fica em `.cursor/<pasta>/` e é propagado via `sync-cursor-pack`"
+2. "Específico deste projeto — fica em `.workspace/<pasta>/` e é ignorado por git/sync"
+
+## Regra 2 — Consulta offline-first (obrigatória)
+
+**Antes de pesquisar na web** ou em documentação externa, a IA **deve**:
+
+1. Executar `python .cursor/scripts/pack_index_db.py --query "<keywords>"`.
+2. Se retornar resultado com score FTS5 ≥ 10 → usar esse ficheiro.
+3. Se não retornar ou score baixo → proceder com pesquisa externa.
+4. **Ao obter resultado da pesquisa externa:** guardar em `E:\.docs\<tech>\` seguindo convenção PascalCase + frontmatter + correr `/syncdb`. O scope `project` do índice (`E:\.docs\index.db`) fica automaticamente actualizado.
+
+Racional: reduz tokens (>95 % em descobertas), acelera respostas (local < rede), preserva conhecimento acumulado para sessões futuras.
+
+## Regra 3 — Frontmatter completo em `.workspace/`
+
+Artefactos em `.workspace/` usam o mesmo schema do pack:
+
+```yaml
+---
+name: <projectId>-<slug>
+description: <descrição curta>
+model: sonnet                  # opus | sonnet | haiku
+thinking: normal               # extended | normal | minimal
+category: project              # categoria do pack
+scope: project-workspace       # identifica pertença a .workspace/
+project_id: <projectId>        # qual projeto este artefacto serve (ex.: activedirectoryorm)
+generated_by: project-init-rules-generator  # só para artefactos materializados
+version: 1.0.0
+---
+```
+
+Campos obrigatórios mínimos: `name`, `description`, `model`, `thinking`, `category`, `scope: project-workspace`, `project_id`, `version`.
+
+## Regra 4 — Nomenclatura
+
+Em `.workspace/`:
+
+- Rules: `<projectId>-<slug>_V<major>.<minor>.<patch>.mdc` (ex.: `activedirectoryorm-naming_V1.0.0.mdc`).
+- Skills: pasta `<projectId>-<slug>_V<major>.<minor>.<patch>/` com `SKILL.md` dentro.
+- Agents: `<projectId>-<slug>_V<major>.<minor>.<patch>.md`.
+- Templates: pasta `<projectId>-<slug>_V<major>.<minor>.<patch>/` ou ficheiro com o mesmo padrão.
+- Context: `context.json` único (sem versão no nome).
+
+## Regra 5 — Ao modificar artefacto existente
+
+Verificar se a pasta ainda é a correcta para o conteúdo actual:
+
+- Se era genérico mas ganhou paths concretos → mover de `.cursor/` para `.workspace/` + actualizar manifestos.
+- Se era específico mas generalizou → mover de `.workspace/` para `.cursor/` + actualizar manifestos.
+
+Após qualquer movimento: correr `/syncdb` para reindexar.
+
+## Regra 6 — Manutenção do índice
+
+Após qualquer criação/edição/movimento/remoção de artefacto:
+
+1. Correr `/syncdb` (ou directamente `python .cursor/scripts/pack_index_db.py --scan all`).
+2. Verificar saída: deve reportar `{N modified, M added, K deleted}`.
+3. Se `validate_pack.py --indexes-fresh` falhar, investigar e refazer `/syncdb --full`.
+
+## Exemplos práticos
+
+### Exemplo 1 — criar skill para documentar um framework (ex.: Horse, Synapse)
+
+**Classificação:** Framework → `.cursor/skills/developer-delphi-<framework>_V*.0.0/`. Mas secções com "exemplos reais do meu projecto" devem ir para `.workspace/`.
+
+### Exemplo 2 — criar skill "como deploy do meu projecto em produção"
+
+**Classificação:** específico do clone → `.workspace/skills/<projectId>-production-deploy_V1.0.0/`.
+
+### Exemplo 3 — criar rule "convenção de naming de formulários FMX"
+
+**Classificação:** padrão reutilizável → `.cursor/rules/fmx-form-naming_V1.0.0.mdc`.
+
+## Versão interna
+
+| Campo | Valor |
+|-------|-------|
+| FileVersion | 1.1.0 |
+| Data | 18/04/2026 |
+
+## Changelog
+
+- 1.1.0 (18/04/2026): introduzido dotfolder `.docs/` para documentação técnica offline (Delphi, Assembly, LDAP). Scope `project` novo no `pack_index_db.py` (base `E:\.docs\index.db`, skip silencioso se pasta ausente). Regra 2 passa a guardar pesquisa externa em `E:\.docs\<tech>\` em vez de `.cursor/Docs/<tech>/`. Escopo da rule estendido no título/description.
+- 1.0.0 (17/04/2026): rule criada na Onda 1 do refactor — estabelece política `.cursor/` vs `.workspace/`, offline-first com `pack_index_db`, nomenclatura e frontmatter obrigatórios.

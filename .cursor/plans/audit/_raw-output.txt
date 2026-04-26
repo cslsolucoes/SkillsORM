@@ -1,0 +1,149 @@
+validate-skills-consistency — path: E:\CSL\ProvidersORM\.cursor
+Ficheiros inspecionados: 588
+Totais: 20 CRITICAL | 115 WARN
+------------------------------------------------------------------------
+
+## R1-BOM  (19 ocorrência(s))
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-orchestrator_V1.3.0.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\agents\governance-agent-orchestrator_V1.0.0.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\agents\quality-agent-orchestrator_V1.0.0.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\agents\version-agent-orchestrator_V1.0.0.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\rules\local_arquivos_V1.0.mdc:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-master-orchestrator_V1.1.0\consultas_rapidas\arvore_decisao.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-master-orchestrator_V1.1.0\consultas_rapidas\quando_usar_cada.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-programming-conditional-defines_V1.0.0\exemplos\diretivas_compilacao.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\documentation-migration-backup_V1.1.0\templates\TEMPLATE_Docs_Backup_README.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\documentation-paste_analysis_unit_class_method_V1.2.0\templates\TEMPLATE_ANALISE_DIAGNOSTICO_ORGANIZACAO.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\documentation-paste_analysis_unit_class_method_V1.2.0\templates\TEMPLATE_ESPECIFICACAO_Modulo.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\governance-master-orchestrator_V1.0.0\consultas_rapidas\quick_ref.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\governance-master-orchestrator_V1.0.0\consultas_rapidas\sub_domains.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\quality-master-orchestrator_V1.0.0\consultas_rapidas\quick_ref.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\version-master-orchestrator_V1.0.0\consultas_rapidas\quick_ref.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\Templates\README.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\Templates\kit-delphi-fpc_V1.0\README.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\Templates\kit-vuejs-nodejs_V1.0\README.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\Templates\mirror-config\claude-md.template.md:1:R1-BOM — ficheiro começa com UTF-8 BOM (quebra frontmatter YAML)
+
+## R3-name-match  (1 ocorrência(s))
+[CRITICAL] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-active-directory-orchestrator_V1.0.0\SKILL.md:2:R3-name-match — name='developer-delphi-active-directory' não bate com diretório 'developer-delphi-active-directory-orchestrator_V1.0.0' (esperado 'developer-delphi-active-directory-orchestrator')
+
+## R4-ifdef-pascal  (20 ocorrência(s))
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L09-patterns-programming.md:475:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-linux-servers_V1.0.0\SKILL.md:599:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-linux-servers_V1.0.0\consultas_rapidas\posix_vs_fpc_linux.md:229:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-linux-servers_V1.0.0\consultas_rapidas\posix_vs_fpc_linux.md:234:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-linux-servers_V1.0.0\consultas_rapidas\posix_vs_fpc_linux.md:250:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-linux-servers_V1.0.0\consultas_rapidas\posix_vs_fpc_linux.md:259:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-linux-servers_V1.0.0\consultas_rapidas\posix_vs_fpc_linux.md:268:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-mobile-orchestrator_V1.1.0\exemplos\mobile_platforms_config.md:149:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-packaging-delivery_V1.0.0\SKILL.md:84:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:363:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:396:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:400:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:600:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:608:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:619:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:626:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:642:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\SKILL.md:650:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-shared-libraries_V1.0.0\consultas_rapidas\calling_conventions_win_linux.md:70:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\documentation-project-expert_V1.0.0\exemplos\README.md:18:R4-ifdef-pascal — '{$IFDEF ...}' dentro de bloco pascal sem marcador de anti-padrão
+
+## R5-ref-quebrada  (87 ocorrência(s))
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-connections-expert_V1.3.0.md:41:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-connections-expert_V1.3.0.md:42:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-database-expert_V1.3.0.md:41:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-database-expert_V1.3.0.md:42:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-exceptions-expert_V1.3.0.md:39:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-exceptions-expert_V1.3.0.md:41:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-loggers-expert_V1.3.0.md:40:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-loggers-expert_V1.3.0.md:41:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-modules-orchestrator_V1.3.0.md:41:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-modules-orchestrator_V1.3.0.md:42:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-orchestrator_V1.3.0.md:45:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-orchestrator_V1.3.0.md:74:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-orchestrator_V1.3.0.md:78:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-orchestrator_V1.3.0.md:80:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-orchestrator_V1.3.0.md:114:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-views-orchestrator_V1.3.0.md:51:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\agents\developer-delphi-agent-views-orchestrator_V1.3.0.md:52:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\E7-lint-report.md:45:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\E7-lint-report.md:45:R5-ref-quebrada — referência suspeita: project-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\E7-lint-report.md:48:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\E7-lint-report.md:49:R5-ref-quebrada — referência suspeita: project-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:8:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:381:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:402:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:414:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:454:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:466:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:509:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L01-architecture.md:536:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L02-assembly.md:89:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L02-assembly.md:777:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:62:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:63:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:102:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:106:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:207:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:243:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:244:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:285:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L03-build.md:289:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L04-docs.md:275:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L04-docs.md:338:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L04-docs.md:463:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:339:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:340:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:340:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:341:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:342:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:364:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:368:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:369:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:372:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:373:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L05-mobile-errors.md:376:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:75:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:76:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:77:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:78:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:79:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:80:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:82:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:83:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:109:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:110:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:111:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:118:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:139:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L10-performance-testing.md:140:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L18-project-quality-version.md:60:R5-ref-quebrada — referência suspeita: project-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L18-project-quality-version.md:116:R5-ref-quebrada — referência suspeita: project-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L18-project-quality-version.md:159:R5-ref-quebrada — referência suspeita: project-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L22-commands-and-summary.md:86:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L22-commands-and-summary.md:112:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\plans\audit\L22-commands-and-summary.md:112:R5-ref-quebrada — referência suspeita: project-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-architecture-and-design_V1.0.0\SKILL.md:171:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-build-cross-compiler_V1.0.0\SKILL.md:136:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-docs-to-structured-code_V1.0.0\SKILL.md:139:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-documentation-governance_V1.0.0\SKILL.md:126:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-error-handling-and-diagnostics_V1.0.0\SKILL.md:154:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-language-core_V1.1.0\SKILL.md:61:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-master-orchestrator_V1.1.0\SKILL.md:265:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-packaging-delivery_V1.0.0\SKILL.md:128:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-performance-and-memory_V1.0.0\SKILL.md:143:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-testing-and-quality_V1.0.0\SKILL.md:137:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\governance-master-orchestrator_V1.0.0\SKILL.md:27:R5-ref-quebrada — referência suspeita: developer-delphi-orchestrator (falta 'master-')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\governance-pack-checklist-validation_V1.0.0\SKILL.md:141:R5-ref-quebrada — referência suspeita: ref legada delphi-fpc-*
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\project-master-orchestrator_V1.2.0\SKILL.md:101:R5-ref-quebrada — referência suspeita: project-orchestrator (falta 'master-')
+
+## R6-acentos  (8 ocorrência(s))
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-assembly-calling-conventions_V1.0.0\SKILL.md:2:R6-acentos — description usa 'convencoes' (provavelmente falta acento: 'convenções')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-assembly-debugging_V1.0.0\SKILL.md:2:R6-acentos — description usa 'depuracao' (provavelmente falta acento: 'depuração')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-assembly-expressions_V1.0.0\SKILL.md:2:R6-acentos — description usa 'expressoes' (provavelmente falta acento: 'expressões')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-ios-publishing_V1.0.0\SKILL.md:2:R6-acentos — description usa 'publicacao' (provavelmente falta acento: 'publicação')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-testing-dunitx_V1.0.0\SKILL.md:2:R6-acentos — description usa 'testes unitarios' (provavelmente falta acento: 'testes unitários')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\developer-delphi-testing-integration_V1.0.0\SKILL.md:2:R6-acentos — description usa 'integracao' (provavelmente falta acento: 'integração')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\documentation-class-analysis-generator_V1.1.0\SKILL.md:2:R6-acentos — description usa 'documentacao' (provavelmente falta acento: 'documentação')
+[WARN] E:\CSL\ProvidersORM\.cursor\skills\documentation-overview-architecture_V1.1.0\SKILL.md:2:R6-acentos — description usa 'documentacao' (provavelmente falta acento: 'documentação')

@@ -1,0 +1,100 @@
+<!--
+  TEMPLATE: iOS Connection Profile + PropertyGroups para .dproj
+
+  INSTRUCOES:
+  1. Substituir [BUNDLE_ID] pelo Bundle Identifier do app (ex.: com.empresa.meuapp)
+  2. Substituir [APP_NAME] pelo nome do app (ex.: MeuApp)
+  3. Substituir [DEV_CERT] pelo nome do certificado Apple Development
+     (ex.: Apple Development: Joao Silva (ABC123DEF))
+  4. Substituir [DIST_CERT] pelo nome do certificado Apple Distribution
+     (ex.: Apple Distribution: Empresa LTDA (TEAMID456))
+  5. Substituir [DEV_PROFILE] pelo nome do provisioning profile de desenvolvimento
+  6. Substituir [APPSTORE_PROFILE] pelo nome do provisioning profile App Store
+  7. Substituir [ADHOC_PROFILE] pelo nome do provisioning profile Ad Hoc (se necessário)
+  8. Substituir [MIN_IOS] pela versao minima de iOS (ex.: 16.0)
+  9. Substituir [VERSION_CODE] pela versao interna (ex.: 1.0.0)
+  10. Substituir [VERSION_SHORT] pela versao exibida ao usuario (ex.: 1.0)
+
+  IMPORTANTE: Este trecho deve ser inserido dentro da tag <Project> do .dproj,
+  junto com os demais PropertyGroups existentes.
+-->
+
+<!-- ============================================================ -->
+<!-- iOS Device 64-bit — BASE (todas as configuracoes)           -->
+<!-- ============================================================ -->
+<PropertyGroup Condition="'$(Platform)'=='iOSDevice64'">
+  <!-- Namespaces obrigatorios para iOS/FMX -->
+  <DCC_Namespace>Macapi;iOSapi;FMX;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+
+  <!-- Bundle Identifier: DEVE coincidir com App ID no Apple Developer Portal -->
+  <VerInfo_CFBundleIdentifier>[BUNDLE_ID]</VerInfo_CFBundleIdentifier>
+
+  <!-- Versao interna (build number) — incrementar a cada build para TestFlight/App Store -->
+  <VerInfo_CFBundleVersion>[VERSION_CODE]</VerInfo_CFBundleVersion>
+
+  <!-- Versao exibida ao usuario na App Store e em Settings -->
+  <VerInfo_CFBundleShortVersionString>[VERSION_SHORT]</VerInfo_CFBundleShortVersionString>
+
+  <!-- iOS minimo suportado — verificar requisitos do Delphi/FMX -->
+  <VerInfo_MinimumOSVersion>[MIN_IOS]</VerInfo_MinimumOSVersion>
+
+  <!-- Familia de dispositivos: 1=iPhone, 2=iPad, 1,2=Universal -->
+  <VerInfo_UIDeviceFamily>1,2</VerInfo_UIDeviceFamily>
+
+  <!-- Nome exibido no dispositivo (pode ser diferente do nome do projeto) -->
+  <VerInfo_CFBundleDisplayName>[APP_NAME]</VerInfo_CFBundleDisplayName>
+</PropertyGroup>
+
+<!-- ============================================================ -->
+<!-- iOS Device 64-bit — DEBUG (desenvolvimento em dispositivo)  -->
+<!-- ============================================================ -->
+<PropertyGroup Condition="'$(Cfg_1)'!='' and '$(Platform)'=='iOSDevice64'">
+  <!-- Certificado Apple Development -->
+  <CodeSigningIdentity>[DEV_CERT]</CodeSigningIdentity>
+
+  <!-- Provisioning Profile de Development (arquivo .mobileprovision importado) -->
+  <ProvisioningProfile>[DEV_PROFILE]</ProvisioningProfile>
+
+  <!-- Debug completo -->
+  <DCC_DebugInformation>2</DCC_DebugInformation>
+</PropertyGroup>
+
+<!-- ============================================================ -->
+<!-- iOS Device 64-bit — RELEASE APP STORE                      -->
+<!-- ============================================================ -->
+<PropertyGroup Condition="'$(Cfg_2)'!='' and '$(Platform)'=='iOSDevice64'">
+  <!-- Certificado Apple Distribution -->
+  <CodeSigningIdentity>[DIST_CERT]</CodeSigningIdentity>
+
+  <!-- Provisioning Profile App Store Distribution -->
+  <ProvisioningProfile>[APPSTORE_PROFILE]</ProvisioningProfile>
+
+  <!-- Otimizacoes de release -->
+  <DCC_Optimize>true</DCC_Optimize>
+  <DCC_DebugInformation>0</DCC_DebugInformation>
+  <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+</PropertyGroup>
+
+<!-- ============================================================ -->
+<!-- iOS Device 64-bit — RELEASE AD HOC                         -->
+<!-- Descomente este bloco se usar uma configuracao Ad Hoc       -->
+<!-- separada. Ajuste o nome da configuracao conforme necessario -->
+<!-- ============================================================ -->
+<!--
+<PropertyGroup Condition="'$(Cfg_3)'!='' and '$(Platform)'=='iOSDevice64'">
+  <CodeSigningIdentity>[DIST_CERT]</CodeSigningIdentity>
+  <ProvisioningProfile>[ADHOC_PROFILE]</ProvisioningProfile>
+  <DCC_Optimize>true</DCC_Optimize>
+  <DCC_DebugInformation>0</DCC_DebugInformation>
+</PropertyGroup>
+-->
+
+<!-- ============================================================ -->
+<!-- Connection Profile — referencia ao PAServer no Mac         -->
+<!-- Normalmente gerenciado pelo IDE, mas pode ser fixado aqui  -->
+<!-- ============================================================ -->
+<!--
+<PropertyGroup>
+  <ConnectionProfile>MacLocal</ConnectionProfile>
+</PropertyGroup>
+-->

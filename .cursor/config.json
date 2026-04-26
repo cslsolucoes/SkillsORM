@@ -1,0 +1,149 @@
+{
+  "_version": "1.5.1",
+  "_description": "Configuracao das IAs gerenciadas pelo sistema de mirrors + paths convencionais de frameworks + ponteiro para .workspace/context.json.",
+  "_changelog": [
+    "1.5.1 (25/04/2026): Paths específicos de frameworks movidos para .workspace/context.json (_frameworks_overrides). Em .cursor/config.json ficam apenas chaves/esquema genéricos.",
+    "1.5.0 (25/04/2026): pack-inventory.json descontinuado como SSOT. Indexação oficial via .cursor/index.db (FTS5) com /syncdb; inventário apenas on-demand via gen_pack_inventory.py. _pack_versions atualizado.",
+    "1.4.3 (17/04/2026): Onda 5 do refactor — skills-pack-manifest V1.15.0 -> V1.16.0 (AD/RDW generificados + 2 SPLITs + 1 MOVE; -1 skill em .cursor/skills/).",
+    "1.4.2 (17/04/2026): Onda 4 do refactor — agents-pack-manifest V1.6.0 -> V1.7.0 (generificacao dos 11 agents; zero renames).",
+    "1.4.1 (17/04/2026): Onda 3 do refactor — skills-pack-manifest V1.14.0 -> V1.15.0 (10 renames + 2 consolidacoes).",
+    "1.4.0 (17/04/2026): Adicionadas secções _frameworks (paths canónicos: ProvidersORM, REST-DataWare, Horse, ActiveDirectoryORM, ZeosDBO, SQLite, FPC, Lazarus, RAD Studio) e _workspace_context (ponteiro para ../.workspace/context.json). Preparação da Onda 1 do refactor .cursor/ + .workspace/.",
+    "1.3.0 (12/04/2026): Inventario regenerado — 251 entradas (era 228); Scripts V1.2.4 (gen_pack_inventory.py 1.2.1: _generated dinamico); pack-inventory.json V1.2.1.",
+    "1.2.9 (12/04/2026): Skills V1.10.8 — Consolidacao: filename drift corrigido (skills-pack-manifest_V1.10.0.md → V1.10.8.md); links quebrados corrigidos em 6 skills (refs .cursor/Templates/ → caminhos relativos templates/ ou ../skill/templates/).",
+    "1.2.8 (12/04/2026): Templates V1.0.13 — Fase 7: pasta rules-modelo-orm_V1.0/ deletada; referencias stale corrigidas em 6 skills; Skills V1.10.7.",
+    "1.2.7 (12/04/2026): Templates V1.0.12 — Fase 6 migracao: TEMPLATE_Docs_ROTEIROS_CONSOLIDADO.md e TEMPLATE_Docs_LOGICA_DATABASE.md → documentation-project-bootstrap_V2.1.0/templates/; Skills V1.10.6.",
+    "1.2.6 (12/04/2026): Templates V1.0.11 — Fase 5 migracao: TEMPLATE_Docs_Analise.md → documentation-analysis-index_V1.1.0/templates/; TEMPLATE_Docs_README_Simples.md → documentation-readme-hub_V1.1.0/templates/; Skills V1.10.5.",
+    "1.2.5 (12/04/2026): Templates V1.0.10 — Fase 4 migracao: TEMPLATE_ClassName_Full_Documentation.md movido para documentation-class-analysis-generator_V1.1.0/templates/; Skills V1.10.4 — nota de templates/ adicionada.",
+    "1.2.4 (12/04/2026): Templates V1.0.9 — Fase 3 migracao: 11 templates de dono unico movidos para 6 skills (project-init-rules-generator, documentation-overview-architecture, documentation-architecture, documentation-readme-hub, documentation-versioning-changelog, documentation-portal-html); Skills V1.10.3 — notas de templates/ adicionadas.",
+    "1.2.3 (12/04/2026): Scripts V1.2.3 — bootstrap_autostart_mirrors.py 1.2.0 e bootstrap-autostart-mirrors.ps1 1.0.8 (placeholders removidos do install_tasks_template); Templates V1.0.8 — vscode-tasks.template.json 1.3.0 usa variaveis nativas VSCode.",
+    "1.2.2 (11/04/2026): Manifesto `agents` atualizado → V1.4.0 (34 agentes: +3 novos orquestradores governance/quality/version; renomeação global concluída).",
+    "1.2.1 (09/04/2026): Manifestos criados para `commands/` e `scripts/` — campos `manifest` e `version` agora preenchidos em todas as areas de `_pack_versions`.",
+    "1.2.0 (09/04/2026): Adicionados blocos `_pack_versions` (versoes dos manifestos por area) e `_inventory` (referencia ao pack-inventory.json com 196 entradas).",
+    "1.1.0 (09/04/2026): Adicionada IA `opencode` (OpenCode TUI/CLI); estrutura `ias` expandida com `ignoreFile` e `ignoreTemplate` para cada IA.",
+    "1.0.0 (30/03/2026): Versao inicial — configuracao das IAs claude, cursor, continue com `enabled`, `mirrorDir`, `rootFiles`."
+  ],
+  "_pack_versions": {
+    "_note": "Versoes dos manifestos de cada area do pack .cursor/. Atualizar apos bump de FolderVersion.",
+    "skills": {
+      "manifest": "skills/skills-pack-manifest_V1.24.0.md",
+      "version": "1.24.0",
+      "updated": "2026-04-25"
+    },
+    "agents": {
+      "manifest": "agents/agents-pack-manifest_V1.7.1.md",
+      "version": "1.7.1",
+      "updated": "2026-04-24"
+    },
+    "rules": {
+      "manifest": "rules/rules-pack-manifest_V1.6.3.md",
+      "version": "1.6.3",
+      "updated": "2026-04-24"
+    },
+    "templates": {
+      "manifest": "Templates/templates-pack-manifest_V1.1.0.md",
+      "version": "1.1.0",
+      "updated": "2026-04-16"
+    },
+    "commands": {
+      "manifest": "commands/commands-pack-manifest_V1.8.0.md",
+      "version": "1.8.0",
+      "updated": "2026-04-25"
+    },
+    "scripts": {
+      "manifest": "scripts/scripts-pack-manifest_V1.4.0.md",
+      "version": "1.4.0",
+      "updated": "2026-04-16"
+    }
+  },
+  "_inventory": {
+    "_note": "DEPRECADO: o inventário JSON (`pack-inventory.json`) deixou de ser SSOT. Use `.cursor/index.db` (FTS5) e rode `/syncdb` após alterações em `.cursor/`. Se precisar de snapshot/export, rode `python .cursor/scripts/gen_pack_inventory.py` on-demand.",
+    "deprecated": true,
+    "regenerate_cmd": "python .cursor/scripts/gen_pack_inventory.py"
+  },
+  "ias": {
+    "claude": {
+      "enabled": true,
+      "mirrorDir": ".claude",
+      "rootFiles": [
+        "CLAUDE.md",
+        ".claudeignore"
+      ],
+      "ignoreFile": ".claudeignore",
+      "ignoreTemplate": "claudeignore.template",
+      "description": "Claude Code (Anthropic)"
+    },
+    "cursor": {
+      "enabled": true,
+      "mirrorDir": ".vscode",
+      "rootFiles": [
+        ".cursorignore"
+      ],
+      "ignoreFile": ".cursorignore",
+      "ignoreTemplate": "cursorignore.template",
+      "description": "Cursor IDE / VS Code"
+    },
+    "continue": {
+      "enabled": true,
+      "mirrorDir": ".continue",
+      "rootFiles": [
+        ".continueignore"
+      ],
+      "ignoreFile": ".continueignore",
+      "ignoreTemplate": "continueignore.template",
+      "description": "Continue.dev"
+    },
+    "opencode": {
+      "enabled": false,
+      "mirrorDir": ".opencode",
+      "rootFiles": [
+        "opencode.json"
+      ],
+      "description": "OpenCode TUI/CLI"
+    }
+  },
+  "_workspace_context": {
+    "_note": "Ponteiro para o ficheiro .workspace/context.json na raiz do workspace. Contém valores concretos do clone actual (projectName, backendRoot, modules, _frameworks_overrides). Lido por project-init-rules-generator --full e pack_index_db.py.",
+    "path": "../.workspace/context.json"
+  },
+  "_frameworks": {
+    "_note": "ESQUEMA genérico. Valores concretos por máquina/projeto devem viver em `.workspace/context.json` → `_frameworks_overrides`. Skills e agents devem ler daqui e aplicar override quando existir.",
+    "restDataWare": {
+      "version": "2.1.0",
+      "installPath": "",
+      "corePath": "CORE/Source",
+      "includesFile": "CORE/Source/uRESTDW.inc"
+    },
+    "horse": {
+      "version": "4.x",
+      "installPath": ""
+    },
+    "providersORM": {
+      "version": "2.1.0",
+      "installPath": "",
+      "includesFile": "ORM.Defines.inc"
+    },
+    "parametersORM": {
+      "installPath": ""
+    },
+    "activeDirectoryORM": {
+      "installPath": ""
+    },
+    "zeosDBO": {
+      "installPath": ""
+    },
+    "sqlite": {
+      "installPath": "SQLite",
+      "cliBinary": "SQLite/sqlite3.exe",
+      "_note": "Defaults relativos ao workspace. Se quiser override absoluto (por máquina), use `.workspace/context.json`."
+    },
+    "fpc": {
+      "root": "",
+      "lazarusRoot": "",
+      "opmRoot": ""
+    },
+    "radStudio": {
+      "version": "23.0",
+      "installPath": ""
+    }
+  }
+}

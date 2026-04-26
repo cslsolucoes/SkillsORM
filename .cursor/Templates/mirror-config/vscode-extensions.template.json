@@ -1,0 +1,17 @@
+{
+  "_template_info": "Template para .vscode/extensions.json — extensoes recomendadas. Fonte: .cursor/Templates/mirror-config/",
+  "_template_version": "1.0.0",
+  "recommendations": [
+    "alefragnani.pascal",
+    "alefragnani.pascal-formatter",
+    "alefragnani.project-manager",
+    "alefragnani.delphi-keybindings",
+    "embarcaderotechnologies.delphilsp",
+    "formulahendry.code-runner",
+    "github.vscode-pull-request-github",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "sst-dev.opencode",
+    "diegoomal.ollama-connection"
+  ]
+}

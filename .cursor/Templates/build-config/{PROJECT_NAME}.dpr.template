@@ -1,0 +1,34 @@
+{ =============================================================================
+  {PROJECT_NAME} - Programa principal Delphi (VCL)
+
+  Descrição:
+  Ponto de entrada do projeto {PROJECT_NAME}. Inicializa a aplicação VCL e
+  cria o formulário principal.
+
+  Características:
+  - Framework: VCL (Delphi Windows)
+  - Formulário principal: T{MAIN_FORM_CLASS} ({MAIN_FORM_UNIT})
+
+  Project:        {PROJECT_NAME}
+  ProjectVersion: {PROJECT_VERSION}
+  FileVersion:    1.0.0
+  Author:         Claiton de Souza Linhares
+  Date:           {DATE}
+
+  Changelog (file):
+  - 1.0.0 ({DATE}): criação via bootstrap-build-config.ps1.
+  ============================================================================= }
+program {PROJECT_NAME};
+
+uses
+  Vcl.Forms,
+  {MAIN_FORM_UNIT} in 'src\Views\{MAIN_FORM_UNIT}.pas' {{MAIN_FORM_CLASS}};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(T{MAIN_FORM_CLASS}, {MAIN_FORM_INSTANCE});
+  Application.Run;
+end.

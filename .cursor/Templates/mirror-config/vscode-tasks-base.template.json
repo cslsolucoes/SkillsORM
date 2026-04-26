@@ -1,0 +1,202 @@
+{
+  "_template_info": "Template base para .vscode/tasks.json — tasks bootstrap/sync; cwd e paths relativos sempre ${workspaceFolder}. Fonte: .cursor/Templates/mirror-config/",
+  "_template_version": "1.1.1",
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Mirror Bootstrap: Auto Start",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_autostart_mirrors.py"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_autostart_mirrors.py"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_autostart_mirrors.py"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Bootstrap: Full Run",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Bootstrap: Validate Only",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--validate-only"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--validate-only"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--validate-only"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Bootstrap: Repair",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--repair", "--force"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--repair", "--force"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--repair", "--force"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Reset: WhatIf",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--whatif"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--whatif"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--whatif"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Reset: Force",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--force"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--force"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--force"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Sync: Cursor Pack (WhatIf)",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--whatif", "--dest"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--whatif", "--dest"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--whatif", "--dest"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Sync: Cursor Pack",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--dest"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--dest"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--dest"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

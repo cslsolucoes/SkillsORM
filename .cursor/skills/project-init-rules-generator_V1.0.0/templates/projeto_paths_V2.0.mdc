@@ -1,0 +1,106 @@
+---
+description: "Paths e pacotes do projeto {PROJECT_NAME} — onde estão os arquivos, pacotes, ferramentas e dependências"
+alwaysApply: true
+---
+
+# LOCAL DE ARQUIVOS — {PROJECT_NAME}
+
+**Responsabilidade:** Referência única de onde estão os arquivos e pacotes necessários ao projeto (paths, diretórios, configuração de compilação). Convenções e estrutura em **`projeto_estrutura.mdc`**; processos documentais em **`projeto_documentacao.mdc`**.
+
+---
+
+## PACOTES DE TERCEIROS
+
+**Base:** `{PACKAGES_ROOT}`
+
+### Banco de Dados
+<!-- Listar engines e DLLs usados no projeto -->
+{DATABASE_PACKAGES}
+
+### Frameworks e Bibliotecas
+<!-- Listar bibliotecas principais (REST, WebSocket, JWT, etc.) -->
+{MAIN_PACKAGES}
+
+### Testes
+<!-- DUnitX ou outro framework -->
+{TEST_PACKAGES}
+
+---
+
+## DIRETÓRIOS DO PROJETO
+
+**Raiz:** raiz do repositório — programa principal **`{PROJECT_NAME}.dpr`**
+
+### Estrutura de código
+
+```
+src/
+├── Commons/          — tipos base, constantes, utilitários (Commons.*)
+├── Main/             — facades/API pública dos módulos
+├── Modulos/          — implementações por domínio
+│   ├── Connections/
+│   ├── Database/
+│   ├── Exceptions/
+│   ├── Loggers/
+│   ├── Parameters/
+│   └── PoolConnections/
+└── Views/            — formulários de teste/demo (sem lógica de negócio)
+```
+
+### Diretórios auxiliares
+
+| Diretório | Conteúdo |
+|-----------|----------|
+| `Documentation/` | Documentação canônica estruturada |
+| `Analise/` | Documentação por classe (scaffold via skill) |
+| `Data/` | Configs (config.ini, config.json), bancos de teste, scripts SQL |
+| `Compiled/` | Saída de build — EXE, DCU, DCP (por Platform/Config) |
+| `dll/` | DLLs de drivers de banco (win32/, win64/) |
+
+---
+
+## SUB-PROJETOS / DEPENDÊNCIAS EXTERNAS
+
+<!-- Listar projetos externos usados como módulo ou referência -->
+{SUBPROJECTS}
+
+---
+
+## FPC / LAZARUS
+
+| Componente | Path |
+|------------|------|
+| **FPC** (mínimo 3.3.1) | `{FPC_ROOT}` |
+| **Lazarus** | `{LAZARUS_ROOT}` |
+| **Binários Win64** | `{FPC_ROOT}/bin/x86_64-win64` |
+| **Binários Win32** | `{FPC_ROOT}/bin/i386-win32` |
+| **OPM** | `{FPC_OPM_ROOT}` |
+
+---
+
+## CONFIGURAÇÃO DE COMPILAÇÃO
+
+| Arquivo | Função |
+|---------|--------|
+| `ORM.Defines.inc` | Diretivas de engine e features (raiz) |
+| `dcc32.cfg` / `dcc64.cfg` | Compilador Delphi — paths de units e includes |
+| `fpc32.opts` / `fpc64.opts` | Compilador FPC |
+| `{PROJECT_NAME}.dpr` / `.dproj` | Projeto Delphi |
+| `{PROJECT_NAME}.lpr` / `.lpi` | Projeto Lazarus/FPC |
+
+---
+
+## ACESSO CLI AOS BANCOS (testes e inspeção)
+
+| Banco | Cliente | Configuração |
+|-------|---------|-------------|
+| **SQLite** | `sqlite3` | `Data/Config.db` |
+| **PostgreSQL** | `psql` | `Data/config.ini` — seção `[DATABASE]` |
+| **MySQL** | `mysql` | `Data/config.ini` — seção `[DATABASE]` |
+| **Firebird** | `isql` | `Data/config.ini` — host, port 3050 |
+| **SQL Server** | `sqlcmd` | `Data/config.ini` — seção `[DATABASE]` |
+
+---
+
+**Changelog (este arquivo):**
+- 1.0.0 ({DATE}): Criação — gerado por skill `project-init-rules-generator` durante `/init` do projeto {PROJECT_NAME}.

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TEMPLATE: PropertyGroup para publicacao na Microsoft Store
+  ============================================================
+  Este template mostra o PropertyGroup de Release Win64 com as
+  propriedades de Package Identity necessarias para a Store.
+
+  COMO USAR:
+  1. Localizar o PropertyGroup Release/Win64 no seu .dproj existente
+  2. Adicionar/substituir as propriedades MSIX_* abaixo
+  3. Substituir TODOS os placeholders marcados com {{PLACEHOLDER}}
+
+  DE ONDE VEM CADA VALOR:
+  - MSIX_PackageIdentityName  → Partner Center > Product management > Product Identity > Package/Identity/Name
+  - MSIX_PackagePublisher     → Partner Center > Product management > Product Identity > Package/Identity/Publisher
+  - MSIX_PackageVersion       → Definido pelo desenvolvedor; formato: Major.Minor.Build.0
+  - MSIX_PackageDisplayName   → Nome legivel do app (pode diferir do Identity Name)
+  - MSIX_PackagePublisherDisplayName → Nome da empresa/desenvolvedor para exibicao
+
+  AVISO: Copiar EXATAMENTE os valores do Partner Center — qualquer
+  diferenca de maiusculas, espacos ou caracteres causa rejeicao.
+
+  Referencia: https://learn.microsoft.com/windows/msix/packaging-tool/
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    ================================================================
+    CONFIGURACOES GLOBAIS DO PROJETO
+    (Manter as existentes no seu .dproj — este e apenas o fragmento
+    relevante para a Store)
+    ================================================================
+  -->
+
+  <!--
+    ================================================================
+    PROPERTYGROUP — RELEASE WIN64 (para Microsoft Store)
+    ================================================================
+    Adicionar dentro do PropertyGroup existente de Release/Win64
+    ou criar este PropertyGroup se nao existir.
+    ================================================================
+  -->
+  <PropertyGroup Condition="'$(Config)'=='Release' and '$(Platform)'=='Win64'">
+
+    <!--
+      ===== PACKAGE IDENTITY =====
+      Valores EXATOS copiados do Partner Center.
+      Caminho no Partner Center:
+        Apps and games → [Seu app] → Product management → Product Identity
+    -->
+
+    <!--
+      MSIX_PackageIdentityName
+      Formato: XXXXXXXXX.NomeDoApp (onde XXXXXXXXX e o ID numerico da sua conta)
+      Exemplo: 12345EmpresaLTDA.GestorERP
+      Nunca alterar depois de publicado — e o identificador permanente do app.
+    -->
+    <MSIX_PackageIdentityName>{{PACKAGE_IDENTITY_NAME}}</MSIX_PackageIdentityName>
+    <!--
+      Exemplo preenchido:
+      <MSIX_PackageIdentityName>12345EmpresaLTDA.GestorERP</MSIX_PackageIdentityName>
+    -->
+
+    <!--
+      MSIX_PackagePublisher
+      Formato: Distinguished Name (DN) no padrao X.509
+      Gerado automaticamente pelo Partner Center com base nos dados da sua conta.
+      Exemplo: CN=Empresa LTDA, O=Empresa LTDA, C=BR, SerialNumber=0123456789
+      Para contas individuais: CN=Nome Completo
+    -->
+    <MSIX_PackagePublisher>{{PACKAGE_PUBLISHER_DN}}</MSIX_PackagePublisher>
+    <!--
+      Exemplo preenchido:
+      <MSIX_PackagePublisher>CN=Empresa LTDA, O=Empresa LTDA, C=BR, SerialNumber=0123456789</MSIX_PackagePublisher>
+    -->
+
+    <!--
+      ===== VERSAO DO PACOTE =====
+      Formato OBRIGATORIO: Major.Minor.Build.0
+      - Quarto componente SEMPRE deve ser 0 para submissoes a Store
+      - Deve ser maior que a versao atualmente publicada
+      - Incrementar a cada nova submission
+    -->
+    <MSIX_PackageVersion>{{VERSION_MAJOR}}.{{VERSION_MINOR}}.{{VERSION_BUILD}}.0</MSIX_PackageVersion>
+    <!--
+      Exemplos:
+      <MSIX_PackageVersion>1.0.0.0</MSIX_PackageVersion>   <- primeira release
+      <MSIX_PackageVersion>1.0.1.0</MSIX_PackageVersion>   <- bugfix
+      <MSIX_PackageVersion>1.1.0.0</MSIX_PackageVersion>   <- nova feature
+      <MSIX_PackageVersion>2.0.0.0</MSIX_PackageVersion>   <- major release
+    -->
+
+    <!--
+      ===== NOMES DE EXIBICAO =====
+      Estes valores aparecem para o usuario final (instalador, lista de apps).
+      Podem ser diferentes do Identity Name mas devem ser consistentes.
+    -->
+
+    <!--
+      Nome legivel do app — aparece no instalador e na lista de apps instalados.
+      Limite: 256 caracteres.
+    -->
+    <MSIX_PackageDisplayName>{{APP_DISPLAY_NAME}}</MSIX_PackageDisplayName>
+    <!--
+      Exemplo:
+      <MSIX_PackageDisplayName>GestorERP</MSIX_PackageDisplayName>
+    -->
+
+    <!--
+      Nome do publisher para exibicao — aparece abaixo do nome do app
+      no instalador. Deve corresponder ao nome registrado no Partner Center.
+    -->
+    <MSIX_PackagePublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</MSIX_PackagePublisherDisplayName>
+    <!--
+      Exemplo:
+      <MSIX_PackagePublisherDisplayName>Empresa LTDA</MSIX_PackagePublisherDisplayName>
+    -->
+
+    <!--
+      ===== CONFIGURACOES DE BUILD =====
+    -->
+
+    <!-- Diretorio de saida do build Release Win64 -->
+    <DCC_ExeOutput>.\Output\Win64\Release</DCC_ExeOutput>
+
+    <!-- Defines para compilacao condicional -->
+    <DCC_Define>RELEASE;FRAMEWORK_VCL</DCC_Define>
+
+    <!--
+      ===== ASSINATURA DO PACOTE =====
+      Para submissao a Store: NAO assinar localmente.
+      A Microsoft assina o pacote apos a certificacao ser aprovada.
+
+      Para testes locais com sideload:
+      - Criar certificado auto-assinado com mesmo Publisher CN
+      - Assinar com signtool.exe
+      - Ver skill MSIX (SP-L1) para detalhes
+    -->
+    <!-- <MSIX_SignPackage>false</MSIX_SignPackage> -->
+    <!-- Para sideload local: <MSIX_SignPackage>true</MSIX_SignPackage> -->
+
+  </PropertyGroup>
+
+  <!--
+    ================================================================
+    PROPERTYGROUP — DEBUG WIN64 (para desenvolvimento local)
+    Manter o Identity da Store mesmo em Debug para testes de sideload.
+    Usar CurrentAppSimulator no codigo em {$IFDEF DEBUG}.
+    ================================================================
+  -->
+  <PropertyGroup Condition="'$(Config)'=='Debug' and '$(Platform)'=='Win64'">
+
+    <!-- Em Debug: manter mesmos valores de Identity para sideload de teste -->
+    <MSIX_PackageIdentityName>{{PACKAGE_IDENTITY_NAME}}</MSIX_PackageIdentityName>
+    <MSIX_PackagePublisher>{{PACKAGE_PUBLISHER_DN}}</MSIX_PackagePublisher>
+    <MSIX_PackageVersion>{{VERSION_MAJOR}}.{{VERSION_MINOR}}.{{VERSION_BUILD}}.0</MSIX_PackageVersion>
+    <MSIX_PackageDisplayName>{{APP_DISPLAY_NAME}} (Debug)</MSIX_PackageDisplayName>
+    <MSIX_PackagePublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</MSIX_PackagePublisherDisplayName>
+
+    <!-- Debug: assinar localmente para sideload -->
+    <MSIX_SignPackage>true</MSIX_SignPackage>
+
+    <!-- Defines de Debug -->
+    <DCC_Define>DEBUG;FRAMEWORK_VCL</DCC_Define>
+    <DCC_DebugInfo>true</DCC_DebugInfo>
+    <DCC_RemoteDebug>false</DCC_RemoteDebug>
+
+  </PropertyGroup>
+
+</Project>
+
+<!--
+  ================================================================
+  GUIA DE PLACEHOLDERS — O QUE SUBSTITUIR
+  ================================================================
+
+  {{PACKAGE_IDENTITY_NAME}}
+    Origem: Partner Center > Product management > Product Identity
+    Exemplo: 12345EmpresaLTDA.GestorERP
+    Nota: Nunca alterar apos a primeira publicacao
+
+  {{PACKAGE_PUBLISHER_DN}}
+    Origem: Partner Center > Product management > Product Identity
+    Exemplo: CN=Empresa LTDA, O=Empresa LTDA, C=BR, SerialNumber=0123456789
+    Nota: Para Individual: CN=Nome Sobrenome
+
+  {{VERSION_MAJOR}} / {{VERSION_MINOR}} / {{VERSION_BUILD}}
+    Definido pelo desenvolvedor
+    Exemplo: 1 / 0 / 0
+    Resultado: MSIX_PackageVersion = 1.0.0.0
+
+  {{APP_DISPLAY_NAME}}
+    Nome do app exibido ao usuario
+    Exemplo: GestorERP
+
+  {{PUBLISHER_DISPLAY_NAME}}
+    Nome do desenvolvedor/empresa exibido ao usuario
+    Exemplo: Empresa LTDA
+
+  ================================================================
+-->

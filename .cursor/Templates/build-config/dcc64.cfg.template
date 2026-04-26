@@ -1,0 +1,125 @@
+# ==============================================================================
+# dcc64.cfg - {PROJECT_NAME} (Win64)
+# Uso: compilacao por linha de comando. Executar a partir da raiz: {REPO_ROOT}
+# Ex.: dcc64 {PROJECT_DPR}
+# ==============================================================================
+# Ajustar paths de Zeos/UniDAC conforme sua instalacao.
+# Placeholders: substituir todos os {PLACEHOLDER} antes de usar.
+# ==============================================================================
+
+# ==============================================================================
+# 1. CAMINHOS DE UNITS (-U)
+# ==============================================================================
+
+# 1.1 Projeto — src e subpastas
+-U"src"
+-U"src\Commons"
+-U"src\Attributers"
+-U"src\Main"
+-U"src\Views"
+-U"src\Modulos\Connections"
+-U"src\Modulos\PoolConnections"
+-U"src\Modulos\Database"
+-U"src\Modulos\Database\Fields"
+-U"src\Modulos\Database\Tables"
+-U"src\Modulos\Database\Schemas"
+-U"src\Modulos\Database\EntityManager"
+-U"src\Modulos\Database\QueryBuilder"
+-U"src\Modulos\Database\IdentityMap"
+-U"src\Modulos\Database\UnitOfWork"
+-U"src\Modulos\Database\TypeDatabase"
+-U"src\Modulos\Parameters"
+-U"src\Modulos\Parameters\Database"
+-U"src\Modulos\Parameters\IniFiles"
+-U"src\Modulos\Parameters\JsonObject"
+-U"src\Modulos\Parameters\Attributes"
+-U"src\Modulos\Loggers"
+-U"src\Modulos\Loggers\Commons"
+-U"src\Modulos\Loggers\Attributes"
+-U"src\Modulos\Loggers\Paramenters"
+-U"src\Modulos\Loggers\Databases"
+-U"src\Modulos\Loggers\WebSocket"
+-U"src\Modulos\Loggers\CSV"
+-U"src\Modulos\Loggers\TextFiles"
+-U"src\Modulos\Loggers\Https"
+-U"src\Modulos\Loggers\Https\Engines"
+-U"src\Modulos\Loggers\XML"
+-U"src\Modulos\Loggers\Emails"
+-U"src\Modulos\Loggers\Emails\Engines"
+-U"src\Modulos\Loggers\Events"
+-U"src\Modulos\Loggers\EventLogs"
+-U"src\Modulos\Loggers\JsonObject"
+-U"src\Modulos\Exceptions"
+
+# 1.2 Zeos (USE_ZEOS em ORM.Defines.inc)
+-U"{ZEOS_ROOT}\src\component"
+-U"{ZEOS_ROOT}\src\core"
+-U"{ZEOS_ROOT}\src\dbc"
+-U"{ZEOS_ROOT}\src\parsesql"
+-U"{ZEOS_ROOT}\src\plain"
+
+# 1.2b DataSet.Serialize (Loggers.Database, Parameters.Database, Connection)
+-U"{DATASET_SERIALIZE_ROOT}\src"
+
+# 1.2c Synapse (USE_EMAIL_SYNAPSE, USE_HTTP_SYNAPSE)
+-U"{SYNAPSE_ROOT}\source\lib"
+
+# 1.3 UniDAC (USE_UNIDAC em ORM.Defines.inc — descomente se usar)
+#-U"{UNIDAC_ROOT}\Source"
+#-U"{UNIDAC_ROOT}\Source\UniProviders"
+# FireDAC: ja na RTL desde Delphi XE7 (USE_FIREDAC) — nao precisa -U
+
+# ==============================================================================
+# 2. CAMINHOS DE INCLUDE (-I) — ORM.Defines.inc na raiz
+# ==============================================================================
+-I"."
+-I"src"
+
+# Zeos
+-I"{ZEOS_ROOT}\src\component"
+-I"{ZEOS_ROOT}\src\core"
+-I"{ZEOS_ROOT}\src\dbc"
+-I"{ZEOS_ROOT}\src\parsesql"
+-I"{ZEOS_ROOT}\src\plain"
+
+# ==============================================================================
+# 3. DIRETORIOS DE SAIDA
+# ==============================================================================
+-E"Compiled\EXE\Debug\Win64"
+-N"Compiled\DCU\Debug\Win64"
+-NO"Compiled\DCU\Debug\Win64"
+-LN"Compiled\DCP\Debug\Win64"
+-NB"Compiled\DCP\Debug\Win64"
+
+# BPL / HPP Win64
+-LE"C:\Users\Public\Documents\Embarcadero\Studio\{STUDIO_VERSION}\Bpl\Win64"
+-NH"C:\Program Files (x86)\Embarcadero\Studio\{STUDIO_VERSION}\hpp\Win64"
+
+# ==============================================================================
+# 4. OPCOES DE COMPILACAO
+# ==============================================================================
+-$O-
+-$W+
+-$C+
+-$D+
+-$L+
+-$Y+
+-Q
+-TX.exe
+-VN
+
+# ==============================================================================
+# 5. ALIASES (compatibilidade)
+# ==============================================================================
+-AGenerics.Collections=System.Generics.Collections;Generics.Defaults=System.Generics.Defaults;WinTypes=Winapi.Windows;WinProcs=Winapi.Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE
+-NSWinapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell
+
+# ==============================================================================
+# 6. DEFINICOES CONDICIONAIS (ORM.Defines.inc ja e incluido pelo .dpr)
+# ==============================================================================
+-DDEBUG
+-DFRAMEWORK_VCL
+
+# ==============================================================================
+# FIM — {PROJECT_NAME} dcc64.cfg
+# ==============================================================================

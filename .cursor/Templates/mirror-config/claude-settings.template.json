@@ -1,0 +1,14 @@
+{
+  "_template_info": "Template para .claude/settings.json — substituir {PLACEHOLDERS} antes de usar. Fonte: .cursor/Templates/mirror-config/",
+  "_template_version": "1.0.0",
+  "project": "{PROJECT_NAME}-support-workspace",
+  "description": "Workspace de apoio para desenvolvimento do repositorio canonico {REPO_ROOT}.",
+  "context": {
+    "canonicalRepository": "{REPO_ROOT}",
+    "rulesPath": ".claude/rules",
+    "skillsPath": ".claude/skills",
+    "compileDoc": ".claude/skills/project-compile-database-docs_V1.0.1/exemplos/compile.md",
+    "databaseDoc": ".claude/skills/project-compile-database-docs_V1.0.1/exemplos/database.md",
+    "directivesDoc": ".claude/skills/project-diretivas-compilacao_V1.0.1/exemplos/diretivas_compilacao.md"
+  }
+}

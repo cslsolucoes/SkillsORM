@@ -1,0 +1,139 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Demo Animações FMX'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object RecFundo: TRectangle
+    Align = Client
+    Fill.Color = xFF1A1A2E
+    Stroke.Kind = None
+    object RecCard: TRectangle
+      Position.X = 100
+      Position.Y = 100
+      Width = 200
+      Height = 120
+      Fill.Color = xFFFFFFFF
+      Stroke.Color = xFFE0E0E0
+      Stroke.Thickness = 1.0
+      XRadius = 12
+      YRadius = 12
+      Cursor = crHandPoint
+      object LblCardTitulo: TLabel
+        Position.X = 16
+        Position.Y = 16
+        Text = 'Card com animações'
+        TextSettings.Font.Style = [fsBold]
+        TextSettings.Font.Size = 14
+        TextSettings.FontColor = xFF333333
+      end
+      object LblCardDesc: TLabel
+        Position.X = 16
+        Position.Y = 44
+        Width = 168
+        Text = 'Hover para ver TColorAnimation'
+        TextSettings.FontColor = xFF666666
+        TextSettings.Font.Size = 11
+      end
+      // TColorAnimation: muda Fill.Color no MouseEnter/MouseLeave via Trigger
+      object AnimFundoHover: TColorAnimation
+        PropertyName = 'Fill.Color'
+        StartValue = xFFFFFFFF
+        StopValue = xFFF0F7FF
+        Duration = 0.150000005960464
+        Trigger = 'MouseEnter=true'
+        TriggerInverse = 'MouseEnter=false'
+      end
+      // TColorAnimation para borda
+      object AnimBordaHover: TColorAnimation
+        PropertyName = 'Stroke.Color'
+        StartValue = xFFE0E0E0
+        StopValue = xFF3498DB
+        Duration = 0.150000005960464
+        Trigger = 'MouseEnter=true'
+        TriggerInverse = 'MouseEnter=false'
+      end
+    end
+    object RecSpinner: TRectangle
+      Position.X = 340
+      Position.Y = 100
+      Width = 60
+      Height = 60
+      Fill.Color = xFF3498DB
+      Stroke.Kind = None
+      XRadius = 30
+      YRadius = 30
+      // TFloatAnimation: rotação contínua em loop
+      object AnimRotacao: TFloatAnimation
+        PropertyName = 'RotationAngle'
+        StartValue = 0
+        StopValue = 360
+        Duration = 1.0
+        Loop = True
+        AutoReverse = False
+        Interpolation = Linear
+        AnimationType = InOut
+        Enabled = True
+      end
+      object LblSpinner: TLabel
+        Position.X = 8
+        Position.Y = 20
+        Width = 44
+        Text = '...'
+        TextSettings.HorzAlign = Center
+        TextSettings.FontColor = xFFFFFFFF
+      end
+    end
+    object RecPulso: TRectangle
+      Position.X = 440
+      Position.Y = 100
+      Width = 60
+      Height = 60
+      Fill.Color = xFFFF5252
+      Stroke.Kind = None
+      XRadius = 30
+      YRadius = 30
+      // TColorAnimation: pulso (loop + AutoReverse)
+      object AnimPulso: TColorAnimation
+        PropertyName = 'Fill.Color'
+        StartValue = xFFFF5252
+        StopValue = xFFFFCDD2
+        Duration = 0.800000011920929
+        Loop = True
+        AutoReverse = True
+        Interpolation = Sinusoidal
+        AnimationType = InOut
+        Enabled = True
+      end
+    end
+    object BtnAnimar: TButton
+      Position.X = 100
+      Position.Y = 260
+      Width = 120
+      Height = 40
+      Text = 'Animar Entrada'
+      OnClick = BtnAnimarClick
+    end
+    object RecAlvo: TRectangle
+      Position.X = 240
+      Position.Y = 260
+      Width = 300
+      Height = 40
+      Fill.Color = xFFE8F5E9
+      Stroke.Color = xFF4CAF50
+      XRadius = 8
+      YRadius = 8
+      object LblAlvo: TLabel
+        Position.X = 12
+        Position.Y = 10
+        Text = 'Clique "Animar Entrada" →'
+        TextSettings.FontColor = xFF333333
+      end
+    end
+  end
+end

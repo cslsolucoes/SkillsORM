@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TEMPLATE: AndroidManifest.template.xml para projetos Delphi FMX
+
+  INSTRUCOES:
+  1. Copiar este arquivo para a pasta do projeto com o nome: AndroidManifest.template.xml
+  2. Configurar em: Project > Options > Building > Android > Manifest file
+  3. Descomentar/adicionar as permissoes necessarias para o seu app
+  4. NAO remover os placeholders entre % — sao substituidos automaticamente no build
+  5. Substituir comentarios [DESCREVER] pelo conteudo real
+
+  PLACEHOLDERS (substituidos automaticamente pelo RAD Studio):
+    %package%          → Application ID do .dproj
+    %versionCode%      → Android_VersionCode do .dproj
+    %versionName%      → Android_VersionName do .dproj
+    %minSdkVersion%    → Android_MinSdkVersion do .dproj
+    %targetSdkVersion% → Android_TargetSdkVersion do .dproj
+    %label%            → Nome do app
+    %libNameValue%     → Nome da .so gerada
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="%package%"
+  android:versionCode="%versionCode%"
+  android:versionName="%versionName%">
+
+  <uses-sdk
+    android:minSdkVersion="%minSdkVersion%"
+    android:targetSdkVersion="%targetSdkVersion%"/>
+
+  <!-- ============================================================ -->
+  <!-- PERMISSOES NORMAIS (concedidas automaticamente ao instalar) -->
+  <!-- ============================================================ -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <!-- Descomentar conforme necessario: -->
+  <!-- <uses-permission android:name="android.permission.VIBRATE"/> -->
+  <!-- <uses-permission android:name="android.permission.WAKE_LOCK"/> -->
+  <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> -->
+  <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/> -->
+
+  <!-- ============================================================ -->
+  <!-- PERMISSOES PERIGOSAS (requerer runtime request no codigo)   -->
+  <!-- CAMERA                                                       -->
+  <!-- ============================================================ -->
+  <!-- <uses-permission android:name="android.permission.CAMERA"/> -->
+
+  <!-- ============================================================ -->
+  <!-- LOCALIZACAO                                                  -->
+  <!-- ============================================================ -->
+  <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> -->
+  <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> -->
+  <!-- Background location (Android 10+) — solicitar SEPARADAMENTE: -->
+  <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/> -->
+
+  <!-- ============================================================ -->
+  <!-- ARMAZENAMENTO — API 26-32                                   -->
+  <!-- ============================================================ -->
+  <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> -->
+  <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+       android:maxSdkVersion="29"/> -->
+
+  <!-- ARMAZENAMENTO — API 33+ (midia por tipo)                   -->
+  <!-- <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/> -->
+  <!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/> -->
+  <!-- <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/> -->
+
+  <!-- ============================================================ -->
+  <!-- MICROFONE                                                   -->
+  <!-- ============================================================ -->
+  <!-- <uses-permission android:name="android.permission.RECORD_AUDIO"/> -->
+
+  <!-- ============================================================ -->
+  <!-- NOTIFICACOES — API 33+                                      -->
+  <!-- ============================================================ -->
+  <!-- <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> -->
+
+  <!-- ============================================================ -->
+  <!-- BLUETOOTH — API 31+                                         -->
+  <!-- ============================================================ -->
+  <!-- <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/> -->
+  <!-- <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/> -->
+  <!-- <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/> -->
+
+  <!-- ============================================================ -->
+  <!-- CONTATOS                                                    -->
+  <!-- ============================================================ -->
+  <!-- <uses-permission android:name="android.permission.READ_CONTACTS"/> -->
+  <!-- <uses-permission android:name="android.permission.WRITE_CONTACTS"/> -->
+
+  <!-- ============================================================ -->
+  <!-- HARDWARE FEATURES — declarar hardware necessario            -->
+  <!-- required="false" permite instalacao em dispositivos sem o HW -->
+  <!-- ============================================================ -->
+  <!-- <uses-feature android:name="android.hardware.camera"
+                  android:required="false"/> -->
+  <!-- <uses-feature android:name="android.hardware.location.gps"
+                  android:required="false"/> -->
+  <!-- <uses-feature android:name="android.hardware.bluetooth"
+                  android:required="false"/> -->
+
+  <!-- ============================================================ -->
+  <!-- APPLICATION                                                  -->
+  <!-- ============================================================ -->
+  <application
+    android:label="%label%"
+    android:icon="@drawable/ic_launcher"
+    android:allowBackup="true"
+    android:extractNativeLibs="true">
+
+    <!-- Activity principal -->
+    <activity
+      android:name="com.embarcadero.firemonkey.FMXNativeActivity"
+      android:label="%label%"
+      android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|screenLayout|density|uiMode"
+      android:exported="true"
+      android:launchMode="singleTop">
+
+      <meta-data
+        android:name="android.app.lib_name"
+        android:value="%libNameValue%"/>
+
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+
+    <!-- Service (descomentar se usar TAndroidService) -->
+    <!--
+    <service
+      android:name="com.embarcadero.firemonkey.FMXService"
+      android:exported="false">
+      <meta-data
+        android:name="android.app.lib_name"
+        android:value="%libNameValue%Service"/>
+    </service>
+    -->
+
+    <!-- Broadcast Receiver (descomentar se usar RECEIVE_BOOT_COMPLETED) -->
+    <!--
+    <receiver
+      android:name=".BootReceiver"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+      </intent-filter>
+    </receiver>
+    -->
+
+  </application>
+
+</manifest>

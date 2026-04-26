@@ -1,0 +1,90 @@
+---
+description: "Documentação do projeto {PROJECT_NAME} — estrutura de Documentation/, Analise/, skills documentais e convenções de nomenclatura"
+alwaysApply: true
+globs: ["**/*.md", "**/Documentation/**", "**/Analise/**"]
+---
+
+# DOCUMENTAÇÃO — {PROJECT_NAME}
+
+**Raiz de documentação:** `Documentation/`
+**Documentação por classe:** `Analise/` — scaffold via skill `documentation-paste_analysis_unit_class_method`
+**Responsabilidade desta regra:** ponteiros de onde está cada tipo de documentação e qual skill produz cada artefato.
+
+---
+
+## Mapa de responsabilidades
+
+| Responsabilidade | Localização | Skill |
+|-----------------|-------------|-------|
+| **Hub da documentação** | `Documentation/README.md` | `documentation-readme-hub` |
+| **Documentação por classe** | `Analise/{ClassName}.md` | `documentation-paste_analysis_unit_class_method` |
+| **Gaps, lacunas, RN** | `Documentation/` | `documentation-project-feature` |
+| **Scan amplo** | `Documentation/` + `Analise/` | `documentation-project-scan` |
+| **Migração com backup** | `Documentation/Backup/` | `documentation-migration-backup` |
+| **Criar/atualizar regras** | `.cursor/rules/` | `documentation-rules_creator` |
+| **Arquitetura** | `Documentation/Arquitetura/` | `documentation-architecture` |
+| **Regras de negócio** | `Documentation/Regras de Negocio/` | `documentation-business-rules` |
+| **Roadmap** | `Documentation/` | `documentation-roadmap-from-docs` |
+| **Estrutura do projeto** | `projeto_estrutura.mdc` | — |
+| **Paths e pacotes** | `projeto_paths.mdc` | — |
+
+---
+
+## Documentos principais
+
+| Documento | Local | Descrição |
+|-----------|-------|-----------|
+| **README.md** | `Documentation/` | Hub — índice completo de toda a documentação |
+| **CHANGELOG.md** | raiz | Histórico de versões (Keep a Changelog + SemVer) |
+| **Analise/README.md** | `Analise/` | Índice por módulo (classes, interfaces, responsabilidades) |
+| **{PROJECT_MAIN_DOC}** | `Documentation/` | {PROJECT_MAIN_DOC_DESCRIPTION} |
+
+---
+
+## Convenção `Analise/` — `{ClassName}.md`
+
+- **Canónico (novo scaffold):** um arquivo `{ClassName}.md` por tipo `T…` (classe) ou `I…` (interface)
+  - Nome base **sem** prefixo `T`/`I` — ex.: `Connection.md` para `TConnection`
+  - O corpo do `.md` referencia explicitamente o identificador `T`/`I` e a unit
+- **Subpastas por módulo:** `Analise/Database/`, `Analise/Connections/`, `Analise/Exceptions/`, etc.
+- **Skill canônica:** `documentation-paste_analysis_unit_class_method` (scaffold + sync + relatório)
+- **Legado:** arquivos no formato antigo `Unit.TClasse.md` — migrar voluntariamente
+
+---
+
+## Como criar ou atualizar documentação
+
+1. **Scaffold / sync de classes a partir de `src/`:**
+   ```
+   skill: documentation-paste_analysis_unit_class_method
+   ```
+2. **Gaps, checklist, backlog por feature:**
+   ```
+   skill: documentation-project-feature
+   ```
+3. **Migração com risco de perda (origem → destino):**
+   ```
+   skill: documentation-migration-backup
+   ```
+4. **Inventário amplo de `Documentation/` + `Analise/`:**
+   ```
+   skill: documentation-project-scan
+   ```
+5. **Criar ou atualizar regra Cursor:**
+   ```
+   skill: documentation-rules_creator
+   ```
+
+---
+
+## Regras transversais
+
+- **Nunca duplicar** definições presentes em `src/Commons/` em documentação de módulos
+- **Changelog por unit** obrigatório no cabeçalho de cada `.pas` modificado (ver `projeto_estrutura.mdc`)
+- **Ao fechar versão:** consolidar Changelogs (file) em `CHANGELOG.md` — seção "Alterações unit a unit (X.Y.Z)"
+- **Templates documentais:** `.cursor/Templates/` — ver `.cursor/Templates/README.md`
+
+---
+
+**Changelog (este arquivo):**
+- 1.0.0 ({DATE}): Criação — gerado por skill `project-init-rules-generator` durante `/init` do projeto {PROJECT_NAME}.

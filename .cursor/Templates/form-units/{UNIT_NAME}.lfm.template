@@ -1,0 +1,8 @@
+object {FORM_CLASS}: T{FORM_CLASS}
+  Left = 248
+  Height = 480
+  Top = 111
+  Width = 640
+  Caption = '{FORM_CAPTION}'
+  LCLVersion = '{LCL_VERSION}'
+end

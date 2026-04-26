@@ -1,0 +1,75 @@
+---
+alwaysApply: false
+description: "Inventário JSON do pack foi descontinuado: usar `/syncdb` para reindexar `.cursor/index.db` após edições em `.cursor/`."
+globs: [".cursor/**"]
+---
+
+# Index DB — Auto-reindex após edições (substitui pack-inventory.json)
+
+## Escopo
+
+Aplica-se a qualquer operação que cria, edita, renomeia ou deleta arquivos
+em `.cursor/` (qualquer subpasta: `skills/`, `rules/`, `agents/`, `commands/`,
+`Templates/`, `scripts/`). Esta rule garante que o índice **`.cursor/index.db`**
+reflita sempre o estado atual do pack.
+
+**Não se aplica** a edições fora de `.cursor/` (código-fonte, documentação, etc.).
+
+## Scripts e agents referenciados
+
+| Recurso | Tipo | Quando referenciado |
+| ------- | ---- | ------------------- |
+| `pack_index_db.py` | script | Após qualquer edição em `.cursor/` |
+| `syncdb` | command | Reindexa `.cursor/index.db` (e `.workspace/index.db`, `.docs/index.db` quando existir) |
+
+---
+
+## Quando reindexar
+
+Após qualquer operação de **criar, editar, renomear ou deletar** um arquivo
+em `.cursor/` (qualquer subpasta), executar:
+
+```bash
+# Windows
+python .cursor/scripts/pack_index_db.py --scan all
+
+# Linux / macOS
+python3 .cursor/scripts/pack_index_db.py --scan all
+```
+
+Executar **antes de responder** ao usuário sobre o resultado da operação.
+Se o script não existir ou falhar, reportar ao usuário sem bloquear.
+
+O scan é incremental por hash (upsert) e é suficientemente rápido para uso rotineiro.\n+Em casos de mudança de schema do índice, usar `--full`.
+
+---
+
+## Como usar o índice como lookup seletivo (offline-first)
+
+Antes de escanear `.cursor/` para localizar skills, rules, agents ou templates:
+
+1. Consultar o índice via: `python .cursor/scripts/pack_index_db.py --query \"<keywords>\"`.\n+2. Se necessário, filtrar por `--type` e/ou `--scope`.\n+3. Se um arquivo esperado não aparecer, rodar `--scan all` e repetir a query.
+
+### Campos úteis do índice
+
+- `type` (skill/agent/rule/doc)\n+- `scope` (cursor/workspace/project)\n+- `title` / `description`\n+- `path`\n+- `indexed_at`
+
+### Exemplo de lookup
+
+```python
+# Exemplo via CLI (preferido):\n+# python .cursor/scripts/pack_index_db.py --query \"governance\" --type skill --scope cursor
+```
+
+---
+
+## Versão interna
+
+| Campo | Valor |
+| --- | --- |
+| **FileVersion** | 1.0.0 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog
+
+- 1.0.0 (09/04/2026): Criação da rule — auto-atualização incremental após edições
+  em `.cursor/` e uso do inventário como índice seletivo de busca.

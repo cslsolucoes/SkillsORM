@@ -1,0 +1,136 @@
+---
+description: "Acesso rápido ao ProvidersORM — API pública, exemplos de uso, paths da documentação e referências canônicas"
+alwaysApply: false
+---
+
+# PROVIDERSORM — Referência rápida
+
+**Projeto-fonte:** `E:\CSL\ProvidersORM`
+**Documentação:** `E:\CSL\ProvidersORM\Documentation\`
+**Analise por classe:** `E:\CSL\ProvidersORM\Analise\`
+**Rules de referência (exemplos preenchidos):** `E:\CSL\ProvidersORM\.cursor\Templates\rules-modelo-orm_V1.0\`
+**Skill principal:** `documentation-project-expert` · `developer-delphi-providers-orm-usage`
+
+---
+
+## API pública — facades em `src/Main/`
+
+| Módulo | Interface | Implementação | Unit de uso |
+|--------|-----------|--------------|-------------|
+| Connection | `IConnection` | `TConnection` | `Providers.Connection` |
+| PoolConnections | `IPoolConnections` | `TPoolConnections` | `Providers.PoolConnections` |
+| Tables | `ITables` / `ITable` | `TTables` / `TTable` | `Providers.Database.Tables` |
+| Fields | `IFields` / `IField` | `TFields` / `TField` | `Providers.Database.Fields` |
+| EntityManager | `IEntityManager` | `TEntityManager` | `Providers.Database.EntityManager` |
+| QueryBuilder | `IQueryBuilder` | `TQueryBuilder` | `Providers.Database.QueryBuilder` |
+| UnitOfWork | `IUnitOfWork` | `TUnitOfWork` | `Providers.Database.UnitOfWork` |
+| IdentityMap | `IIdentityMap<T>` | `TIdentityMap<T>` | `Providers.Database.IdentityMap` |
+| Parameters | `IParameters` | `TParameters` | `Parameters` |
+| Loggers | `ILogger` | `TLogger` | `Loggers` |
+| Exceptions | `IExceptions` | `TExceptions` | `Exceptions` |
+
+---
+
+## Modo Slim — Connection + Tables (quick start)
+
+```pascal
+uses
+  Providers.Connection.Interfaces, Providers.Connection,
+  Providers.Database.Tables.Interfaces, Providers.Database.Tables;
+
+var
+  LConn  : IConnection;
+  LTables: ITables;
+begin
+  // 1) Conexão fluente
+  LConn := TConnection.New
+    .DatabaseType(dtPostgreSQL)
+    .Host('localhost').Port(5432)
+    .Database('mydb').Username('user').Password('pass')
+    .Connect;
+  try
+    // 2) Metadados
+    LTables := TTables.New;
+    LTables.Connection(LConn).LoadFromConnection;
+
+    // 3) DML via QueryBuilder
+    LDS := TQueryBuilder.New.Connection(LConn)
+      .Select('*').From('tabela').Where('id', '=', 1)
+      .Execute; // retorna TDataSet — fazer Free após uso
+
+    // 4) Transação
+    LConn.BeginTransaction;
+    try
+      LConn.ExecuteCommand('UPDATE tabela SET nome = :nome WHERE id = :id', [...]);
+      LConn.Commit;
+    except
+      LConn.Rollback;
+      raise;
+    end;
+  finally
+    LConn.Disconnect;
+  end;
+end;
+```
+
+---
+
+## FromConfig (zero-config — lê `Data/config.ini`)
+
+```pascal
+LConn := TConnection.New.FromConfig.Connect;
+```
+
+---
+
+## Modo com Attributes/EntityManager
+
+```pascal
+uses Providers.Attributers, Providers.Database.EntityManager;
+
+[Table('clientes')]
+TCliente = class
+  [PrimaryKey] [Field('id')]    property Id: Integer read FId write FId;
+  [Field('nome', 100)]          property Nome: string read FNome write FNome;
+end;
+
+// Uso:
+LEM := TEntityManager.New.Connection(LConn);
+LEM.Save(LCliente);                          // INSERT ou UPDATE (Id > 0)
+LCliente := LEM.Find<TCliente>(42);          // SELECT por PK
+LList    := LEM.FindAll<TCliente>;           // SELECT *
+LEM.Delete<TCliente>(42);                    // DELETE por PK
+```
+
+---
+
+## Pool de conexões
+
+```pascal
+LPool := TPoolConnections.New;
+LPool.TryAdd(TConnection.New.FromConfig);    // adicionar ao pool
+
+LConn := LPool.GetFromPool;                  // pegar (FIFO)
+try
+  // usar LConn normalmente
+finally
+  LPool.ReturnToPool(LConn);                 // devolver
+end;
+```
+
+---
+
+## Documentação completa
+
+| Recurso | Path |
+|---------|------|
+| **Exemplos completos** (Connection, Pool, DDL/DML, EntityManager, UoW, Exemplos Parte 1–4) | `E:\CSL\ProvidersORM\.cursor\Templates\rules-modelo-orm_V1.0\Exemplos_ORM_V1.0.mdc` |
+| **Roteiros consolidados** (composition root, ecossistema unificado) | `E:\CSL\ProvidersORM\Documentation\ROTEIROS_CONSOLIDADO.md` |
+| **Lógica Parameters.Database** | `E:\CSL\ProvidersORM\Documentation\LOGICA_DATABASE.md` |
+| **Analise por classe** | `E:\CSL\ProvidersORM\Analise\` |
+| **Skills de referência** | `documentation-project-expert`, `developer-delphi-providers-orm-usage`, `project-expert_V*` |
+
+---
+
+**Changelog (este arquivo):**
+- 1.0.0 ({DATE}): Criação — gerado por skill `project-init-rules-generator` durante `/init` de projeto que usa ProvidersORM.

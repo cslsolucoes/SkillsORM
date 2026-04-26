@@ -1,0 +1,192 @@
+<!--
+  TEMPLATE: .dproj Multi-Plataforma iOS + Android
+  Skill: developer-delphi-mobile-orchestrator_V1.1.0
+
+  INSTRUCOES DE USO:
+  1. Abrir o arquivo .dproj do projeto em um editor de texto
+  2. Localizar a tag <Project> raiz
+  3. Copiar os PropertyGroups abaixo dentro de <Project>
+  4. Substituir todos os placeholders indicados por [...]
+  5. Salvar e reabrir no RAD Studio
+
+  PLACEHOLDERS A SUBSTITUIR:
+    [BUNDLE_ID]          → Bundle ID / Package Name (ex.: com.empresa.meuapp)
+    [APP_DISPLAY_NAME]   → Nome exibido ao usuario (ex.: Meu App)
+    [MIN_IOS]            → iOS minimo (ex.: 16.0)
+    [DEV_CERT]           → Certificado Apple Development (ex.: Apple Development: Joao (ABC))
+    [DIST_CERT]          → Certificado Apple Distribution (ex.: Apple Distribution: Emp (TEAM))
+    [DEV_PROFILE]        → Provisioning profile Development (.mobileprovision)
+    [APPSTORE_PROFILE]   → Provisioning profile App Store (.mobileprovision)
+    [IOS_VERSION]        → CFBundleVersion (ex.: 1.0.0)
+    [IOS_SHORT_VERSION]  → CFBundleShortVersionString (ex.: 1.0)
+    [ANDROID_MIN_SDK]    → Android minSdkVersion (ex.: 26)
+    [ANDROID_TARGET_SDK] → Android targetSdkVersion (ex.: 34)
+    [ANDROID_VERSION_CODE] → versionCode inteiro incremental (ex.: 10)
+    [ANDROID_VERSION_NAME] → versionName string (ex.: 1.0.0)
+    [KEYSTORE_PATH]      → Caminho da keystore (ex.: .\certificates\meuapp.keystore)
+    [KEYSTORE_ALIAS]     → Alias da keystore (ex.: meuapp)
+
+  VARIAVEIS DE AMBIENTE NECESSARIAS PARA BUILD ANDROID RELEASE:
+    KEYSTORE_PASS  → Senha da keystore
+    KEY_ALIAS_PASS → Senha do alias
+-->
+
+<!-- ================================================================ -->
+<!-- iOS DEVICE 64-BIT — BASE                                        -->
+<!-- Aplica a todas as configuracoes (Debug e Release)               -->
+<!-- ================================================================ -->
+<PropertyGroup Condition="'$(Platform)'=='iOSDevice64'">
+
+  <!-- Namespaces para FMX iOS — obrigatorio -->
+  <DCC_Namespace>Macapi;iOSapi;FMX;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+
+  <!-- Bundle Identifier: DEVE coincidir exatamente com App ID no Apple Developer Portal -->
+  <VerInfo_CFBundleIdentifier>[BUNDLE_ID]</VerInfo_CFBundleIdentifier>
+
+  <!-- Build version — incrementar para cada build submetido ao TestFlight/App Store -->
+  <VerInfo_CFBundleVersion>[IOS_VERSION]</VerInfo_CFBundleVersion>
+
+  <!-- Version string exibida ao usuario na App Store -->
+  <VerInfo_CFBundleShortVersionString>[IOS_SHORT_VERSION]</VerInfo_CFBundleShortVersionString>
+
+  <!-- iOS minimo suportado (verificar requisitos do Delphi/FMX) -->
+  <VerInfo_MinimumOSVersion>[MIN_IOS]</VerInfo_MinimumOSVersion>
+
+  <!-- Familia de dispositivos: 1=iPhone, 2=iPad, 1,2=Universal -->
+  <VerInfo_UIDeviceFamily>1,2</VerInfo_UIDeviceFamily>
+
+  <!-- Nome exibido no launcher do dispositivo -->
+  <VerInfo_CFBundleDisplayName>[APP_DISPLAY_NAME]</VerInfo_CFBundleDisplayName>
+
+</PropertyGroup>
+
+<!-- ================================================================ -->
+<!-- iOS DEVICE 64-BIT — DEBUG                                       -->
+<!-- Usado para testes em dispositivo fisico durante desenvolvimento  -->
+<!-- ================================================================ -->
+<PropertyGroup Condition="'$(Cfg_1)'!='' and '$(Platform)'=='iOSDevice64'">
+
+  <!-- Certificado Apple Development -->
+  <!-- Formato: "Apple Development: Nome Completo (DEVID123)" -->
+  <CodeSigningIdentity>[DEV_CERT]</CodeSigningIdentity>
+
+  <!-- Provisioning Profile de Development -->
+  <!-- Importado em Project > Options > Provisioning -->
+  <ProvisioningProfile>[DEV_PROFILE]</ProvisioningProfile>
+
+  <!-- Debug completo: linha, coluna, nome de variaveis -->
+  <DCC_DebugInformation>2</DCC_DebugInformation>
+
+</PropertyGroup>
+
+<!-- ================================================================ -->
+<!-- iOS DEVICE 64-BIT — RELEASE (App Store)                        -->
+<!-- Usado para builds de distribuicao (TestFlight e App Store)     -->
+<!-- ================================================================ -->
+<PropertyGroup Condition="'$(Cfg_2)'!='' and '$(Platform)'=='iOSDevice64'">
+
+  <!-- Certificado Apple Distribution -->
+  <!-- Formato: "Apple Distribution: Nome Empresa (TEAMID)" -->
+  <CodeSigningIdentity>[DIST_CERT]</CodeSigningIdentity>
+
+  <!-- Provisioning Profile App Store Distribution -->
+  <ProvisioningProfile>[APPSTORE_PROFILE]</ProvisioningProfile>
+
+  <!-- Otimizacoes de release -->
+  <DCC_Optimize>true</DCC_Optimize>
+  <DCC_DebugInformation>0</DCC_DebugInformation>
+  <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+
+</PropertyGroup>
+
+<!-- ================================================================ -->
+<!-- ANDROID 64-BIT — BASE                                          -->
+<!-- Aplica a todas as configuracoes (Debug e Release)              -->
+<!-- ================================================================ -->
+<PropertyGroup Condition="'$(Platform)'=='Android64'">
+
+  <!-- Namespaces para FMX Android — obrigatorio -->
+  <DCC_Namespace>Androidapi;FMX;System;Xml;Data;$(DCC_Namespace)</DCC_Namespace>
+
+  <!-- Application ID: Package Name unico no Google Play -->
+  <!-- DEVE coincidir com o app registrado no Play Console -->
+  <Android_ApplicationId>[BUNDLE_ID]</Android_ApplicationId>
+
+  <!-- API minima suportada (26 = Android 8.0) -->
+  <Android_MinSdkVersion>[ANDROID_MIN_SDK]</Android_MinSdkVersion>
+
+  <!-- API alvo — Google Play exige >= 34 para novos apps (2024+) -->
+  <Android_TargetSdkVersion>[ANDROID_TARGET_SDK]</Android_TargetSdkVersion>
+
+</PropertyGroup>
+
+<!-- ================================================================ -->
+<!-- ANDROID 64-BIT — DEBUG                                         -->
+<!-- Debug keystore gerada automaticamente — nao precisa configurar -->
+<!-- ================================================================ -->
+<PropertyGroup Condition="'$(Cfg_1)'!='' and '$(Platform)'=='Android64'">
+
+  <Android_VersionCode>1</Android_VersionCode>
+  <Android_VersionName>[ANDROID_VERSION_NAME]-debug</Android_VersionName>
+  <DCC_DebugInformation>2</DCC_DebugInformation>
+
+</PropertyGroup>
+
+<!-- ================================================================ -->
+<!-- ANDROID 64-BIT — RELEASE (Google Play Store)                  -->
+<!-- ================================================================ -->
+<PropertyGroup Condition="'$(Cfg_2)'!='' and '$(Platform)'=='Android64'">
+
+  <!-- VERSAO: incrementar SEMPRE antes de cada upload para o Play Store -->
+  <!-- versionCode: inteiro, nunca reutilizar, nunca regredir           -->
+  <Android_VersionCode>[ANDROID_VERSION_CODE]</Android_VersionCode>
+  <!-- versionName: exibida ao usuario (recomendado: SemVer)           -->
+  <Android_VersionName>[ANDROID_VERSION_NAME]</Android_VersionName>
+
+  <!-- KEYSTORE — caminho do arquivo .keystore (relativo ao .dproj) -->
+  <Android_KeyStore>[KEYSTORE_PATH]</Android_KeyStore>
+
+  <!-- Alias da chave dentro da keystore (definido com keytool -alias) -->
+  <Android_KeyStoreAlias>[KEYSTORE_ALIAS]</Android_KeyStoreAlias>
+
+  <!-- SENHAS: NUNCA hardcodar — usar variaveis de ambiente -->
+  <!-- Antes do build: set KEYSTORE_PASS=suasenha          -->
+  <Android_KeyStorePass>$(KEYSTORE_PASS)</Android_KeyStorePass>
+  <!-- Antes do build: set KEY_ALIAS_PASS=suasenha         -->
+  <Android_KeyAliasPass>$(KEY_ALIAS_PASS)</Android_KeyAliasPass>
+
+  <!-- APP BUNDLE: obrigatorio para Google Play desde agosto 2021 -->
+  <Android_GenerateBundle>true</Android_GenerateBundle>
+
+  <!-- Otimizacoes de release -->
+  <DCC_Optimize>true</DCC_Optimize>
+  <DCC_DebugInformation>0</DCC_DebugInformation>
+  <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+
+</PropertyGroup>
+
+<!--
+  ================================================================
+  NOTAS IMPORTANTES
+  ================================================================
+
+  iOS:
+  - PAServer deve estar rodando no Mac durante o build
+  - Certificados e profiles sao importados em Project > Options > Provisioning
+  - TestFlight requer provisioning profile App Store (mesma configuracao da App Store)
+  - Certificados Apple tem validade de 1 ano — renovar antes do vencimento
+
+  Android:
+  - Variaveis de ambiente KEYSTORE_PASS e KEY_ALIAS_PASS devem estar definidas
+  - versionCode NUNCA pode regredir em producao (Play Store rejeita)
+  - Android_GenerateBundle=true e obrigatorio para novos apps desde ago/2021
+  - Keystore NUNCA deve ser versionada no git (adicionar ao .gitignore)
+  - Play App Signing e fortemente recomendado para seguranca da keystore
+
+  Para mais detalhes:
+  - iOS Setup:         developer-delphi-ios-setup_V1.0.0
+  - iOS Publishing:    developer-delphi-ios-publishing_V1.0.0
+  - Android Setup:     developer-delphi-android-setup_V1.0.0
+  - Android Publishing: developer-delphi-android-publishing_V1.0.0
+  ================================================================
+-->

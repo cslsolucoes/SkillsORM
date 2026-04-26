@@ -1,0 +1,112 @@
+---
+alwaysApply: true
+description: "Qualquer plano gravado em .cursor/plans/ usa obrigatoriamente o sufixo .plan.md e formato Markdown alinhado ao Cursor (frontmatter + corpo)."
+---
+
+# Persistência de planos em `.cursor/plans/`
+
+## Escopo
+
+Sempre que couber **gravar um plano** neste repositório — incluindo:
+
+- pedido explícito de **plano** (ex.: "faz um plano", "plano de migração", "roadmap técnico", "planeia as alterações");
+- pedido explícito para **salvar / gravar / persistir** o plano em **`.cursor/plans/`** ou **`./cursor/plans`** (ex.: "guarda o plano em .cursor/plans");
+
+o agente **DEVE**, além de responder no chat:
+
+1. **Criar ou atualizar** o documento **somente** sob **`.cursor/plans/`** na raiz do workspace.
+2. Cumprir a **extensão e nomenclatura** abaixo (padrão Cursor / hub do projeto — ver **`.cursor/README.md`** → `plans/`).
+
+**Não se aplica** a: respostas curtas sem entrega de plano; quando o utilizador disser explicitamente para **não** gravar ficheiro.
+
+---
+
+## Extensão e nome do ficheiro (obrigatório)
+
+- **Sufixo obrigatório:** **`.plan.md`** — é **proibido** gravar planos de execução nesta pasta apenas como **`.md`** (sem `.plan` antes da extensão).
+- **Sem espaços** no nome; usar `kebab-case` ou `snake_case` para o segmento textual.
+- **Convenções aceites** (escolher uma e manter consistência no mesmo ficheiro ao rever):
+  - **Cronológica:** `YYYY-MM-DD-<slug-kebab>.plan.md` (recomendada para ordenação por data).
+  - **Estilo hub Cursor (nome + sufixo único):** `<nome-descritivo-kebab>_<hash-ou-data-curta>.plan.md` — alinhado a **`<nome>_<hash>.plan.md`** em `.cursor/README.md` e a **`migration-plan_<hash>.plan.md`** em `.cursor/commands/migration-plan.md`.
+- **Exemplos válidos:** `2026-04-10-refatorar-repositorio-seguranca.plan.md`, `migration-plan_a1b2c3d4.plan.md`.
+- Se o plano **atualizar** um ficheiro `.plan.md` existente sobre o mesmo tema, **reutilizar** o mesmo nome; atualizar frontmatter `updated` e, se necessário, secção **Revisões**.
+
+**Excepção:** ficheiros que são **templates de referência** versionados no repositório (ex.: `documentation-migration-plan_V1.0.md`) **não** precisam ser renomeados; ao **materializar** um plano executável a partir deles, a cópia gravada em `plans/` **DEVE** usar **`.plan.md`**.
+
+---
+
+## Formato canónico (Markdown + Cursor)
+
+O ficheiro **DEVE** começar por **frontmatter YAML** seguido do corpo.
+
+**Frontmatter mínimo (projeto):**
+
+```yaml
+---
+title: "<título curto do plano>"
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+status: draft | approved | executed | superseded
+locale: pt-PT
+---
+```
+
+**Campos opcionais (compatibilidade com Plan / UI Cursor)** — usar quando fizer sentido:
+
+```yaml
+name: "<título curto>"       # alternativa curta ao title
+overview: "<uma linha>"      # resumo executivo
+# todos: []                  # opcional: lista de tarefas rastreáveis (id, content, status)
+---
+```
+
+**Secções obrigatórias** (nesta ordem, com nível `##`):
+
+| Secção | Conteúdo |
+| ------ | -------- |
+| **Resumo** | 2–4 frases: o quê, porquê, resultado esperado. |
+| **Objectivos** | Lista marcada, mensuráveis quando possível. |
+| **Âmbito e exclusões** | O que entra e o que fica fora. |
+| **Inventário de ficheiros / artefactos** | Tabela: caminho, operação (criar/editar/mover/remover), nota breve. |
+| **Passos / fases** | Numerados; sub-passos com `###` se necessário. |
+| **Dependências e riscos** | Bloqueadores, ordem crítica, hipóteses. |
+| **Critérios de conclusão** | Como validar que o plano foi bem executado. |
+
+**Secções opcionais** (quando aplicável):
+
+- **Rollback** — como reverter.
+- **Referências** — links ou paths (`Documentation/`, skills, issues).
+
+---
+
+## Planos de migração / áreas protegidas
+
+Se o plano incidir sobre **`Documentation/`**, **`.cursor/skills/`**, **`.cursor/Templates/`**, **`.cursor/agents/`** ou **`.cursor/rules/`**, o corpo **DEVE** estar alinhado às exigências da regra **`documentation-migration-plan-mode`** (inventário completo, antes/depois, backup, ordem de execução, rollback). Pode usar como base estrutural o template **`.cursor/plans/documentation-migration-plan_V1.0.md`**; o **artefacto de plano persistido** para execução **DEVE** ser gravado como **`.plan.md`** (não substituir o template versionado salvo que o projeto mantém como `.md`).
+
+---
+
+## Entrega no chat
+
+Na resposta ao utilizador, indicar **sempre** o caminho do ficheiro gravado, por exemplo:
+
+`Plano gravado em: .cursor/plans/2026-04-10-<slug>.plan.md`
+
+---
+
+## Pós-edição em `.cursor/`
+
+Se o plano gravado implicar criação/edição posterior de ficheiros sob **`.cursor/`** (além do próprio plano), após essas edições rodar **`/syncdb`** (reindexar `.cursor/index.db`) conforme a regra **`pack-inventory-autoupdate`**.
+
+---
+
+## Versão interna (ficheiro)
+
+| Campo | Valor |
+| ----- | ----- |
+| **FileVersion** | 1.1.0 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog (este ficheiro)
+
+- 1.1.0 (10/04/2026): Extensão obrigatória **`.plan.md`**; gatilhos alargados a qualquer pedido de gravar plano em `.cursor/plans/`; alinhamento a `.cursor/README.md` e `migration-plan`; frontmatter opcional `name` / `overview` / `todos`.
+- 1.0.0 (10/04/2026): Criação — persistência obrigatória de planos em `.cursor/plans/` com frontmatter e secções canónicas.

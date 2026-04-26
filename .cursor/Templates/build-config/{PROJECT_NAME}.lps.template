@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ===========================================================================
+     {PROJECT_NAME}.lps — Lazarus Project Session
+     Arquivo de sessao: armazena estado da IDE (abas abertas, posicao do cursor).
+     NAO versionar — gerado/atualizado automaticamente pelo Lazarus.
+     Gerado a partir de .cursor/Templates/build-config/{PROJECT_NAME}.lps.template
+     Referencia: https://wiki.freepascal.org/Lazarus_IDE_Tools#Project_session_file
+     =========================================================================== -->
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="12"/>
+    <BuildModes Active="Default"/>
+    <Units>
+      <Unit>
+        <Filename Value="{PROJECT_NAME}.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="1"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\Views\{MAIN_FORM_UNIT}.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="{MAIN_FORM_CLASS}"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <UsageCount Value="1"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="-1"/>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

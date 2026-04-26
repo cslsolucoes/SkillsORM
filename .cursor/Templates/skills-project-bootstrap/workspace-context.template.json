@@ -1,0 +1,9 @@
+{
+  "_note": "Contexto específico deste clone/workspace. Este ficheiro NÃO é propagado pelo pack `.cursor/`.",
+  "_internal_template_version": "1.0.0",
+  "projectName": "{PROJECT_NAME}",
+  "projectType": "skills-pack",
+  "company": "{COMPANY}",
+  "author": "{AUTHOR}",
+  "githubUrl": "{GITHUB_URL}"
+}

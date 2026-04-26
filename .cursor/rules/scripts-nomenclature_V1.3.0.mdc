@@ -1,0 +1,69 @@
+---
+alwaysApply: false
+description: "Convenções de nomes para scripts em `.cursor/scripts/`: Python em snake_case minúsculo; PowerShell em kebab-case minúsculo (bootstrap-*, sync-*, decompile-*, database_*)."
+globs: [".cursor/scripts/**"]
+---
+
+# Nomenclatura — `.cursor/scripts/`
+
+## Escopo
+
+Aplica-se a **novos ou renomeados** ficheiros em `.cursor/scripts/` (Python e PowerShell). A IA e os autores devem seguir estes padrões para manter paridade documentada no [scripts-pack-manifest_V1.2.2.md](.cursor/scripts/scripts-pack-manifest_V1.2.2.md).
+
+**Não se aplica** a: renomeações pontuais já aprovadas em plano de migração; conteúdo fora de `scripts/`.
+
+## Objectivo
+
+Nomes previsíveis por **domínio de responsabilidade**, alinhados entre **Python** (canónico, cross-platform) e **PowerShell** (Windows, atalhos quando não há paridade).
+
+## Python (`snake_case`, sem hífens)
+
+| Prefixo / padrão | Responsabilidade | Exemplos |
+|------------------|------------------|----------|
+| `bootstrap_*` | Espelhos, reset, autostart ao abrir pasta | `bootstrap_mirror_symlinks.py`, `bootstrap_reset.py`, `bootstrap_autostart_mirrors.py` |
+| `sync_*` | Copiar pack `.cursor/` entre projetos | `sync_cursor_pack.py` |
+| `validate_*` | Quality gate do pack | `validate_pack.py` |
+| `decompile_*` | CHM → HTML | `decompile_chm.py` |
+| `gen_*` | Gerar artefactos (inventário) | `gen_pack_inventory.py` |
+| `database_*` | Gerência de sessão CLI de bancos (5 SGBDs) | `database_session_manager.py` |
+
+## PowerShell (`bootstrap-*`, `sync-*`, `decompile-*`)
+
+| Padrão | Responsabilidade | Exemplos |
+|--------|------------------|----------|
+| `bootstrap-*.ps1` | Projeto, espelhos, autostart, forms, build | `bootstrap-mirror-symlinks.ps1`, `bootstrap-autostart-mirrors.ps1`, `bootstrap-build-config.ps1`, `bootstrap-form-unit.ps1`, `bootstrap-reset.ps1` |
+| `sync-*.ps1` | Sincronização do pack | `sync-cursor-pack.ps1` |
+| `decompile-*.ps1` | CHM via `hh.exe` (Windows) | `decompile-chm.ps1` |
+| `database-*.ps1` | Paridade opcional de `database_*` Python | *(criar sob demanda)* |
+
+Regra: **toda** a lógica de "bootstrap" no Windows usa o prefixo **`bootstrap-`** (incluindo autostart de espelhos), na mesma família de nomes que `bootstrap-mirror-symlinks.ps1`.
+
+## Paridade Python ↔ PowerShell
+
+O manifesto [scripts-pack-manifest_V1.2.2.md](.cursor/scripts/scripts-pack-manifest_V1.2.2.md) lista o par quando existe equivalente. Scripts com prefixo `database_*` têm paridade PowerShell **opcional** — podem ser criados apenas em Python quando o fluxo é interativo e multiplataforma.
+
+## Referência cruzada
+
+| Recurso | Path |
+| ------- | ---- |
+| Manifesto da pasta `scripts/` | `.cursor/scripts/scripts-pack-manifest_V1.2.2.md` |
+| Auto-atualização do inventário | `.cursor/rules/pack-inventory-autoupdate_V1.0.0.mdc` |
+| Regra Pascal backend (MXX) | `.cursor/rules/backend-pascal-unit-naming_V1.3.0.mdc` |
+| Skill de gerência de bancos | `.cursor/skills/project-open-database-cli_V1.0.0/` |
+
+---
+
+## Versão interna (ficheiro)
+
+| Campo | Valor |
+| ----- | ----- |
+| **FileVersion** | 1.3.0 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog (este ficheiro)
+
+- 1.3.0 (16/04/2026): Novo prefixo Python `database_*` para gerência de sessões CLI de bancos (ex.: `database_session_manager.py`); paridade PowerShell opcional (`database-*.ps1`); referência cruzada à skill `project-open-database-cli_V1.0.0`; atualização do link para `backend-pascal-unit-naming_V1.3.0.mdc`.
+- 1.2.1 (14/04/2026): Adicionada referência cruzada para `backend-pascal-unit-naming_V1.1.0.mdc` (regra canônica de nomenclatura Pascal backend MXX).
+- 1.2.0 (11/04/2026): Convertido para rule Cursor (`.mdc`); `alwaysApply: false`; `globs` em `.cursor/scripts/**`; secções Escopo e Referência cruzada.
+- 1.1.0 (11/04/2026): Tabelas e exemplos com `bootstrap_autostart_mirrors.py` e `bootstrap-autostart-mirrors.ps1`; correcção de caracteres corruptos; `bootstrap-*` engloba autostart.
+- 1.0.0 (11/04/2026): Criação — `validate_pack.py`, `gen_pack_inventory.py`; convenções iniciais.

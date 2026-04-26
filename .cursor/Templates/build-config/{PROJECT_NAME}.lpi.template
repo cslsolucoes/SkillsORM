@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ===========================================================================
+     {PROJECT_NAME}.lpi — Lazarus Project Information
+     Gerado a partir de .cursor/Templates/build-config/{PROJECT_NAME}.lpi.template
+     Referencia: https://wiki.freepascal.org/Lazarus_IDE_Tools#Project_file
+     =========================================================================== -->
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="{PROJECT_NAME}"/>
+      <Scaled Value="True"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
+      <!-- Icon: 0 = icone padrao do Lazarus; substituir pelo path do .ico apos geracao -->
+      <Icon Value="0"/>
+    </General>
+
+    <!-- ===========================================================================
+         BUILD MODES
+         Adicionar modes adicionais conforme necessario (ex.: Debug, Release).
+         =========================================================================== -->
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+    </BuildModes>
+
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+
+    <RunParams>
+      <FormatVersion Value="2"/>
+    </RunParams>
+
+    <!-- ===========================================================================
+         PACOTES REQUERIDOS
+         Adicionar pacotes adicionais conforme necessario.
+         =========================================================================== -->
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPackages>
+
+    <!-- ===========================================================================
+         UNITS DO PROJETO
+         Adicionar as units do projeto aqui.
+         =========================================================================== -->
+    <Units>
+      <Unit>
+        <Filename Value="{PROJECT_NAME}.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src\Views\{MAIN_FORM_UNIT}.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="{MAIN_FORM_CLASS}"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+
+  <!-- ===========================================================================
+       COMPILER OPTIONS
+       SearchPaths/OtherUnitFiles deve replicar os -Fu do fpc32.opts / fpc64.opts.
+       =========================================================================== -->
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <!-- Nome do executavel de saida (sem extensao) -->
+      <Filename Value="{PROJECT_NAME}"/>
+    </Target>
+    <SearchPaths>
+      <!-- Diretorio de saida das units compiladas (DCU equivalente no FPC) -->
+      <UnitOutputDirectory Value="Compiled\DCU\Default\$(TargetCPU)-$(TargetOS)"/>
+      <!-- Paths das units do projeto (espelha fpc32/fpc64.opts) -->
+      <OtherUnitFiles Value="src;src\Commons;src\Attributers;src\Main;src\Views;src\Modulos\Connections;src\Modulos\PoolConnections;src\Modulos\Database;src\Modulos\Database\Fields;src\Modulos\Database\Tables;src\Modulos\Database\Schemas;src\Modulos\Database\EntityManager;src\Modulos\Database\QueryBuilder;src\Modulos\Database\IdentityMap;src\Modulos\Database\UnitOfWork;src\Modulos\Database\TypeDatabase;src\Modulos\Parameters;src\Modulos\Parameters\Database;src\Modulos\Parameters\IniFiles;src\Modulos\Parameters\JsonObject;src\Modulos\Parameters\Attributes;src\Modulos\Loggers;src\Modulos\Loggers\Commons;src\Modulos\Loggers\Attributes;src\Modulos\Loggers\Paramenters;src\Modulos\Loggers\Databases;src\Modulos\Loggers\WebSocket;src\Modulos\Loggers\CSV;src\Modulos\Loggers\TextFiles;src\Modulos\Loggers\Https;src\Modulos\Loggers\Https\Engines;src\Modulos\Loggers\XML;src\Modulos\Loggers\Emails;src\Modulos\Loggers\Emails\Engines;src\Modulos\Loggers\Events;src\Modulos\Loggers\EventLogs;src\Modulos\Loggers\JsonObject;src\Modulos\Exceptions"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+    </SearchPaths>
+    <Parsing>
+      <!-- Modo Delphi para compatibilidade Delphi/FPC -->
+      <SyntaxOptions>
+        <SyntaxMode Value="Delphi"/>
+        <UseAnsiStrings Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <!-- Defines condicionais: ajustar conforme ORM.Defines.inc -->
+      <Defines Value="{CONDITIONAL_DEFINES}"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CustomOptions Value="-dDEBUG"/>
+    </Other>
+  </CompilerOptions>
+
+  <Debugging>
+    <Exceptions>
+      <Item>
+        <Name Value="EAbort"/>
+      </Item>
+      <Item>
+        <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
+      </Item>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

@@ -1,0 +1,46 @@
+{ =============================================================================
+  {UNIT_NAME} - Formulário VCL
+
+  Descrição:
+  Formulário VCL {FORM_CLASS} — edite esta seção para descrever a finalidade
+  do formulário (quais dados apresenta, quais ações expõe, integrações).
+
+  Características:
+  - Framework: VCL (Delphi Windows)
+  - Classe: T{FORM_CLASS}
+  - Instância: {FORM_INSTANCE}
+
+  Project:        {PROJECT_NAME}
+  ProjectVersion: {PROJECT_VERSION}
+  FileVersion:    1.0.0
+  Author:         Claiton de Souza Linhares
+  Date:           {DATE}
+
+  Changelog (file):
+  - 1.0.0 ({DATE}): criação via bootstrap-form-unit.ps1.
+  ============================================================================= }
+unit {UNIT_NAME};
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+
+type
+  T{FORM_CLASS} = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  {FORM_INSTANCE}: T{FORM_CLASS};
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,77 @@
+# =============================================================================
+# .continueignore — Continue.dev
+# Reduz indexacao e contexto do Continue.
+# internal_template_version: 1.0.0
+#
+# Sintaxe: gitignore-style. Continue respeita .gitignore por padrao; este
+# ficheiro complementa com pastas que nao devem aparecer no contexto da IA.
+# =============================================================================
+
+# --- Pastas especificas do projecto (ajustar conforme necessario) ---
+# MySQL/
+# SQLite/
+# MSSqlcmd/
+# Exemplos/
+backup/
+Backup/
+
+# --- Build outputs (Delphi + FPC) ---
+Compiled/
+lib/
+__history/
+__recovery/
+
+# --- Binarios Delphi/FPC ---
+*.exe
+*.bpl
+*.bpi
+*.dcp
+*.dcu
+*.drc
+*.map
+*.dres
+*.rsm
+*.tds
+*.lib
+*.a
+*.o
+*.ocx
+*.ppu
+*.compiled
+*.identcache
+*.local
+*.dsk
+*.dsv
+*.~*
+
+# --- Resources LSP/IDE (binarios grandes) ---
+{PROJECT_NAME}.delphilsp.json
+{PROJECT_NAME}.identcache
+{PROJECT_NAME}*.res
+{PROJECT_NAME}*.ico
+
+# --- Workspace IDE (nao e fonte) ---
+.vscode/
+.idea/
+
+# --- Mirrors do .cursor (nao duplicar contexto) ---
+.claude/
+.opencode/
+
+# --- Backups e arquivos temporarios ---
+*.bak
+*.bak2
+*.claude.bak
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# --- Documentacao extensa (consulta sob demanda, nao auto-load) ---
+Documentation/
+CHANGELOG.md
+
+# --- Plans gerados (consultar sob demanda) ---
+.claude/plans/
+.cursor/plans/

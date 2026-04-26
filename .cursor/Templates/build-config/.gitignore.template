@@ -1,0 +1,61 @@
+# =============================================================================
+# .gitignore — {PROJECT_NAME}
+# internal_template_version: 1.0.0
+# =============================================================================
+
+# --- Build outputs (Delphi + FPC) ---
+Compiled/
+lib/
+__history/
+__recovery/
+*.exe
+*.bpl
+*.bpi
+*.dcp
+*.dcu
+*.drc
+*.identcache
+*.local
+*.map
+*.rsm
+*.tvsconfig
+*.~*
+
+# --- FPC/Lazarus ---
+*.compiled
+*.o
+*.ppu
+*.or
+*.a
+*.lrj
+*.res.tmp
+
+# --- IDE / editores ---
+.vscode/.history/
+.vs/
+*.swp
+*.swo
+
+# --- Caches de sessão CLI de bancos (skill project-open-database-cli) ---
+MSSqlcmd/ss_*.md
+MySQL/ss_*.md
+SQLite/ss_*.md
+PostgreSQL/ss_*.md
+Firebird/ss_*.md
+
+# --- Backups ---
+backup/
+Backup/
+bkp/
+*.bkp
+*.rar
+*.zip
+*.7z
+
+# --- Dados sensíveis ---
+config/*.ini.local
+config/*.json.local
+.env
+.env.local
+*.pem
+*.key

@@ -1,0 +1,226 @@
+---
+alwaysApply: true
+globs: ["**/*.md", "**/Analise/**", "**/Documentation/**"]
+description: "Template genérico — documentação do projeto: matriz de responsabilidades, convenção Analise/, documentos-chave, roteiros de uso, preocupações transversais. Substituir todos os {PLACEHOLDER} antes de usar."
+---
+
+# Documentação do Projeto — {PROJECT_NAME}
+<!-- EXAMPLE (ORM): # Documentação do Projeto (Providers ORM) -->
+<!-- [PORTÁTIL] Cabeçalho -->
+
+---
+
+## Escopo
+
+Esta rule e um **template generico** — deve ser personalizado para cada projeto substituindo todos os `{PLACEHOLDER}` antes de usar. O arquivo preenchido torna-se a regra canonica de documentacao do projeto especifico.
+
+**NAO aplicar este template diretamente** sem substituir os placeholders — ele nao tem efeito util sem personalizacao.
+
+## Skills e agents referenciados
+
+| Recurso | Tipo | Quando referenciado |
+|---------|------|---------------------|
+| `documentation-paste_analysis_unit_class_method` | skill | Scaffold e sync de `Analise/` |
+| `documentation-project-feature` | skill | Matriz de lacunas e cobertura |
+| `documentation-migration-backup` | skill | Migracao com backup |
+| `documentation-project-scan` | skill | Inventario amplo |
+| `documentation-general_rules` | skill | Fluxo entre skills e changelog generico |
+| `doc-agent-orchestrator` | agent | Orquestrador de fluxos documentais |
+
+---
+
+## Responsabilidade deste arquivo
+<!-- [PORTÁTIL] -->
+
+Conteúdo **específico deste repositório**: roteiros de uso, convenções de análise, ponteiros para documentos-chave.
+A estrutura física de `{ANALYSIS_DIR}/` e seu scaffold são geridos pela skill **documentation-paste_analysis_unit_class_method** — não duplicar aqui.
+
+---
+
+## Consolidação por responsabilidade
+
+**Matriz completa:** ver skill **documentation-general_rules** (secção "Matriz de responsabilidades de documentação").
+
+---
+
+## Pasta `{ANALYSIS_DIR}/` — ponteiros e documentos principais
+<!-- [ESPECÍFICO DO PROJETO] -->
+
+**Propósito:** documentação **por {ANALYSIS_UNIT}** em `{ANALYSIS_DIR}/` (índice completo em **`{ANALYSIS_DIR}/README.md`**).
+<!-- EXAMPLE (ORM): por classe/interface em Analise/ -->
+
+### Documentos principais
+
+| Documento | Local | Descrição |
+| --------- | ----- | --------- |
+| **README.md** | `{ANALYSIS_DIR}/` | Índice completo por módulo/domínio. |
+| **{MAIN_DIAGNOSIS_DOC}** | `{ANALYSIS_DIR}/` | {DIAGNOSIS_DOC_DESCRIPTION} |
+<!-- EXAMPLE (ORM): ANALISE_DIAGNOSTICO_ORGANIZACAO.md | Hub único: inventário DPR, Analise vs src, matriz de migração (10 capítulos) -->
+| **{VIEWS_DOC}** | `{ANALYSIS_DIR}/` | {VIEWS_DOC_DESCRIPTION} |
+<!-- EXAMPLE (ORM): Views_Formularios.md | Formulários em src/Views/ -->
+| **{EXAMPLES_DOC}** | `.cursor/rules/` | {EXAMPLES_DOC_DESCRIPTION} |
+<!-- EXAMPLE (ORM): project-exemplos_V1.0.mdc | Exemplos completos de código -->
+| **{ECOSYSTEM_DOC}** | `{DOCS_DIR}/` | {ECOSYSTEM_DOC_DESCRIPTION} |
+<!-- EXAMPLE (ORM): Documentation/ROTEIROS_CONSOLIDADO.md | Roteiro unificado do ecossistema -->
+
+---
+
+## Convenção de nomeação de documentos de análise
+<!-- [PORTÁTIL] política; [ESPECÍFICO DO PROJETO] exemplos -->
+
+**Canônico:** um arquivo **`{ClassName}.md`** por {ANALYSIS_UNIT}; o corpo do arquivo referencia o identificador completo.
+**Scaffold e sync:** geridos pela skill **documentation-paste_analysis_unit_class_method** — não duplicar aqui.
+
+<!-- EXAMPLE (ORM): nome do arquivo sem prefixo T/I — ex.: Connection.md para TConnection/IConnection; prefixo aparece apenas dentro do documento -->
+
+---
+
+## Roteiros de uso do {PROJECT_DOMAIN}
+<!-- [ESPECÍFICO DO PROJETO] -->
+
+**Skill de referência:** `.cursor/skills/{USAGE_SKILL_PATH}_V{MAJOR.MINOR.PATCH}/SKILL.md` (sufixo da pasta = versão SemVer do `SKILL.md`)
+
+### Modo {MODE_1_NAME}
+<!-- EXAMPLE (ORM): Modo Slim — Connection + Tables (sem Attributes/RTTI) -->
+
+**Visão:** {MODE_1_DESCRIPTION}
+**Units mínimas:** `{MODE_1_UNITS}`
+
+| Passo | Conteúdo |
+| ----- | -------- |
+| 1 | {MODE_1_STEP_1} |
+| 2 | {MODE_1_STEP_2} |
+| N | {MODE_1_STEP_N} |
+
+### Modo {MODE_2_NAME}
+<!-- EXAMPLE (ORM): Modo com Attributes/RTTI — mapeamento Classe ↔ ITable + EntityManager -->
+
+**Visão:** {MODE_2_DESCRIPTION}
+**Units mínimas:** `{MODE_2_UNITS}`
+
+| Passo | Conteúdo |
+| ----- | -------- |
+| 1 | {MODE_2_STEP_1} |
+| N | {MODE_2_STEP_N} |
+
+---
+
+## Conteúdo consolidado (ex-documentos arquivados)
+<!-- [ESPECÍFICO DO PROJETO] — listar documentos antigos mesclados neste arquivo ou nas regras principais -->
+
+Os documentos **{ARCHIVED_DOC_1}**, **{ARCHIVED_DOC_N}** foram incorporados às regras principais:
+
+- **project-roadmap_V1.0.1.mdc:** {ROADMAP_ABSORBED_CONTENT}
+- **project-fundamentos_V1.0.1.mdc:** {FUNDAMENTOS_ABSORBED_CONTENT}
+- **project-documentacao_V1.0.1.mdc (esta regra):** {THIS_ABSORBED_CONTENT}
+
+<!-- EXAMPLE (ORM):
+  Arquivados: PLANO_ESTRATEGICO_EXECUCAO.mdc, IMPLEMENTACAO_FASES.mdc, CRUD_SQL_Execucao.mdc, Classes_Excecoes.mdc
+  → project-roadmap_V1.0.mdc: fases, checklist DDL/DML, Connection, Pool
+  → project-fundamentos_V1.0.mdc: hierarquia de exceções, nomenclatura Fluent/Factory
+  → project-documentacao_V1.0.mdc: roteiros Slim/Attributes, assimilações, convenção Analise/
+-->
+
+---
+
+## Especificação de módulos (resumo reconstrutivo)
+<!-- [ESPECÍFICO DO PROJETO] -->
+
+**Hierarquia de dependência:** {MODULE_HIERARCHY}
+<!-- EXAMPLE (ORM): Field (1) → Fields (2) → Table (3) → Tables (4) → Connection (5) → PoolConnections (6) → Attributers/EntityManager -->
+
+| Módulo | Pasta | Padrões aplicados |
+| ------ | ----- | ----------------- |
+| {MOD_1} | `{MOD_1_PATH}` | {MOD_1_PATTERNS} |
+| {MOD_N} | `{MOD_N_PATH}` | {MOD_N_PATTERNS} |
+<!-- EXAMPLE (ORM):
+  Commons     | src/Commons                | tipos/constantes únicos; sem duplicação com módulos
+  Database    | src/Modulos/Database       | Fields, Tables, Schemas, EntityManager, QueryBuilder, UnitOfWork, IdentityMap
+  Connections | src/Modulos/Connections    | TConnection (Slim); engines por diretiva
+  PoolConn.   | src/Modulos/PoolConnections| pool FIFO de IConnection
+  Parameters  | src/Modulos/Parameters     | módulo externo integrado via USE_PARAMENTERS
+  Loggers     | src/Modulos/Loggers        | módulo externo integrado via USE_LOGGERS
+  Exceptions  | src/Modulos/Exceptions     | centralização; facade em src/Main/Exceptions.*
+-->
+
+---
+
+## {CROSS_CUTTING_CONCERN_1}
+<!-- [ESPECÍFICO DO PROJETO] — ex.: "Exceções centralizadas"; repetir para cada preocupação transversal -->
+
+**Visão:** {CONCERN_1_DESCRIPTION}
+**Implementação interna:** `{CONCERN_1_IMPL_PATH}`
+**Tipos/base:** `{CONCERN_1_BASE_PATH}`
+**Facade pública:** `{CONCERN_1_FACADE_PATH}`
+**Padrão de consumo:** {CONCERN_1_USAGE_PATTERN}
+
+<!-- EXAMPLE (ORM):
+  Exceções centralizadas
+  Implementação: src/Modulos/Exceptions
+  Base/tipos: src/Commons/Commons.Exceptions
+  Facade: src/Main/Exceptions.Interfaces.pas + Exceptions.pas
+  Consumo: apenas via Exceptions.Interfaces; nunca apontar diretamente para units internas
+-->
+
+---
+
+## {CROSS_CUTTING_CONCERN_2}
+<!-- [ESPECÍFICO DO PROJETO] — ex.: "Fonte única de tipos (Commons)" -->
+
+**Regra:** {SINGLE_SOURCE_RULE}
+<!-- EXAMPLE (ORM): Tipos e constantes de engine/banco → sempre src/Commons; módulos não duplicam -->
+
+**Ações recomendadas:**
+1. {ACTION_1}
+2. {ACTION_N}
+<!-- EXAMPLE (ORM):
+  1. Verificar em Commons.Types antes de criar novo tipo
+  2. Mover para Commons se o tipo for usado em mais de um módulo
+  3. Nunca duplicar enums de banco (TDatabaseTypes, TDataTypes) nos módulos
+-->
+
+---
+
+## Como criar ou alterar documentação
+<!-- [PORTÁTIL] -->
+
+1. **Scaffold / placeholders:** skill **documentation-paste_analysis_unit_class_method**.
+2. **Matriz de lacunas / cobertura:** skill **documentation-project-feature**.
+3. **Migração com backup:** skill **documentation-migration-backup**.
+4. **Inventário amplo:** skill **documentation-project-scan**.
+5. **Fluxo entre skills e changelog genérico:** skill **documentation-general_rules**.
+6. **Atualizar índice:** `{ANALYSIS_DIR}/README.md` após qualquer alteração estrutural.
+
+---
+
+## Referência cruzada
+<!-- [ESPECÍFICO DO PROJETO] — atualizar paths -->
+
+| Recurso | Path |
+| ------- | ---- |
+| Índice de análise | `{ANALYSIS_DIR}/README.md` |
+| Templates Markdown/HTML | `.cursor/Templates/README.md` |
+| Skill canônica de Analise/ | `.cursor/skills/documentation-paste_analysis_unit_class_method_V1.0.1/SKILL.md` |
+| Regras relacionadas | *(project-fundamentos, documentation-project-structure, project-roadmap foram removidas — conteúdo absorvido por skills `documentation-project-expert`, `documentation-project-structure`, `developer-delphi-providers-orm-usage`)* |
+
+---
+
+## Changelog (este arquivo)
+
+- 1.0.0 (30/03/2026): Criação do template genérico a partir do Documentacao_V1.0.mdc do ProvidersORM.
+---
+
+## Versão interna (ficheiro)
+
+| Campo | Valor |
+|-------|-------|
+| **FileVersion** | 1.1.0 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog (este arquivo)
+
+- 1.1.0 (09/04/2026): Migração V2 — adicionadas seções Escopo e Skills e agents referenciados.
+- 1.0.3 (01/04/2026): Tabela de responsabilidades e *Conteúdo consolidado* — nomes de rules alinhados a **`_V1.0.1.mdc`** (template); referência cruzada *Regras relacionadas* actualizada.
+- 1.0.2 (30/03/2026): Removida seccao "Como usar este template" (lacuna espelhos).
+- 1.0.1 (30/03/2026): Rubrica de versionamento interno (política: `.cursor/VERSION.md`).
+- 1.0.0 (30/03/2026): Versionamento interno inicial (pacote `.cursor`).

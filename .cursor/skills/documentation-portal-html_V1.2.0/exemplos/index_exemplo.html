@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Providers ORM v2.0 — Documentação</title>
+  <script src="docs-data.js"></script>
+  <style>
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1d27;
+      --bg3:       #22263a;
+      --border:    #2e3350;
+      --accent:    #5b8cff;
+      --accent2:   #8be9fd;
+      --text:      #d4d8f0;
+      --text2:     #8892b0;
+      --green:     #50fa7b;
+      --yellow:    #f1fa8c;
+      --red:       #ff5555;
+      --orange:    #ffb86c;
+      --code-bg:   #12141e;
+      --radius:    8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 { font-size: 1.4rem; color: var(--accent); }
+    header .version {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    header .meta { color: var(--text2); font-size: 0.85rem; margin-left: auto; }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: flex;
+      flex: 1;
+    }
+
+    /* ---------- Sidebar ---------- */
+    nav.sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+    }
+    nav.sidebar h2 {
+      font-size: 0.7rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px 8px;
+    }
+    nav.sidebar ul { list-style: none; }
+    nav.sidebar li a {
+      display: block;
+      padding: 8px 20px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    nav.sidebar li a:hover,
+    nav.sidebar li a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(91,140,255,0.08);
+    }
+    nav.sidebar .sep {
+      margin: 12px 20px;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ---------- Main ---------- */
+    main {
+      flex: 1;
+      padding: 32px 40px;
+      max-width: 960px;
+    }
+
+    section { margin-bottom: 48px; scroll-margin-top: 80px; }
+    h2.section-title {
+      font-size: 1.5rem;
+      color: var(--accent2);
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { color: var(--text); font-size: 1.1rem; margin: 20px 0 8px; }
+
+    /* ---------- Cards de módulo ---------- */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .module-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .module-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .module-card .icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .module-card .name { font-weight: 700; font-size: 1rem; color: var(--accent2); }
+    .module-card .desc { font-size: 0.83rem; color: var(--text2); margin-top: 4px; }
+    .module-card .path {
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin-top: 8px;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    /* ---------- Detalhe do módulo ---------- */
+    .module-detail {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .module-detail .module-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .module-detail .icon { font-size: 2rem; }
+    .module-detail .title { font-size: 1.3rem; font-weight: 700; color: var(--accent2); }
+    .module-detail .subtitle { font-size: 0.9rem; color: var(--text2); margin-top: 4px; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: monospace;
+      margin: 2px;
+    }
+    .badge-interface { background: rgba(91,140,255,0.2); color: var(--accent); }
+    .badge-class     { background: rgba(80,250,123,0.15); color: var(--green); }
+    .badge-note      { background: rgba(255,184,108,0.15); color: var(--orange); }
+
+    ul.features {
+      list-style: none;
+      padding: 0;
+      columns: 2;
+      column-gap: 24px;
+    }
+    ul.features li {
+      padding: 3px 0;
+      font-size: 0.85rem;
+      color: var(--text2);
+      break-inside: avoid;
+    }
+    ul.features li::before { content: '✓ '; color: var(--green); font-weight: bold; }
+
+    pre.code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.8rem;
+      color: var(--accent2);
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    /* ---------- Tables ---------- */
+    table.info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 12px;
+    }
+    table.info-table th {
+      background: var(--bg3);
+      color: var(--text2);
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    table.info-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    table.info-table tr:last-child td { border-bottom: none; }
+    table.info-table code {
+      background: var(--code-bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      color: var(--accent2);
+    }
+
+    /* ---------- Exemplos ---------- */
+    .example-list { display: flex; flex-direction: column; gap: 10px; }
+    .example-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+    }
+    .example-item .ex-name {
+      font-family: monospace;
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .example-item .ex-path { color: var(--text2); font-size: 0.78rem; font-family: monospace; }
+    .example-item .ex-desc { color: var(--text); font-size: 0.85rem; margin-top: 4px; }
+
+    /* ---------- Status badges ---------- */
+    .status-active  { color: var(--green);  }
+    .status-support { color: var(--yellow); }
+    .status-paused  { color: var(--text2);  }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 14px 32px;
+      text-align: center;
+      color: var(--text2);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <h1>Providers ORM</h1>
+  <span class="version" id="hdr-version"></span>
+  <span class="meta" id="hdr-meta"></span>
+</header>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <nav class="sidebar">
+    <h2>Navegação</h2>
+    <ul>
+      <li><a href="#overview" onclick="setActive(this)">Visão geral</a></li>
+      <li><a href="#engines"  onclick="setActive(this)">Engines</a></li>
+      <li><a href="#modules"  onclick="setActive(this)">Módulos</a></li>
+      <li><a href="#databases" onclick="setActive(this)">Bancos</a></li>
+      <li><a href="#examples" onclick="setActive(this)">Exemplos</a></li>
+    </ul>
+    <hr class="sep" />
+    <h2>Módulos</h2>
+    <ul id="modules-nav"></ul>
+  </nav>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- Visão Geral -->
+    <section id="overview">
+      <h2 class="section-title">Visão geral</h2>
+      <div class="module-detail">
+        <p style="line-height:1.7; color: var(--text2);">
+          O <strong style="color:var(--accent2)">Providers ORM</strong> é um ORM multi-engine, multi-banco
+          para <strong>Delphi</strong> e <strong>Free Pascal (FPC)</strong>. Um único engine é ativado por
+          compilação via <code style="background:var(--code-bg);padding:1px 5px;border-radius:3px">ORM.Defines.inc</code>.
+          A arquitetura segue o padrão <em>Fluent Builder + Factory</em>: todos os objetos são criados via
+          <code style="background:var(--code-bg);padding:1px 5px;border-radius:3px">TClasse.New</code> e os
+          setters retornam a interface para encadeamento.
+        </p>
+        <br />
+        <p style="line-height:1.7; color: var(--text2);">
+          <strong style="color:var(--accent2)">Modo Slim:</strong> <code style="background:var(--code-bg);padding:1px 5px;border-radius:3px">TConnection</code> + <code style="background:var(--code-bg);padding:1px 5px;border-radius:3px">TTables</code> separados — máxima flexibilidade.<br />
+          <strong style="color:var(--accent2)">Modo Lite:</strong> <code style="background:var(--code-bg);padding:1px 5px;border-radius:3px">TConnectionLite</code> — objeto único que combina conexão e tabelas.
+        </p>
+      </div>
+    </section>
+
+    <!-- Engines -->
+    <section id="engines">
+      <h2 class="section-title">Engines disponíveis</h2>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Define</th>
+            <th>Engine</th>
+            <th>Status</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody id="engines-body"></tbody>
+      </table>
+    </section>
+
+    <!-- Módulos (cards) -->
+    <section id="modules">
+      <h2 class="section-title">Módulos</h2>
+      <div class="module-grid" id="module-grid"></div>
+    </section>
+
+    <!-- Detalhe de cada módulo -->
+    <section id="module-details">
+      <div id="module-details-list"></div>
+    </section>
+
+    <!-- Bancos de dados -->
+    <section id="databases">
+      <h2 class="section-title">Bancos de dados suportados</h2>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Constante</th>
+            <th>Banco</th>
+            <th>DLL / Driver</th>
+          </tr>
+        </thead>
+        <tbody id="db-body"></tbody>
+      </table>
+    </section>
+
+    <!-- Exemplos -->
+    <section id="examples">
+      <h2 class="section-title">Exemplos (.dpr)</h2>
+      <p style="color:var(--text2); font-size:0.85rem; margin-bottom:16px;">
+        Todos os exemplos são projetos console compilados a partir de <code style="background:var(--code-bg);padding:1px 5px;border-radius:3px">E:\CSL\ORM\</code>.
+      </p>
+      <div class="example-list" id="example-list"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer id="footer"></footer>
+
+<script>
+  // ---------- Preencher header / footer ----------
+  document.getElementById('hdr-version').textContent = 'v' + ORM_VERSION;
+  document.getElementById('hdr-meta').textContent    = 'Autor: ' + ORM_AUTHOR + ' · ' + ORM_DATE;
+  document.getElementById('footer').textContent      =
+    'Providers ORM v' + ORM_VERSION + ' · ' + ORM_AUTHOR + ' · ' + ORM_DATE;
+
+  // ---------- Engines ----------
+  const engBody = document.getElementById('engines-body');
+  ENGINES.forEach(e => {
+    const cls = e.status === 'ativo' ? 'status-active' : 'status-support';
+    engBody.innerHTML += `<tr>
+      <td><code>${e.define}</code></td>
+      <td>${e.name}</td>
+      <td class="${cls}">${e.status === 'ativo' ? '● Ativo' : '○ Suporte'}</td>
+      <td style="color:var(--text2)">${e.note}</td>
+    </tr>`;
+  });
+
+  // ---------- Módulos nav ----------
+  const nav = document.getElementById('modules-nav');
+  MODULES.forEach(m => {
+    nav.innerHTML += `<li><a href="#mod-${m.id}" onclick="setActive(this)">${m.icon} ${m.name}</a></li>`;
+  });
+
+  // ---------- Module cards ----------
+  const grid = document.getElementById('module-grid');
+  MODULES.forEach(m => {
+    grid.innerHTML += `<a class="module-card" href="#mod-${m.id}">
+      <div class="icon">${m.icon}</div>
+      <div class="name">${m.name}</div>
+      <div class="desc">${m.desc}</div>
+      <div class="path">${m.path}</div>
+    </a>`;
+  });
+
+  // ---------- Module details ----------
+  const details = document.getElementById('module-details-list');
+  MODULES.forEach(m => {
+    let ifaces = (m.interfaces || []).map(i =>
+      `<span class="badge badge-interface">${i}</span>`).join('');
+    let classes = (m.classes || []).map(c =>
+      `<span class="badge badge-class">${c}</span>`).join('');
+    let noteHtml = m.note
+      ? `<div style="margin-top:8px"><span class="badge badge-note">⚠ ${m.note}</span></div>` : '';
+    let featHtml = (m.features || []).length
+      ? `<h3>Funcionalidades</h3>
+         <ul class="features">${m.features.map(f => `<li>${f}</li>`).join('')}</ul>` : '';
+    let codeHtml = m.example
+      ? `<h3>Exemplo</h3><pre class="code-block">${escHtml(m.example)}</pre>` : '';
+    let filesHtml = (m.files || []).length
+      ? `<h3>Arquivos</h3>
+         <ul style="list-style:none;padding:0">${m.files.map(f =>
+           `<li style="font-size:0.8rem;font-family:monospace;color:var(--text2);padding:2px 0">${m.path}${f}</li>`
+         ).join('')}</ul>` : '';
+
+    details.innerHTML += `<div class="module-detail" id="mod-${m.id}" style="scroll-margin-top:80px">
+      <div class="module-header">
+        <span class="icon">${m.icon}</span>
+        <div>
+          <div class="title">${m.name}</div>
+          <div class="subtitle">${m.desc}</div>
+          <div style="margin-top:8px">${ifaces}${classes}</div>
+          ${noteHtml}
+        </div>
+      </div>
+      ${featHtml}
+      ${filesHtml}
+      ${codeHtml}
+    </div>`;
+  });
+
+  // ---------- Bancos ----------
+  const dbBody = document.getElementById('db-body');
+  DATABASE_TYPES.forEach(d => {
+    dbBody.innerHTML += `<tr>
+      <td><code>${d.const}</code></td>
+      <td>${d.name}</td>
+      <td style="color:var(--text2);font-family:monospace;font-size:0.8rem">${d.dll}</td>
+    </tr>`;
+  });
+
+  // ---------- Exemplos ----------
+  const exList = document.getElementById('example-list');
+  EXAMPLES.forEach(e => {
+    exList.innerHTML += `<div class="example-item">
+      <div class="ex-name">${e.name}</div>
+      <div class="ex-path">${e.path}</div>
+      <div class="ex-desc">${e.desc}</div>
+    </div>`;
+  });
+
+  // ---------- Helpers ----------
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function setActive(el) {
+    document.querySelectorAll('nav.sidebar a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!--
+  TEMPLATE_msix_release.dproj
+  Skill: developer-delphi-windows-msix_V1.0.0
+
+  Este arquivo contem APENAS os PropertyGroups relacionados ao MSIX.
+  NAO e um .dproj completo — insira estes blocos no .dproj do seu projeto.
+
+  INSTRUCOES:
+  1. Abrir o .dproj do projeto em um editor de texto
+  2. Localizar o bloco <PropertyGroup> para Win64 (buscar por 'Win64')
+  3. Inserir/substituir pelas propriedades MSIX abaixo
+  4. Substituir todos os [PLACEHOLDER_*] com os valores do projeto
+  5. Sincronizar Publisher com o Subject DN do certificado
+  6. Sincronizar Version com o AppxManifest.xml
+
+  CRITICO — Versao:
+  Quarto componente SEMPRE 0 para Microsoft Store.
+  1.0.0.0 CORRETO / 1.0.0.1 ERRADO
+-->
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     BLOCO 1 — Identidade base Win64 (qualquer configuracao)
+     Inserir dentro do elemento <Project> do .dproj, apos o PropertyGroup global
+     ════════════════════════════════════════════════════════════════════════ -->
+<PropertyGroup Condition="'$(Platform)'=='Win64'">
+
+  <!-- Identificador unico do pacote. Sem espacos. Coincide com Partner Center. -->
+  <MSIX_PackageIdentityName>[PLACEHOLDER_EMPRESA].[PLACEHOLDER_NOMEAPP]</MSIX_PackageIdentityName>
+
+  <!--
+    Publisher: DEVE ser IDENTICO ao Subject DN do certificado de assinatura.
+    Diferenca de um caractere = erro de instalacao.
+    Exemplo: CN=Empresa LTDA, O=Empresa LTDA, C=BR
+  -->
+  <MSIX_PackagePublisher>CN=[PLACEHOLDER_EMPRESA], O=[PLACEHOLDER_EMPRESA], C=BR</MSIX_PackagePublisher>
+
+  <!--
+    Versao: formato Major.Minor.Build.0
+    Quarto componente SEMPRE 0 para Store.
+    Para patches: incrementar o terceiro componente (1.0.1.0).
+    Para features: incrementar o segundo (1.1.0.0).
+    Para breaking: incrementar o primeiro (2.0.0.0).
+  -->
+  <MSIX_PackageVersion>[PLACEHOLDER_VERSION_EX_1.0.0.0]</MSIX_PackageVersion>
+
+  <!-- Nome de exibicao na Start Menu e Store -->
+  <MSIX_PackageDisplayName>[PLACEHOLDER_NOME_EXIBICAO]</MSIX_PackageDisplayName>
+
+  <!-- Descricao exibida na Store -->
+  <MSIX_PackageDescription>[PLACEHOLDER_DESCRICAO]</MSIX_PackageDescription>
+
+  <!-- Arquitetura: x64 para Win64. Opcoes: x86, x64, arm64. -->
+  <MSIX_PackageArchitecture>x64</MSIX_PackageArchitecture>
+
+  <!-- Store Logo: 50x50 PNG. Caminho relativo ao .dproj. -->
+  <MSIX_PackageLogo>Assets\StoreLogo.png</MSIX_PackageLogo>
+
+  <!-- Nome do publisher exibido ao usuario final -->
+  <MSIX_PublisherDisplayName>[PLACEHOLDER_EMPRESA]</MSIX_PublisherDisplayName>
+
+</PropertyGroup>
+
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     BLOCO 2 — Release Win64 com MSIX ativado
+     $(Cfg_2) = Release (padrao RAD Studio)
+     $(Cfg_1) = Debug
+     Se o projeto tiver nomes de configuracao personalizados, ajustar a condicao.
+     ════════════════════════════════════════════════════════════════════════ -->
+<PropertyGroup Condition="'$(Cfg_2)'!='' and '$(Platform)'=='Win64'">
+
+  <!-- Ativa a geracao do .msix durante o build -->
+  <MSIX_Packaging>true</MSIX_Packaging>
+
+  <!--
+    AppxManifest.xml customizado.
+    Se omitido, o RAD Studio gera um manifest automatico (menos customizavel).
+    Recomendado: sempre fornecer o proprio manifest para controle total.
+  -->
+  <MSIX_AppxManifestFile>AppxManifest.xml</MSIX_AppxManifestFile>
+
+  <!--
+    Pasta de saida do arquivo .msix.
+    Relativa ao diretorio do .dproj.
+    Garantir que a pasta existe e tem permissao de escrita.
+  -->
+  <MSIX_OutputDir>dist</MSIX_OutputDir>
+
+  <!-- Otimizacoes de Release -->
+  <DCC_Optimize>true</DCC_Optimize>
+  <DCC_DebugInformation>0</DCC_DebugInformation>
+  <DCC_LocalSymbols>false</DCC_LocalSymbols>
+  <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+
+  <!--
+    MSIX_SigningEnabled: false = nao assinar automaticamente via IDE.
+    Recomendado: assinar externamente com signtool em etapa separada
+    (mais controle sobre timestamp e parametros de assinatura).
+  -->
+  <MSIX_SigningEnabled>false</MSIX_SigningEnabled>
+
+</PropertyGroup>
+
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     BLOCO 3 — Debug Win64 (MSIX desativado para builds de desenvolvimento)
+     ════════════════════════════════════════════════════════════════════════ -->
+<PropertyGroup Condition="'$(Cfg_1)'!='' and '$(Platform)'=='Win64'">
+
+  <!-- MSIX desativado em Debug: builds mais rapidos, sem overhead de empacotamento -->
+  <MSIX_Packaging>false</MSIX_Packaging>
+
+  <!-- Configuracoes de Debug -->
+  <DCC_Optimize>false</DCC_Optimize>
+  <DCC_DebugInformation>2</DCC_DebugInformation>
+  <DCC_LocalSymbols>true</DCC_LocalSymbols>
+
+</PropertyGroup>
+
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     REFERENCIA: Exemplo de DeployFile para DLL adicional no Deployment Manager
+     Inserir dentro do ItemGroup de Deploy do .dproj
+     ════════════════════════════════════════════════════════════════════════ -->
+<!--
+<DeployFile LocalName="..\..\Windows\System32\vcruntime140.dll"
+            Configuration="Release"
+            Class="Dependencies">
+  <Platform Name="Win64">
+    <RemoteDir>.\</RemoteDir>
+    <RemoteName>vcruntime140.dll</RemoteName>
+    <Overwrite>true</Overwrite>
+    <Enabled>1</Enabled>
+  </Platform>
+</DeployFile>
+-->

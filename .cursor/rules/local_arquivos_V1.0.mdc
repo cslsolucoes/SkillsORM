@@ -1,0 +1,379 @@
+---
+description: "Template canónico — locais de pacotes, toolchains e diretórios do projeto ORM. Cópia materializada em .cursor/rules/ no fluxo /init (bootstrap-build-config.ps1)."
+alwaysApply: true
+---
+
+# LOCAL DE ARQUIVOS — Locais e pacotes do projeto
+
+> **Regra ativa no workspace:** `.cursor/rules/local_arquivos_V1.0.mdc` — gerada por **`bootstrap-build-config.ps1`** no fim do fluxo **`/init`** (após recolher o nome do projeto) ou ao correr esse script manualmente. No corpo abaixo, o nome do programa e dos ficheiros `.dpr`/`.dproj` segue o **nome do projeto** passado ao script (ou detetado no `program ...;`).
+> **Edição:** alterar paths absolutos (`E:\Pacote`, clones `e:\CSL\...`, etc.) **na regra** em `.cursor/rules/`, por máquina.
+
+**Responsabilidade:** Referência única (**SSOT** legível por humanos e pela IA) de **onde estão** os ficheiros e pacotes necessários ao projeto. Processos de execução e fases ficam em **roadmap_V1.0.mdc**; regras de criação em **Inicial_V1.0.mdc**.
+
+Use a **regra** em `.cursor/rules/local_arquivos_V1.0.mdc` como referência ao implementar ou compilar; o bloco opcional `externalPaths` em `.cursor/config.json` (se existir) pode complementar automação de scripts, **sem** substituir esta lista para documentação.
+
+**Documento de visão geral (estrutura, finalidade, fases):** **Inicial.md** (raiz do projeto). As regras Cursor consolidam: **Inicial_V1.0.mdc** = regras de criação; **local_arquivos_V1.0.mdc** = locais e pacotes; **roadmap_V1.0.mdc** = processos e execução.
+
+---
+
+## 📦 PACOTES DE TERCEIROS (comum aos três projetos)
+
+**Base:** `E:\Pacote`
+
+### 🔌 Bibliotecas de Rede e Comunicação
+- **Indy 10.6.3** → `E:\Pacote\Indy`
+- **Bird Socket** → `E:\Pacote\Bird.Socket`
+- **Bird Socket Server** → `E:\Pacote\bird-socket-server`
+- **Synapse D123** → `E:\Pacote\synapseD123` (versão completa mantida)
+- **Synapse D12** → `E:\Pacote\synapseD12` (HabilORM)
+- **Synapse** → `E:\Pacote\synapse` (HabilORM)
+- **Synapse WebSocket** → `E:\Pacote\synapse-websocket`
+- **Generic Socket** → `E:\Pacote\GenericSocket`
+
+### 🌐 Bibliotecas WebSocket (Projeto / ParamentersORM)
+- **TMS FNC WebSocket** → `C:\Users\Public\Documents\Embarcadero\Studio\tmssoftware\registered\TMSFNCWebSocket RSXE15`
+- **ICS** → `D:\Users\claiton.linhares\Documents\Embarcadero\Studio\23.0\CatalogRepository\ICS_FMX-12`
+- **IPWorks 2024** → `D:\Users\claiton.linhares\Documents\Embarcadero\Studio\IPWorks 2024 Delphi Edition`
+- **Indy** (em uso) → `E:\Pacote\Indy`
+- **Bird Socket Server** → `E:\Pacote\bird-socket-server`
+- **Synapse WebSocket** → `E:\Pacote\synapse-websocket`
+- **Horse SocketIO** → `E:\Pacote\Horse-SocketIO`
+
+### 🐴 Horse Framework (API REST)
+- **Horse Core** → `E:\Pacote\horse\src`
+- **Horse JWT** → `E:\Pacote\horse-jwt\src`
+- **Horse JWT (Jhonson)** → `E:\Pacote\jhonson\src`
+- **Horse Basic Auth** → `E:\Pacote\horse-basic-auth\src`
+- **Horse Exception Logger** → `E:\Pacote\horse-exception-logger\src`
+- **Horse Logger** → `E:\Pacote\horse-logger\src`
+- **Horse Logger Console** → `E:\Pacote\horse-logger-provider-console\src`
+- **Horse Logger LogFile** → `E:\Pacote\horse-logger-provider-logfile\src`
+- **Horse SocketIO** → `E:\Pacote\Horse-SocketIO`
+
+### 🔐 Autenticação e Segurança
+- **Delphi JOSE JWT** → `E:\Pacote\delphi-jose-jwt\Source`
+
+### 🌐 REST e Serialização
+- **RESTRequest4Delphi** → `E:\Pacote\RESTRequest4Delphi\src`
+- **DataSet Serialize** → `E:\Pacote\dataset-serialize\src`
+- **CSV Adapter RESTRequest** → `E:\Pacote\csv-adapter-restrequest4delphi\Src`
+
+### 🗄️ Banco de Dados
+- **Unidac 10.2.1** → `E:\Pacote\Unidac\Source`
+  - Providers: `E:\Pacote\Unidac\Source\UniProviders`
+  - PostgreSQL, MySQL, SQL Server, SQLite, InterBase, Access, ODBC: subpastas em `UniProviders`
+
+### 🎨 Componentes de Interface
+- **DevExpress VCL** → `E:\Pacote\DevExpressVCL\Library\RS29`
+- **KonopkaControls** → `E:\Pacote\KonopkaControls\Lib\RX12\Win32`
+- **StyledComponents** → `E:\Pacote\StyledComponents\source`
+
+### 📊 Relatórios
+- **FortesReport** → `C:\Users\Public\Documents\Embarcadero\Studio\23.0\CatalogRepository\fortesreport-ce`
+
+### 🧪 Testes
+- **DUnitX** → `E:\Pacote\DUnitX`
+- **DUnitX Master** → `E:\Pacote\DUnitX-master`
+
+### 🔧 Utilitários
+- **TProcess** → `E:\Pacote\TProcess`
+
+---
+
+## 📁 DIRETÓRIOS — Repositório principal (`SkillORM`)
+
+**Raiz:** raiz do repositório — programa principal **`SkillORM.dpr`**.
+
+### Estrutura principal
+- **src/** — Código-fonte
+  - **Commons/** — `src/Commons/` — tipagem, constantes, exceções e utilitários (naming **Commons.***). Ex.: Commons.Base, Commons.Consts, Commons.Types, Commons.Exceptions, Commons.IOUtils, Commons.StrUtils, Commons.Messages, Commons.Parameters.*, Commons.Loggers.SQL (ver **`SkillORM.dpr`** para lista completa no `uses`).
+  - **Attributers/** — `src/Attributers/` — Providers.Attributers, Providers.Attributers.Interfaces, Providers.Attributers.Consts, Providers.Attributers.Exceptions, Providers.Attributers.Types
+  - **Modulos/Connections/** — `src/Modulos/Connections/` — Providers.Connection.*, Providers.Connection.Interfaces.* (Connection; Nível 8)
+  - **Modulos/PoolConnections/** — `src/Modulos/PoolConnections/` — Providers.PoolConnections.*, Providers.PoolConnections.Interfaces.*
+  - **Main/** — **Facades:** `Providers.Database.Interfaces.pas`, `Providers.Database.pas`, `Parameters.Interfaces`, `Parameters`, `Loggers.Interfaces`, `Loggers`, `Exceptions.Interfaces`, `Exceptions`, `Providers.v200.*` (caminhos em **`src/Main/`**).
+  - **Database (núcleo ORM):** implementação em **src/Modulos/Database/**; consumo da API via **src/Main/Providers.Database.***:
+    - **Fields/**, **Tables/**, **Schemas/** — Providers.Database.Field.*, Providers.Database.Fields.*, Providers.Database.Table.*, Providers.Database.Tables.*, Providers.Database.Schema.*, Providers.Database.Schemas.* (Níveis 1–4)
+    - **EntityManager/**, **IdentityMap/**, **UnitOfWork/**, **QueryBuilder/**, **TypeDatabase/** — Providers.Database.EntityManager.*, Providers.Database.IdentityMap.*, Providers.Database.UnitOfWork.*, Providers.Database.QueryBuilder.*, Providers.Database.TypeDatabase.* (e respectivos .Interfaces, .Consts, .Exceptions, .Types)
+  - **Views/** — `src/Views/` — formulários de teste; **no** `SkillORM.dpr` (ex.: ufrmConnectionTeste, ufrmPoolConnectionsTeste, ufrmDatabaseTeste, ufrmDatabaseAttributersTeste, ufrmEcossistemaTeste, ufrmExceptionsTeste, ufrmParameters, ufrmParametersAttributers). Outros `.pas` em `Views/` podem existir sem estarem no DPR.
+  - **Modulos/** — `src/Modulos` — Connection, PoolConnections, Database, Parameters, Loggers, Exceptions (implementação). **Regra de consumo:** código da aplicação usa apenas facades em **`src/Main/`** para Parameters, Loggers, Database, Exceptions (ver Inicial_V1.0.mdc).
+  - **Modulos/Parameters/** — Módulo Parameters (project-fonte `e:\CSL\ParamentersORM`). Demais units (Commons, Database, IniFiles, JsonObject, Attributes, View) em src/Modulos/Parameters/ são internas — não modificar.
+  - **Modulos/Loggers/** — Módulo Loggers (project-fonte `e:\CSL\LoggersORM`); ativável por USE_LOGGERS. Demais units em src/Modulos/Loggers/ são internas — não modificar.
+- **Analise/** — Documentação por classe e consolidação por responsabilidade (ver **DIRETÓRIOS — ANALISE** abaixo).
+- **Data/** — config.ini, config.json, config1.json, config1.ini, exception_*.sql, config.sql, script.sql; bancos de teste (ex.: Config.db para SQLite, .fdb para Firebird). **Data/sql/** — scripts CREATE TABLE para exemplos (postgresql.sql, mysql.sql, sqlite.sql; tabelas orm_test_ddl, orm_test_dml, orm_test_uow, orm_test_attr). Ver **Acesso CLI (MySQL, SQLite, Firebird)** abaixo.
+- **Documentation/** — Documentação (html/, md/, scripts), se existir
+- **Compiled/** — Saída (EXE, DCU, DCP por Platform/Config)
+- **dll/** — **Bibliotecas DLL para acesso a banco de dados** — DLLs necessárias aos componentes (UniDAC, FireDAC, Zeos, etc.) para conectar aos bancos (PostgreSQL, MySQL, SQL Server, SQLite, FireBird, Access). Path usado em **DllBasePath** (Connection, Parameters); subpastas por plataforma (win32, win64) ou por engine conforme convenção do projeto.
+
+### Documentação relevante (projeto atual)
+- **Analise/** — Ver seção **DIRETÓRIOS — ANALISE** (path, arquivos, consolidação por responsabilidade).
+- **Inicial.md** — Visão geral, finalidade, fases e status (raiz do projeto)
+- **Roteiros do módulo Parameters** — Ver seção "DIRETÓRIOS — PARAMENTERSORM" abaixo (ROTEIRO_*, PASSO_A_PASSO)
+- **Plano unificado do ecossistema** — `.cursor/plans/plano_unificado_ecossistema_orm.plan.md` (visão de unificação dos cinco projetos, diretivas, API externa, integração Parameters/Loggers/Exceptions, assimilação DatabaseORM, exemplos, validação multi-engine)
+
+---
+
+## Passo a passo da Connection (roteiro por engine)
+
+Checklist reproduzível para configurar e implementar Connection por engine (referência: assimilação DatabaseORMSlim/DatabaseORM; plano único `.cursor/plans/plano_unificado_ecossistema_orm.plan.md` — seção 8 e 11).
+
+### Ordem de configuração (evitar "driver not found")
+
+1. **DllBasePath / VendorLib / LibraryLocation** — configurar **antes** de Protocol/DriverName (ou abrir a conexão). Sem o path correto das DLLs, o driver não é carregado.
+2. **Protocol / DriverName** — definir em seguida, conforme o engine e o tipo de banco.
+3. **Host, Port, Database, Username, Password, Schema** — demais parâmetros de conexão.
+
+### Checklist por engine
+
+| Engine | Propriedades obrigatórias / observação |
+|--------|----------------------------------------|
+| **FireDAC** | ConnectionDef ou Params; DriverID (ex.: PG, MySQL, MSSQL, SQLite, FB); quando usar DLL: VendorLib, LibraryLocation. |
+| **UniDAC** | ProviderName (ex.: PostgreSQL, MySQL, SQL Server, SQLite, InterBase); opcional VendorLib para DLL. |
+| **Zeos** | Protocol (ex.: postgresql, mysql, mssql, sqlite, firebird-2.5); LibraryLocation quando necessário. |
+| **SQLdb** | Driver (ex.: postgresql, mysql51, sqlite3, mssql, firebird); LibraryLocation ou path nas opções. |
+
+### Dono da conexão (vazamento)
+
+- Quando a aplicação cria o objeto nativo (TFDConnection, TUniConnection, etc.) e o passa para TConnection, definir **FOwnConnection** (ou equivalente) para que o **Destroy** da TConnection libere o objeto e não haja vazamento.
+- Quando TConnection cria o objeto internamente, ela é dona e deve liberar no Destroy.
+
+### Referências
+
+- **ParamentersORM:** PASSO_A_PASSO_RECRIAR_LOGIC_DATABASE, CONEXAO_ACCESS_POR_ENGINE (quando aplicável).
+- **Projeto atual:** `src/Modulos/Connections/Providers.Connection.pas`, **ORM.Defines.inc** (um engine por compilação: USE_FIREDAC, USE_UNIDAC, USE_ZEOS ou USE_SQLDB).
+
+---
+
+## 📁 DIRETÓRIOS — ANALISE (documentação por classe)
+
+**Raiz:** `Analise/`
+
+**Responsabilidade:** Documentação por classe (métodos e variáveis), planos de execução, exceções, CRUD e views. Os arquivos da Analise seguem a **consolidação por responsabilidade** das regras: **Inicial_V1.0.mdc** = regras de criação; **local_arquivos_V1.0.mdc** = locais e pacotes; **roadmap_V1.0.mdc** = processos e execução.
+
+### Arquivos principais
+| Arquivo | Descrição |
+|---------|------------|
+| **README.md** | Índice completo por módulo (Hierarquia ORM, Connections, Parameters, Loggers, Database); tabela **Consolidação por responsabilidade** com links para Inicial_V1.0.mdc, local_arquivos_V1.0.mdc, roadmap_V1.0.mdc; convenção canónica **`{ClassName}.md`** (ver secção abaixo). |
+| **Plano, fases, CRUD, exceções, especificação** | Conteúdo consolidado em **roadmap_V1.0.mdc** (visão, fases, CRUD 2.3.4), **Inicial_V1.0.mdc** (classes de exceção, faixas), **Documentacao_V1.0.mdc** (especificação e reconstrução de módulos). |
+| **Views_Formularios.md** | Classes de interface (forms) com descrição e responsabilidade; referência às três regras. |
+
+### Arquivos por classe/interface
+- **Canónico** (alinhado à skill **documentation-paste_analysis_unit_class_method**): ficheiro **`{ClassName}.md`** — nome base **sem** `T`/`I` no nome do ficheiro (ex.: `Connection.md` para a classe `TConnection`).
+- **Legado** (até migração): `Providers.*.TClass.md`, `NomeDaUnit.NomeDaClasse.md` ou ficheiros que ainda contenham `T`/`I` no nome; **Analise/README.md** reconcilia canónico vs legado.
+- Lista completa e responsabilidade de cada classe em **Analise/README.md** (índice por módulo).
+- Cada documento descreve métodos, variáveis e responsabilidade da classe; referências a **roadmap_V1.0.mdc** para hierarquia e métodos por nível.
+
+### Compilação
+- **Compiled/EXE/$(Config)/$(Platform)/** — Executáveis
+- **Compiled/DCU/$(Config)/$(Platform)/** — DCU
+- **Compiled/DCP/$(Config)/$(Platform)/** — DCP
+
+### Configuração
+- **ORM.Defines.inc** — Diretivas de engines e features (raiz)
+- **dcc32.cfg**, **dcc64.cfg** — Compilador (raiz); paths de units (-U) e include (-I)
+- **`SkillORM.dpr`**, **`SkillORM.dproj`** — Projeto principal. O **.dpr** lista Commons, Attributers, núcleo em Modulos/Database, Connection, Pool, Parameters e Loggers (internas), **Modulos/Exceptions**, facades em **src/Main/** (Providers.Database, Parameters, Loggers, Exceptions, Providers.v200), Views. Consumo no código: facades **Main** para API pública dos módulos (ver Inicial_V1.0.mdc).
+- **Paths de busca (units):** definidos em **`SkillORM.dproj`** e em **dcc32.cfg** / **dcc64.cfg** (seção -U).
+
+### Módulos encapsulamento — diretiva: já funcionais, sem alteração interna
+**Path dos módulos:** `src/Modulos`. Loggers e Parameters: **não alterar** ficheiros internos; alterações só nas facades em **`src/Main/`** quando aplicável à política do projeto.
+- **`src/Main/Parameters.Interfaces.pas`**, **`src/Main/Parameters.pas`** — API Parameters. Projeto-fonte: `e:\CSL\ParamentersORM`. Internas: `src/Modulos/Parameters/`.
+- **`src/Main/Loggers.Interfaces.pas`**, **`src/Main/Loggers.pas`** — API Loggers. Projeto-fonte: `e:\CSL\LoggersORM`. Internas: `src/Modulos/Loggers/`.
+
+### Acesso CLI aos bancos de dados (MySQL, SQLite, Firebird)
+O projeto adota **aplicação de acesso CLI** aos bancos **MySQL**, **SQLite** e **Firebird** para testes, scripts, inspeção de dados e alinhamento com Parameters/FromConfig.
+
+| Banco    | Cliente CLI   | Configuração (parâmetros de conexão) | Observação |
+|----------|---------------|--------------------------------------|------------|
+| **MySQL**   | `mysql` (MySQL Client) | **Data/config.ini**, **Data/config.json**, **Data/config1.json** — chaves: host, port, username, password, database (schema opcional). Alinhado às chaves do ParamentersORM. | Exemplo: `mysql -h <host> -P <port> -u <user> -p <database>` |
+| **SQLite**  | `sqlite3`     | **Data/** — arquivo do banco (ex.: **Config.db**); ou caminho em config (chave `database` = caminho do .db). | Exemplo: `sqlite3 Data/Config.db` |
+| **Firebird** | `isql` (Firebird) | **Data/config.ini**, **Data/config.json**, **Data/config1.json** — chaves: host, port (ex.: 3050), username, password, database (caminho do .fdb). | **CLI:** `C:\Program Files\Firebird\Firebird_2_5\` (isql.exe; usar port 3050). Exemplo: `isql -user SYSDBA -pas masterkey host:path\to\arquivo.fdb` |
+
+- **Paths de config:** `Data/config.ini`, `Data/config.json`, `Data/config1.json` (e variantes config1.ini).
+- **Firebird CLI (caminho de instalação):** `C:\Program Files\Firebird\Firebird_2_5\` — executáveis `isql.exe`, `gsec.exe`; porta padrão 3050.
+- **Chaves de conexão (JSON/INI):** `host`, `port`, `username`, `password`, `database`, `database_type`, `schema` — mesma convenção do módulo Parameters e da Connection (FromConfig, FromJSONObject).
+- **Uso:** Consultar ao escrever scripts de banco, validar conexão ou depurar; referência em **roadmap_V1.0.mdc** (parâmetros de conexão, seção 1.2) e **Inicial_V1.0.mdc** (Onde obter detalhes).
+
+---
+
+## 📁 DIRETÓRIOS — PARAMENTERSORM (módulo Parameters)
+
+**Raiz no projeto ORM:** `src/Modulos/Parameters` (módulos em `src/Modulos`: Parameters e Loggers; ambos implementados junto ao projeto; Loggers: project-fonte `e:\CSL\LoggersORM`). **Parameters e Commons:** O módulo Parameters usa **src/Commons** (Commons.Types, Commons.Consts, Commons.IOUtils, Commons.StrUtils, Commons.Messages) para engine/banco, I/O e mensagens; não duplicar tipos/constantes — ver **Documentacao_V1.0.mdc** (Parameters e Commons).
+
+### Estrutura principal
+- **src/Parameters.pas**, **src/Parameters.Interfaces.pas** — API pública (units de encapsulamento) — ponto de uso no projeto
+- **src/Modulos/Parameters/** — Código-fonte interno (Commons, Database, IniFiles, JsonObject, Attributes, View)
+  - **Paramenters.Database.inc** — Constantes de conexão
+  - **ORM.Defines.inc** — Diretivas de compilação
+  - **Commons/** — Parameters.Types, Parameters.Consts, Parameters.Exceptions
+  - **Database/** — Parameters.Database.pas
+  - **IniFiles/** — Parameters.Inifiles.pas
+  - **JsonObject/** — Parameters.JsonObject.pas
+  - **Attributes/** — Parameters.Attributes.* (5 arquivos)
+  - **View/** — ufrmParamenters.pas/dfm, ufrmParamentersAttributers.pas/dfm
+- **Analises/** — Análises
+- **docs/** — Documentação (CONEXAO_ACCESS_POR_ENGINE.md, ROTEIRO_*, etc.)
+
+### Compilação
+- **Compiled/EXE/$(Platform)/$(Config)/** — Executáveis
+- **Compiled/DCU/$(Platform)/$(Config)/** — DCU
+- **Compiled/DCP/$(Platform)/$(Config)/** — DCP
+
+### Configuração
+- **dcc32.cfg**, **dcc64.cfg** — Raiz
+- **ORM.Defines.inc** — Raiz
+- **FPC opts:** `fpc32.opts`, `fpc64.opts` — incluir `-Fu` para Zeos e DataSet.Serialize (`E:\Pacote\dataset-serialize\src`)
+
+### Documentação relevante (módulo Parameters / ParamentersORM)
+Paths relativos ao repositório ParamentersORM (`e:\CSL\ParamentersORM`) ou ao módulo no projeto atual (`src/Modulos/Parameters/`):
+- **docs/ROTEIRO_COMPATIBILIDADE_DELPHI_FPC.md** — Compatibilidade Delphi e FPC
+- **docs/ROTEIRO_IMPLEMENTACAO_SQLDB_LAZARUS.md** — Implementação SQLdb no Lazarus
+- **docs/ROTEIRO_IMPLEMENTACAO_FROMCONFIG.md** — FromConfig, chaves de conexão, zero-config
+- **`Documentation/LOGICA_DATABASE.md`** (no projeto `SkillORM`) — documento canónico da lógica **Parameters.Database**; ponte em **`src/Modulos/Parameters/Database/LOGICA_DATABASE.md`**
+- **src/Database/PASSO_A_PASSO_RECRIAR_LOGIC_DATABASE.md** (no repositório ParamentersORM, se existir) — equivalente histórico no project-fonte Parameters
+
+**Uso:** Consultar ao implementar FromConfig, SQLdb, compatibilidade Delphi/FPC ou lógica de Parameters.Database. Referência cruzada em **roadmap_V1.0.mdc** (seção 1.2) e **Inicial_V1.0.mdc** (Onde obter detalhes).
+
+---
+
+## 📁 DIRETÓRIOS — LOGGERSORM (módulo Loggers)
+
+**Raiz no projeto ORM:** `src/Modulos/Loggers` — já está em src/Modulos/Loggers e é implementado junto ao projeto. Projeto-fonte: `e:\CSL\LoggersORM`. Ativável pela diretiva USE_LOGGERS em ORM.Defines.inc.
+
+### Estrutura (referência LoggersORM)
+- **src/Loggers.pas**, **src/Loggers.Interfaces.pas** — API pública (units de encapsulamento) — ponto de uso no projeto
+- **src/Modulos/Loggers/** — Código do módulo (demais units internas)
+- Projeto-fonte completo: `e:\CSL\LoggersORM` (Docs, padrões e exemplos de uso)
+
+**Uso:** Consultar ao integrar o módulo Loggers, configurar USE_LOGGERS ou localizar API (Loggers.Interfaces + Loggers.pas). Referência cruzada em **roadmap_V1.0.mdc** (seção 1.1 Módulos integrados) e **Inicial_V1.0.mdc** (API pública e encapsulamento; Onde obter detalhes).
+
+---
+
+## 📁 DIRETÓRIOS — EXCEPTIONORM (projeto de referência — exceções)
+
+**Raiz:** `E:\CSL\ExceptionORM\`
+
+Projeto **standalone** de consulta a mensagens de exceção por idioma (pt-BR, en, es). Banco Data/exception.db; tabela messages. **Não** integrado como módulo ao Projeto; o Projeto possui módulo Exceptions próprio (src/Modulos/Exceptions) que segue o **mesmo contrato** (API IExceptions/IExceptionsDatabase, TMessageRecord, messages). Referência de API: **Documentacao_V1.0.mdc** (Exceções centralizadas); repositório `E:\CSL\ExceptionORM` — mesmo contrato (mapeamento ExceptionORM ↔ `SkillORM`).
+
+### Estrutura principal (ExceptionORM)
+- **src/Commons/** — Exceptions.Commons.Base (EExceptionBase), Exceptions.Commons.Types (TMessageRecord, enums), Exceptions.Commons.Consts, Exceptions.Commons.Errors (EConnectionException, 40XXX)
+- **src/Database/** — Exceptions.Database.Interfaces (IExceptionsDatabase), Exceptions.Database
+- **src/Connections/** — Exceptions.Connection.Interfaces, Exception.Connection (SQLite exception.db)
+- **src/** — Exceptions.Interfaces (IExceptions), Exceptions (TExceptions — API pública)
+- **Data/** — exception.db; scripts exception*.sql
+- **Skills em `.cursor/skills/<identificador>_V{SemVer}/SKILL.md`** — sufixo da pasta = versão SemVer do `SKILL.md` (ex.: skills `documentation-*`, `project-*`).
+
+**Uso:** Consultar ao evoluir o módulo Exceptions do Projeto, manter contrato (messages, TMessageRecord, GetMessage por código/constante) ou mapear código trazido de ExceptionORM. Ver **Documentacao_V1.0.mdc** (Exceções centralizadas) e esta secção (EXCEPTIONORM).
+
+---
+
+## 📁 DIRETÓRIOS — HABILORM
+
+**Raiz:** `E:\CSL\HabilORM\`
+
+### Estrutura principal
+- **Analises/** — `E:\CSL\HabilORM\Analises` (análises de banco, telas, formulários)
+- **src/** — `E:\CSL\HabilORM\src\`
+  - **ExemploView** — exemplos de views e cadastros
+  - **Modal** — formulários modais
+  - **Services** — serviços de negócio (ex.: Services.Cliente)
+  - **View** / **Views** — telas principais e consultas
+  - Formulários de cadastro na raiz (ex.: ufrmCadastroClientes)
+- **Database/** — Camada ORM, conexões, tabelas
+- **Providers/** — Providers, CRUD, utilitários
+- **Loggers/** — Sistema de logging
+- **Paramenters/** — Parâmetros de configuração
+- **dll/** — DLLs (win32, win64, drivers ex. PostgreSQL)
+
+### Compilação
+- **Compiled/EXE/$(Config)/$(Platform)/**
+- **Compiled/DCU/$(Config)/$(Platform)/**
+- **Compiled/DCP/$(Config)/$(Platform)/**
+
+### Configuração
+- **ProjetoHabil.dproj**, **HabilFinanceiro.dproj**
+- **ProjetoHabilGroup.groupproj** — Grupo de projetos
+- **ORM.Defines.inc** — `E:\CSL\HabilORM\ORM.Defines.inc`
+
+### Data (parâmetros e configuração)
+- **Data/Config.db** — `E:\CSL\HabilORM\Data\Config.db` (SQLite — Parameters)
+- **Data/config.sql** — Script de criação da tabela config
+
+---
+
+## 🦎 LAZARUS / FREE PASCAL COMPILER (FPC)
+
+### Caminhos de instalação (referência nos projetos)
+- **Base (Projeto / ParamentersORM):** `D:\fpc`
+  - **Lazarus** → `D:\fpc\lazarus`
+  - **FPC** → `D:\fpc\fpc` (3.3.1 — versão mínima para Attributers e Generics)
+  - **Binários 64-bit** → `D:\fpc\fpc\bin\x86_64-win64`
+  - **OPM** → `D:\fpc\config_lazarus\onlinepackagemanager\packages`
+- **Base alternativa (ParamentersORM):** `C:\lazarus`
+  - **OPM** → `C:\lazarus\Configuracao\onlinepackagemanager\packages`
+  - **Zeos** → `C:\lazarus\Configuracao\onlinepackagemanager\packages\zeosdbo`
+  - **SQLdb** → `C:\lazarus\Configuracao\onlinepackagemanager\packages\1-Outros\sqldb`
+
+### Pacotes críticos (banco de dados)
+- **Zeos** — Necessário para FPC quando USE_ZEOS
+- **UniDAC** — Alternativa (licença comercial)
+- **SQLdb** — Framework nativo FCL (USE_SQLDB); pacote **sqldblaz.lpk**
+
+### Notas
+- FireDAC não está disponível no FPC (usar Zeos, UniDAC ou SQLdb).
+- Apenas um engine por build no FPC (USE_ZEOS ou USE_SQLDB).
+- **FPC 3.3.1** — versão mínima para Attributers e Generics; ParamentersORM: módulo Attributes e Generics requerem FPC 3.3.1+.
+
+---
+
+## 📚 Dependências do projeto (fonte: Inicial.md)
+
+### Obrigatórias
+- Delphi XE7+ ou Free Pascal Compiler (FPC) 3.3.1+ (mínimo para Attributers e Generics)
+- Um dos engines: FireDAC, UniDAC, Zeos ou SQLdb (FPC)
+
+### Opcionais
+- DataSet-Serialize (para integração com DataSet) — `E:\Pacote\dataset-serialize\src`
+- System.JSON (Delphi) ou fpjson (FPC)
+- Synapse (para LDAP) — `E:\Pacote\synapse` / synapseD123 / synapseD12
+
+---
+
+## 📝 NOTAS E CONVENÇÕES
+
+### Caminhos especiais
+- **FortesReport** — Catalog Repository (caminho diferente de `E:\Pacote`)
+- **UniDAC** — Pode estar em `C:\Program Files (x86)\Devart\UniDAC for RAD Studio 12\`
+- **WebSocket** — Catalog ou `D:\Users\...\Documents\Embarcadero\Studio\...`
+
+### Convenções
+- Pacotes principais: `E:\Pacote`
+- Subdiretórios **src** — código-fonte
+- Subdiretórios **Lib** — bibliotecas compiladas
+- **Versionamento por arquivo:** ProjectVersion, FileVersion e Changelog (file) no cabeçalho das units (ParamentersORM; ver roadmap NewProject seção 1.4)
+
+---
+
+**Última atualização:** 12/04/2026 — Template com **`SkillORM`**; materialização em **`.cursor/rules/local_arquivos_V1.0.mdc`** via **`bootstrap-build-config.ps1`** (fluxo `/init`); **alwaysApply** no template `false` (a regra copiada para `rules/` usa `true`).
+
+**Changelog (este arquivo):**
+- 1.0.7 (12/04/2026): Direcção **SSOT** = regra `local_arquivos` no workspace; template preparado para cópia em `/init`; placeholders `SkillORM`; `alwaysApply: false` no template (cópia em rules com `true`).
+- 1.0.6 (27/03/2026): Pasta documental **`Documentation/`** (antes `Docs/`); **`Documentation/LOGICA_DATABASE.md`** canónico no repositório ORM; secção **Analise** — `{ClassName}.md` + legado alinhado à skill **documentation-paste_analysis_unit_class_method**.
+- 1.0.5 (27/03/2026): Documentação **Parameters.Database** — canónico **`docs/LOGICA_DATABASE.md`**; ponte **`src/Modulos/Parameters/Database/LOGICA_DATABASE.md`**; ParamentersORM mantém nome histórico no project-fonte.
+- 1.0.4 (27/03/2026): Analise — naming **`ClassName.md`** (`T…` / `I…`); skill paste_analysis 1.2.0.
+- 1.0.3 (27/03/2026): EXCEPTIONORM — sem **Exceptions_Unificado.mdc**; usar **Documentacao_V1.0.mdc** + esta secção.
+- 1.0.3 (27/03/2026): Paths **dentro deste repositório** em formato **relativo à raiz** (`Analise/`, `Data/`, `src/Modulos`, `.cursor/rules`, etc.); mantidos absolutos para **E:\Pacote**, **E:\CSL\ExceptionORM**, **E:\CSL\HabilORM**, projetos-fonte Parameters/Loggers, assimilações.
+- 1.0.2 (27/03/2026): Alinhamento ao repositório — `ProvidersORM.dpr`/`.dproj`, **src/Main/** (facades), Commons conforme DPR, Views no DPR, **alwaysApply: true**; paths absolutos ao clone (época).
+- 1.0.1 (12/03/2026): Seção DIRETÓRIOS — EXCEPTIONORM (estrutura, uso; referência histórica a rule depois removida).
+- 1.0.0 (26/02/2026): Estrutura src/; 4 units de encapsulamento; Analise (convenção legada Unit.ClassName; ver 1.0.4).
+---
+
+## Versão interna (ficheiro)
+
+| Campo | Valor |
+|-------|-------|
+| **FileVersion** | 1.0.7 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog (versionamento interno — rodapé)
+- 1.0.2 (12/04/2026): Alinhamento FileVersion ao changelog principal (1.0.7).
+- 1.0.1 (30/03/2026): Rubrica de versionamento interno (política: `.cursor/VERSION.md`).
+- 1.0.0 (30/03/2026): Versionamento interno inicial (pacote `.cursor`).

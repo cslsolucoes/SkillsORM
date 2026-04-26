@@ -1,0 +1,165 @@
+{
+  "_template_info": "Template para .vscode/settings.json — substituir {PLACEHOLDERS} antes de usar. Fonte: .cursor/Templates/mirror-config/",
+  "_template_version": "1.0.0",
+
+  "editor.formatOnSaveMode": "modifications",
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
+  "editor.trimFinalNewlines": true,
+  "editor.insertFinalNewline": true,
+  "editor.wordWrap": "off",
+  "editor.rulers": [80, 120],
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.suggestSelection": "first",
+  "editor.snippetSuggestions": "top",
+  "editor.tabCompletion": "on",
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": false
+  },
+
+  "files.associations": {
+    "*.pas": "pascal",
+    "*.pp": "pascal",
+    "*.p": "pascal",
+    "*.inc": "pascal",
+    "*.dpr": "pascal",
+    "*.dproj": "xml",
+    "*.lpr": "pascal",
+    "*.lpi": "xml",
+    "*.lfm": "pascal",
+    "*.dfm": "pascal",
+    "*.fmx": "pascal",
+    "*.dpk": "pascal",
+    "*.lpk": "pascal"
+  },
+  "files.encoding": "utf8",
+  "files.eol": "\r\n",
+  "files.exclude": {
+    "**/.git": true,
+    "**/Compiled": true,
+    "**/*.dcu": true,
+    "**/*.exe": true,
+    "**/*.dll": true,
+    "**/*.~*": true,
+    "**/*.local": true,
+    "**/node_modules": true,
+    "**/MySQL": true,
+    "**/Exemplos": true
+  },
+  "files.watcherExclude": {
+    "**/Compiled/**": true,
+    "**/MySQL/**": true,
+    "**/Exemplos/**": true,
+    "**/*.dcu": true,
+    "**/*.exe": true,
+    "**/*.dll": true,
+    "**/*.so": true,
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true
+  },
+
+  "search.exclude": {
+    "**/Compiled": true,
+    "**/*.dcu": true,
+    "**/*.exe": true,
+    "**/*.dll": true,
+    "**/node_modules": true,
+    "**/MySQL": true,
+    "**/Exemplos": true
+  },
+  "search.useIgnoreFiles": true,
+  "search.useGlobalIgnoreFiles": true,
+  "search.followSymlinks": false,
+
+  "[pascal]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "alefragnani.pascal-formatter",
+    "editor.semanticHighlighting.enabled": true,
+    "editor.bracketPairColorization.enabled": true
+  },
+
+  "pascal.formatting.enabled": true,
+  "pascal.completion.enabled": true,
+  "pascal.hover.enabled": true,
+  "pascal.diagnostics.enabled": true,
+  "pascal.intellisense.enabled": true,
+  "pascal.intellisense.includePaths": [
+    "src",
+    "{FPC_UNITS_PATH}",
+    "{LAZARUS_COMPONENTS_PATH}"
+  ],
+  "pascal.intellisense.defines": [
+    "FPC",
+    "{FPC_DEFINES}",
+    "WINDOWS",
+    "WIN64"
+  ],
+
+  "fpc.compilerPath": "{FPC_ROOT}\\bin\\x86_64-win64\\fpc.exe",
+  "fpc.fpcSourcePath": "{FPC_SOURCE_PATH}",
+  "fpc.lazarusPath": "{LAZARUS_ROOT}",
+  "fpc.defaultPlatform": "x86_64-win64",
+  "fpc.defaultMode": "DELPHI",
+  "fpc.defines": ["{FPC_DEFINES}"],
+  "fpc.searchPaths": [
+    "src",
+    "{FPC_UNITS_PATH}",
+    "{LAZARUS_COMPONENTS_PATH}"
+  ],
+
+  "delphiLsp.executable": "C:\\Program Files (x86)\\Embarcadero\\Studio\\{STUDIO_VERSION}\\bin\\DelphiLSP.exe",
+  "delphiLsp.serverType": "agent",
+
+  "code-runner.runInTerminal": true,
+  "code-runner.clearPreviousOutput": true,
+  "code-runner.saveFileBeforeRun": true,
+  "code-runner.executorMap": {
+    "pascal": "cd $dir && {FPC_ROOT}\\bin\\x86_64-win64\\fpc.exe {FPC_DEFINES_FLAGS} $fileName && $fileNameWithoutExt.exe"
+  },
+
+  "terminal.integrated.env.windows": {
+    "PATH": "${env:PATH};C:\\Program Files (x86)\\Embarcadero\\Studio\\{STUDIO_VERSION}\\bin;{FPC_ROOT}\\bin\\x86_64-win64;{LAZARUS_ROOT}",
+    "FPC": "{FPC_ROOT}\\bin\\x86_64-win64\\fpc.exe",
+    "FPCDIR": "{FPC_SOURCE_PATH}",
+    "LAZARUS_DIR": "{LAZARUS_ROOT}",
+    "FPCTARGET": "x86_64-win64",
+    "FPCTARGETCPU": "x86_64",
+    "FPCTARGETOS": "win64"
+  },
+
+  "debug.allowBreakpointsEverywhere": true,
+  "debug.showBreakpointsInOverviewRuler": true,
+
+  "git.enabled": true,
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.autoRepositoryDetection": true,
+  "git.allowForcePush": false,
+  "git.showPushSuccessNotification": true,
+  "git.timeline.enabled": true,
+
+  "chat.instructionsFilesLocations": {
+    ".cursor/rules": true,
+    ".vscode/rules": true
+  },
+
+  "vscode-ollama.baseUrl": "http://{OLLAMA_HOST}:11434",
+  "ollamaAgent.model": "{OLLAMA_MODEL}",
+  "ollamaAgent.baseUrl": "http://{OLLAMA_HOST}:11434",
+  "ollamaAgent.host": "{OLLAMA_HOST}",
+  "vscode-ollama.model": "{OLLAMA_MODEL}",
+
+  "problems.showCurrentInStatus": true,
+  "problems.sortOrder": "severity",
+
+  "redhat.telemetry.enabled": true
+}

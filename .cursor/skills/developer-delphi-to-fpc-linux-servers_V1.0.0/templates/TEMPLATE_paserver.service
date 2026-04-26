@@ -1,0 +1,87 @@
+# TEMPLATE_paserver.service
+# ==========================
+# Unit systemd para o Embarcadero Platform Assistant Server (PAServer).
+#
+# Instruções de uso:
+#   1. Editar /etc/paserver/paserver.env com PASERVER_PASSWORD e PASERVER_PORT
+#   2. Copiar para /etc/systemd/system/paserver.service
+#   3. sudo systemctl daemon-reload
+#   4. sudo systemctl enable paserver
+#   5. sudo systemctl start paserver
+#   6. sudo systemctl status paserver
+#
+# Pré-requisitos:
+#   - Utilizador 'paserver' criado: sudo useradd -r -m -d /opt/paserver -s /bin/false paserver
+#   - Binário copiado para /opt/paserver/paserver e executável (chmod 750)
+#   - Directório scratch: sudo mkdir -p /opt/paserver/scratch-dir
+#   - Ficheiro de ambiente: /etc/paserver/paserver.env (ver secção [Service])
+
+[Unit]
+Description=Embarcadero Platform Assistant Server (PAServer)
+Documentation=https://docwiki.embarcadero.com/RADStudio/en/Running_the_Platform_Assistant_on_Linux
+After=network.target
+Wants=network-online.target
+
+[Service]
+# ── Identidade ──
+Type=simple
+User=paserver
+Group=paserver
+WorkingDirectory=/opt/paserver
+
+# ── Variáveis de ambiente ──
+# Ficheiro /etc/paserver/paserver.env deve conter:
+#   PASERVER_PASSWORD=SenhaMuitoSegura123!
+#   PASERVER_PORT=64211
+EnvironmentFile=/etc/paserver/paserver.env
+
+# ── Execução ──
+ExecStart=/opt/paserver/paserver \
+  -p ${PASERVER_PORT} \
+  -password=${PASERVER_PASSWORD} \
+  -scratch=/opt/paserver/scratch-dir
+
+# Verificação pré-arranque
+ExecStartPre=/usr/bin/test -x /opt/paserver/paserver
+ExecStartPre=/usr/bin/test -d /opt/paserver/scratch-dir
+
+# Limpeza pós-stop (remover processos residuais de build)
+ExecStopPost=/bin/bash -c 'rm -rf /opt/paserver/scratch-dir/tmp_* 2>/dev/null; true'
+
+# ── Restart ──
+Restart=on-failure
+RestartSec=10
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+# ── Timeouts ──
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+# ── Output ──
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=paserver
+
+# ── Limites de recursos ──
+# O PAServer pode abrir muitos ficheiros durante builds grandes
+LimitNOFILE=65536
+LimitNPROC=256
+
+# ── Segurança ──
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+
+# Paths com escrita necessária
+ReadWritePaths=/opt/paserver/scratch-dir
+ReadWritePaths=/tmp
+
+# Path de leitura apenas
+ReadOnlyPaths=/opt/paserver/paserver
+ReadOnlyPaths=/etc/paserver
+
+[Install]
+WantedBy=multi-user.target

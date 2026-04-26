@@ -1,0 +1,46 @@
+{ =============================================================================
+  {UNIT_NAME} - Formulário FireMonkey (FMX)
+
+  Descrição:
+  Formulário FireMonkey {FORM_CLASS} — edite esta seção para descrever a
+  finalidade do formulário (multi-plataforma: Windows, macOS, iOS, Android).
+
+  Características:
+  - Framework: FMX (FireMonkey cross-platform)
+  - Classe: T{FORM_CLASS}
+  - Instância: {FORM_INSTANCE}
+
+  Project:        {PROJECT_NAME}
+  ProjectVersion: {PROJECT_VERSION}
+  FileVersion:    1.0.0
+  Author:         Claiton de Souza Linhares
+  Date:           {DATE}
+
+  Changelog (file):
+  - 1.0.0 ({DATE}): criação via bootstrap-form-unit.ps1.
+  ============================================================================= }
+unit {UNIT_NAME};
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes,
+  System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs;
+
+type
+  T{FORM_CLASS} = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  {FORM_INSTANCE}: T{FORM_CLASS};
+
+implementation
+
+{$R *.fmx}
+
+end.

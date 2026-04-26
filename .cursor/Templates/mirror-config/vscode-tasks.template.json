@@ -1,0 +1,341 @@
+{
+  "_template_info": "Template para .vscode/tasks.json — usa variaveis nativas do VSCode (${workspaceFolderBasename}, ${workspaceFolder}, ${env:FPC_ROOT}); nenhum placeholder {…} requer substituicao por script. Fonte: .cursor/Templates/mirror-config/",
+  "_template_version": "1.3.0",
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "${workspaceFolderBasename}: Delphi Win32",
+      "type": "shell",
+      "command": "dcc32",
+      "args": [
+        "-B",
+        "${workspaceFolder}/${workspaceFolderBasename}.dpr"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: Delphi Win64",
+      "type": "shell",
+      "command": "dcc64",
+      "args": [
+        "-B",
+        "${workspaceFolder}/${workspaceFolderBasename}.dpr"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: FPC Win64",
+      "type": "shell",
+      "command": "${env:FPC_ROOT}\\bin\\x86_64-win64\\fpc.exe",
+      "args": [
+        "@${workspaceFolder}/fpc64.opts",
+        "${workspaceFolder}/${workspaceFolderBasename}.dpr"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: FPC Win32",
+      "type": "shell",
+      "command": "${env:FPC_ROOT}\\bin\\i386-win32\\fpc.exe",
+      "args": [
+        "@${workspaceFolder}/fpc32.opts",
+        "${workspaceFolder}/${workspaceFolderBasename}.dpr"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: SQLite CLI (abrir Config.db)",
+      "type": "shell",
+      "command": "${workspaceFolder}/SQLite/sqlite3.exe",
+      "args": [
+        "${workspaceFolder}/Data/Config.db"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: MySQL CLI (help)",
+      "type": "shell",
+      "command": "${workspaceFolder}/MySQL/bin/mysql.exe",
+      "args": [
+        "--help"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: MSSQL sqlcmd (help)",
+      "type": "shell",
+      "command": "sqlcmd",
+      "args": [
+        "-?"
+      ],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: Firebird isql (help)",
+      "type": "shell",
+      "command": "isql",
+      "args": [
+        "-?"
+      ],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "${workspaceFolderBasename}: PostgreSQL psql (help)",
+      "type": "shell",
+      "command": "psql",
+      "args": [
+        "-?"
+      ],
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Bootstrap: Auto Start",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_autostart_mirrors.py"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_autostart_mirrors.py"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_autostart_mirrors.py"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Bootstrap: Full Run",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Bootstrap: Validate Only",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--validate-only"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--validate-only"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--validate-only"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Bootstrap: Repair",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--repair", "--force"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--repair", "--force"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_mirror_symlinks.py", "--repair", "--force"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Reset: WhatIf",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--whatif"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--whatif"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--whatif"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Mirror Reset: Force",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--force"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--force"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/bootstrap_reset.py", "--force"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Sync: Cursor Pack (WhatIf)",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--whatif", "--dest"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--whatif", "--dest"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--whatif", "--dest"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Sync: Cursor Pack",
+      "type": "shell",
+      "windows": {
+        "command": "python",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--dest"]
+      },
+      "linux": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--dest"]
+      },
+      "osx": {
+        "command": "python3",
+        "args": [".cursor/scripts/sync_cursor_pack.py", "--dest"]
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

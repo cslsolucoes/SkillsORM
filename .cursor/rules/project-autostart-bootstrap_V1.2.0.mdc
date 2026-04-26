@@ -1,0 +1,363 @@
+---
+alwaysApply: true
+description: "Auto-start obrigatório: valida espelhos, detecta projeto existente e — se ausente — pergunta o nome ao usuário e cria automaticamente os arquivos de projeto Delphi e/ou FPC/Lazarus."
+---
+
+# Auto-start Bootstrap — Espelhos, Build Config e Criação de Projeto
+
+---
+
+## Escopo
+
+Aplica-se **a este projeto** e a qualquer projeto que use o pack `.cursor/`. Esta rule executa automaticamente em toda sessão (alwaysApply) e estabelece o protocolo obrigatorio de auto-start: validar espelhos, detectar projeto existente e — se ausente — criar interativamente. Nao e um template generico.
+
+**NAO se aplica** a: projetos sem o pack `.cursor/`; ambientes sem os scripts `bootstrap-*.ps1`.
+
+## Skills e agents referenciados
+
+| Recurso | Tipo | Quando referenciado |
+|---------|------|---------------------|
+| `bootstrap-mirror-symlinks.ps1` | script | FASE 1 — validacao e reparo de espelhos |
+| `bootstrap-skills-project.ps1` | script | FASE 2-A — materializacao de CLAUDE.md/LICENSE/privacy/.workspace para Skills Pack |
+| `bootstrap-build-config.ps1` | script | FASE 2/3 — deteccao e geracao de build config Delphi/FPC |
+| `bootstrap-form-unit.ps1` | script | FASE 4 — geracao de form units sob demanda |
+| `developer-delphi-build-toolchain` | skill | Referencia de compilacao CLI pos-criacao |
+| `dev-agent-delphi-orchestrator` | agent | Orquestrador para fluxos Delphi |
+
+---
+
+## FASE 1 — Validação dos espelhos (.claude / .vscode / .continue / .opencode)
+
+Executar **imediatamente** ao iniciar qualquer sessão, antes de qualquer outra ação:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-mirror-symlinks.ps1" -ValidateOnly
+```
+
+### Política de bloqueio
+
+Se a validação falhar por ausência de privilégios de Administrador ou por erros críticos de espelho:
+
+1. **Abortar** a execução de qualquer tarefa subsequente.
+2. Informar ao usuário:
+   > "Cursor sem elevação de Administrador. Reinicie como Administrador ou ative o Modo Programador do Windows."
+3. Não prosseguir com `skills`, `rules` ou `agents` até correção.
+
+Se `-ValidateOnly` indicar problemas corrigíveis e o processo estiver elevado, executar sem `-ValidateOnly`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-mirror-symlinks.ps1"
+```
+
+---
+
+## FASE 2-A — Detecção de Skills Project (precede FASE 2 Delphi)
+
+Antes de qualquer detecção de projeto Delphi/FPC, verificar se este repositório é um **Skills Pack**:
+
+1. **Sinal explícito:** ler `.workspace/context.json` — se `projectType == "skills-pack"`, é Skills Project.
+2. **Heurística (fallback):** se `.workspace/context.json` não existir ou não tiver `projectType`, considerar Skills Project quando:
+   - `.cursor/skills/` existe e tem pelo menos um subdiretório, **e**
+   - **não** existe nenhum `*.dpr` nem `*.lpr` na raiz (excluindo `*.template`).
+
+Se for Skills Project:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-skills-project.ps1" -ValidateOnly
+```
+
+Materializa idempotentemente `CLAUDE.md`, `LICENSE`, `privacy-policy.md` e `.workspace/context.json` a partir dos templates em `.cursor/Templates/skills-project-bootstrap/`. Se o validate reportar arquivos faltantes ou desatualizados (template > materializado), rodar sem `-ValidateOnly`. Backup automático em `.cursor/Backup/skills-project/<timestamp>/` antes de sobrescrever.
+
+**Após esta fase, em Skills Project: PULAR FASE 2 e FASE 3 (Delphi/FPC).** Encerrar bootstrap.
+
+---
+
+## GATILHO DO CHAT — `/init` ou primeira mensagem sem projeto
+
+> **REGRA DE PRIORIDADE MÁXIMA (apenas projetos não-Skills):**
+> Se o usuário escrever `/init` **ou** se esta for a primeira mensagem da sessão,
+> **e** este repositório **não** for um Skills Project (FASE 2-A negativa),
+> **e** não existir nenhum arquivo `*.dpr` ou `*.lpr` na raiz do projeto,
+> o AI DEVE **interromper qualquer outra ação** e iniciar imediatamente a
+> **FASE 3 — Criação Interativa**, fazendo P1 como primeira resposta no chat.
+>
+> Não responder à mensagem original do usuário. Não executar nenhuma outra tarefa.
+> Perguntar P1 primeiro.
+>
+> **Se for Skills Project, NÃO disparar FASE 3** — apenas executar a FASE 2-A e seguir com a solicitação do usuário.
+
+---
+
+## FASE 2 — Detecção do projeto (Delphi / FPC)
+
+Após a validação dos espelhos, verificar se já existem arquivos de projeto na raiz:
+
+| Arquivo procurado | Significado |
+| ----------------- | ----------- |
+| `*.dpr` | Projeto Delphi existente |
+| `*.lpr` | Projeto FPC/Lazarus existente |
+| `dcc32.cfg` / `dcc64.cfg` | Build config Delphi existente |
+| `fpc32.opts` / `fpc64.opts` | Build config FPC existente |
+
+### 2a — Projeto JÁ existe
+
+Se `.dpr` ou `.lpr` for encontrado, extrair o `ProjectName` da linha `program NomeProjeto;`
+e verificar os arquivos de build:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-build-config.ps1" -ValidateOnly
+```
+
+Se algum arquivo de build estiver ausente, gerá-lo automaticamente:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-build-config.ps1"
+```
+
+### 2b — Projeto NÃO existe → PERGUNTAR AO USUÁRIO
+
+Se **nenhum** `.dpr` nem `.lpr` for encontrado na raiz, executar o **protocolo interativo**
+descrito na FASE 3 abaixo.
+
+---
+
+## FASE 3 — Criação interativa do projeto (quando ausente)
+
+> **REGRA ABSOLUTA:** O agente AI DEVE enviar cada pergunta abaixo como mensagem
+> **individual e explícita no chat**, aguardando a resposta do usuário antes de
+> enviar a próxima. NUNCA agrupar perguntas. NUNCA gerar arquivos antes de
+> coletar todas as respostas obrigatórias (P1 e P2).
+
+---
+
+### Bloco A — Perguntas obrigatórias (DEVEM ser feitas via chat, uma por vez)
+
+**P1 — Nome do projeto** *(obrigatório — perguntar primeiro, aguardar resposta)*
+
+Enviar exatamente esta mensagem no chat:
+
+```text
+Qual é o nome do projeto?
+(Será usado em `program NomeProjeto;` e como nome dos arquivos gerados — ex.: ProvidersORM)
+```
+
+**P2 — Pasta de documentação** *(obrigatório — perguntar após P1, aguardar resposta)*
+
+Enviar exatamente esta mensagem no chat:
+
+```text
+Qual é a pasta de documentação do projeto?
+(Caminho relativo à raiz — ex.: Documentation · padrão: Documentation)
+```
+
+**P3 — Framework(s) a gerar** *(obrigatório — perguntar após P2, aguardar resposta)*
+
+Enviar exatamente esta mensagem no chat:
+
+```text
+Qual framework deseja gerar?
+  1 — Delphi (VCL)      → .dpr + .dproj + dcc32.cfg + dcc64.cfg
+  2 — FPC/Lazarus (LCL) → .lpr + .lpi + .lps + fpc32.opts + fpc64.opts
+  3 — Ambos (Delphi + FPC/Lazarus)
+```
+
+---
+
+### Bloco B — Perguntas opcionais (enviar após P3, aguardar cada resposta)
+
+**P4 — Formulário principal** *(opcional)*
+
+```text
+Nome da unit do formulário principal?
+(Padrão: ufrm.Main · classe: frmMain — pressione Enter para usar o padrão)
+```
+
+**P5 — Defines condicionais** *(opcional)*
+
+```text
+Defines condicionais adicionais?
+(Padrão: FRAMEWORK_VCL para Delphi / LCL para FPC — separar com ; · Enter para padrão)
+```
+
+---
+
+### Bloco C — Perguntas de ambiente Delphi *(somente se P3 = 1 ou 3)*
+
+**P6 — Versão do RAD Studio** *(opcional)*
+
+```text
+Versão do RAD Studio?
+(Padrão: 23.0 · Enter para padrão)
+```
+
+---
+
+### Bloco D — Perguntas de ambiente FPC *(somente se P3 = 2 ou 3)*
+
+**P7 — Raiz do FPC** *(opcional)*
+
+```text
+Caminho da instalação do FPC?
+(Padrão: D:\fpc\fpc · Enter para padrão)
+```
+
+**P8 — Raiz do Lazarus** *(opcional)*
+
+```text
+Caminho da instalação do Lazarus?
+(Padrão: D:\fpc\lazarus · Enter para padrão)
+```
+
+**P9 — OPM do Lazarus** *(opcional)*
+
+```text
+Caminho dos pacotes OPM do Lazarus?
+(Padrão: D:\fpc\config_lazarus\onlinepackagemanager\packages · Enter para padrão)
+```
+
+---
+
+### Geração automática após coleta
+
+Com todas as respostas coletadas, montar e executar o comando:
+
+#### Opção 1 — Somente Delphi
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-build-config.ps1" `
+    -ProjectName        "{RESPOSTA_P1}" `
+    -ConditionalDefines "{RESPOSTA_P4}" `
+    -MainFormUnit       "{UNIT_DA_RESPOSTA_P3}" `
+    -MainFormClass      "{CLASSE_DA_RESPOSTA_P3}" `
+    -StudioVersion      "{RESPOSTA_P5}" `
+    -SkipLazarusFiles
+```
+
+#### Opção 2 — Somente FPC/Lazarus
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-build-config.ps1" `
+    -ProjectName        "{RESPOSTA_P1}" `
+    -ConditionalDefines "{RESPOSTA_P4}" `
+    -MainFormUnit       "{UNIT_DA_RESPOSTA_P3}" `
+    -MainFormClass      "{CLASSE_DA_RESPOSTA_P3}" `
+    -FpcRoot            "{RESPOSTA_P6}" `
+    -LazarusRoot        "{RESPOSTA_P7}" `
+    -FpcOpmRoot         "{RESPOSTA_P8}" `
+    -SkipProjectFiles
+```
+
+#### Opção 3 — Delphi + FPC/Lazarus
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-build-config.ps1" `
+    -ProjectName        "{RESPOSTA_P1}" `
+    -ConditionalDefines "{RESPOSTA_P4}" `
+    -MainFormUnit       "{UNIT_DA_RESPOSTA_P3}" `
+    -MainFormClass      "{CLASSE_DA_RESPOSTA_P3}" `
+    -StudioVersion      "{RESPOSTA_P5}" `
+    -FpcRoot            "{RESPOSTA_P6}" `
+    -LazarusRoot        "{RESPOSTA_P7}" `
+    -FpcOpmRoot         "{RESPOSTA_P8}"
+```
+
+### Confirmação ao usuário
+
+Após a execução bem-sucedida, informar:
+
+> "Projeto **{ProjectName}** criado com sucesso.
+> Arquivos gerados: `{lista dos arquivos criados}`.
+> Para compilar: veja `.claude/skills/developer-delphi-build-toolchain_V1.0.0/exemplos/compile.md` ou use as tasks do VSCode."
+
+Se ocorrer erro, exibir a saída do script e aguardar instrução do usuário.
+
+---
+
+## FASE 4 — Templates de Form Units (sob demanda)
+
+> **NÃO fazem parte do auto-start.** Gerar apenas quando o usuário solicitar
+> explicitamente, informando nome da unit, framework e diretório de destino.
+
+```powershell
+# VCL Delphi
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-form-unit.ps1" `
+    -UnitName "<nome>" -Framework VCL -OutputDir "src\Views"
+
+# FMX Delphi
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-form-unit.ps1" `
+    -UnitName "<nome>" -Framework FMX -OutputDir "src\Views"
+
+# LCL FPC/Lazarus
+powershell -ExecutionPolicy Bypass -File ".cursor/scripts/bootstrap-form-unit.ps1" `
+    -UnitName "<nome>" -Framework LCL -OutputDir "src\Views"
+```
+
+Parâmetros opcionais: `-FormClass`, `-FormCaption`, `-Force`.
+
+---
+
+## Referência de templates canônicos
+
+### Build config / Projeto
+
+| Template (`build-config/`) | Arquivo gerado | Framework |
+| -------------------------- | -------------- | --------- |
+| `dcc32.cfg.template` | `dcc32.cfg` | Delphi Win32 CLI |
+| `dcc64.cfg.template` | `dcc64.cfg` | Delphi Win64 CLI |
+| `fpc32.opts.template` | `fpc32.opts` | FPC Win32 CLI |
+| `fpc64.opts.template` | `fpc64.opts` | FPC Win64 CLI |
+| `{PROJECT_NAME}.dpr.template` | `{name}.dpr` | Delphi — fonte VCL |
+| `{PROJECT_NAME}.dproj.template` | `{name}.dproj` | Delphi — projeto MSBuild |
+| `{PROJECT_NAME}.lpr.template` | `{name}.lpr` | FPC — fonte LCL |
+| `{PROJECT_NAME}.lpi.template` | `{name}.lpi` | Lazarus — projeto |
+| `{PROJECT_NAME}.lps.template` | `{name}.lps` | Lazarus — sessão IDE |
+
+> `.ico` e `.res` são binários — não gerados por template.
+> `.res` é criado automaticamente pelo `lazbuild` na primeira compilação.
+
+### Form units (sob demanda)
+
+| Template (`form-units/`) | Arquivo gerado | Framework |
+| ------------------------ | -------------- | --------- |
+| `{UNIT_NAME}.dfm.template` | `{name}.dfm` | VCL — resource |
+| `{UNIT_NAME}.vcl.pas.template` | `{name}.pas` | VCL — unit Pascal |
+| `{UNIT_NAME}.fmx.template` | `{name}.fmx` | FMX — resource |
+| `{UNIT_NAME}.fmx.pas.template` | `{name}.pas` | FMX — unit Pascal |
+| `{UNIT_NAME}.lfm.template` | `{name}.lfm` | LCL — resource |
+| `{UNIT_NAME}.lcl.pas.template` | `{name}.pas` | LCL — unit Pascal |
+
+Referência completa de placeholders: `.cursor/Templates/build-config/README.md`.
+
+---
+
+## Observações
+
+- Bootstrap de espelhos: `.cursor/scripts/bootstrap-mirror-symlinks.ps1`.
+- Bootstrap de Skills Project: `.cursor/scripts/bootstrap-skills-project.ps1` (templates em `.cursor/Templates/skills-project-bootstrap/`).
+- Bootstrap de build config / projeto: `.cursor/scripts/bootstrap-build-config.ps1`.
+- Bootstrap de form units: `.cursor/scripts/bootstrap-form-unit.ps1`.
+- Espelhos canônicos: `.claude/`, `.vscode/`, `.continue/`, `.opencode/`.
+- Validação operacional complementar: `.cursor/MIRRORS_VALIDATION.md`.
+- Guia de compilação CLI: `.claude/skills/developer-delphi-build-toolchain_V1.0.0/exemplos/compile.md`.
+
+---
+
+## Versão interna (ficheiro)
+
+| Campo | Valor |
+| ----- | ----- |
+| **FileVersion** | 1.2.0 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog (este arquivo)
+
+- 1.2.0 (26/04/2026): **FASE 2-A — Skills Project**. Adicionada deteção de Skills Pack (via `projectType: skills-pack` em `.workspace/context.json` ou heurística `.cursor/skills/` + ausência de `.dpr`/`.lpr`). Quando positivo, executa `bootstrap-skills-project.ps1` (materializa CLAUDE.md/LICENSE/privacy-policy.md/.workspace/context.json a partir de `.cursor/Templates/skills-project-bootstrap/`) e pula FASE 2/3 Delphi. Gatilho de chat `/init` desativado em Skills Project.
+- 1.1.0 (09/04/2026): Migração V2 — adicionadas seções Escopo e Skills e agents referenciados.
+- 1.0.8 (03/04/2026): FASE 1 e observações finais — espelho **`.opencode/`** (OpenCode) junto de `.claude`/`.vscode`/`.continue`.
+- 1.0.7 (31/03/2026): Gatilho `/iniciar` adicionado; AutoStart exibe instrucao no terminal quando nao ha projeto; regra de prioridade maxima para primeira mensagem sem .dpr/.lpr.
+- 1.0.6 (31/03/2026): Reescrita com protocolo interativo de 3 fases — FASE 2 detecta projeto, FASE 3 pergunta nome/framework ao usuário e cria automaticamente; comandos parametrizados por opção de framework.
+- 1.0.5 (31/03/2026): Form units marcadas como sob demanda; descricao atualizada.
+- 1.0.4 (31/03/2026): Templates de Form Units (VCL/FMX/LCL); bootstrap-form-unit.ps1.
+- 1.0.3 (31/03/2026): Templates FPC/Lazarus (.lpr, .lpi, .lps); nota sobre .ico/.res.
+- 1.0.2 (31/03/2026): Bootstrap de build CLI (dcc32.cfg, dcc64.cfg, fpc32.opts, fpc64.opts).
+- 1.0.1 (30/03/2026): Criação da regra alwaysApply com bloqueio em falha de elevação.

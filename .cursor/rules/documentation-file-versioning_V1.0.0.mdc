@@ -1,0 +1,102 @@
+---
+alwaysApply: false
+description: "Regra de versionamento para ficheiros .md em Documentation/. Aceita formato `FileVersion` literal OU tabela `**Versão** | X.Y.Z`. Complementa documentation-migration-plan-mode e é lida por validate_consolidated.py (tier T2 — reutilizável)."
+globs: ["Documentation/**/*.md"]
+---
+
+# File Versioning — formatos aceitos em `Documentation/`
+
+## Tier e escopo
+
+- **Tier:** T2 — reutilizável entre projetos que usem o pack `.cursor/`
+- **Aplica a:** todo ficheiro `.md` dentro de `Documentation/` (recursivo)
+- **Não aplica a:** `Backup/`, `templates/`, `plans/`, `exemplos/`
+
+## Problema que resolve
+
+Historicamente, a documentação do GestorERP (e de outros projetos que usam este pack) marcou versionamento de forma inconsistente:
+
+| Forma | Exemplo | Nota |
+|---|---|---|
+| String literal `FileVersion` | `# internal_file_version: 1.0.0` ou `| **FileVersion** \| 1.0.0 |` | Forma original, exigida antes desta rule |
+| Tabela `**Versão**` | `| **Versão** \| 1.0.0 |` | Forma posterior, usada em README/ADR por ser mais humana |
+| Sufixo no nome | `GestorERP_RN-M01-001_M01_V1_1_0.md` | Forma tácita — versão no filename |
+
+O `validate_consolidated.py` rejeitava as duas últimas como FAIL, enquanto a prática real do repositório já as aceitava. Esta rule **formaliza** o que é aceito.
+
+## Formatos canónicos (qualquer um destes conta como versão válida)
+
+### Forma A — `FileVersion` na tabela de metadados
+
+```markdown
+| Campo | Valor |
+|---|---|
+| **FileVersion** | 1.2.3 |
+| **Data** | 2026-04-18 |
+```
+
+### Forma B — `FileVersion` inline (header HTML-comment ou `# internal_file_version:`)
+
+```markdown
+<!-- FileVersion: 1.2.3 -->
+# Título
+```
+
+ou
+
+```markdown
+<!-- internal_file_version: 1.2.3 -->
+```
+
+### Forma C — `**Versão**` na tabela de metadados (PT)
+
+```markdown
+| Campo | Valor |
+|---|---|
+| **Versão** | 1.2.3 |
+| **Data** | 2026-04-18 |
+```
+
+### Forma D — Sufixo `_V{X.Y.Z}` ou `_V{X_Y_Z}` no nome do ficheiro
+
+```
+GestorERP_RN-M01-001_M01_V1_1_0.md
+GestorERP_ADR_Pascal_Headers_Pacotes_Externos_V1_0_0.md
+template-rn-standard_V1.0.0.md
+```
+
+## Regras de conformidade
+
+1. **Pelo menos UMA forma deve estar presente.** Preferência: Forma A ou C se o ficheiro tem tabela de metadados; Forma D se o ficheiro é versionado por nome.
+2. **Versão em formato SemVer** — `MAJOR.MINOR.PATCH` (ex.: `1.0.0`, `2.3.1`). Aceita também `X.Y` para documentos que ainda não estabilizaram.
+3. **Consistência filename ↔ conteúdo:** se ambos estão presentes, devem coincidir. Se divergirem, a fonte canónica é o **conteúdo** (Forma A/B/C).
+4. **Bump de versão:**
+   - PATCH (`+0.0.1`): correções ortográficas, links quebrados, reformatação
+   - MINOR (`+0.1.0`): adição de secção, nova regra, novo exemplo
+   - MAJOR (`+1.0.0`): reestruturação incompatível, remoção de regras vigentes
+
+## Exceções (não requerem versionamento)
+
+- `README.md` dentro de subpastas utilitárias (ex.: `Documentation/html/`)
+- Relatórios gerados por ferramentas (ex.: `Documentation/Backup/audit_consolidado_*.md`)
+- Ficheiros de índice gerados automaticamente
+
+## Integração com `validate_consolidated.py`
+
+O check `docs/version` aceita qualquer uma das 4 formas. A regra em `check_docs_version()` é:
+
+```python
+# Aceita se houver "FileVersion" OU "**Versão**" no conteúdo,
+# OU sufixo _V{X.Y.Z} no filename.
+if ("FileVersion" in content
+    or "**Versão**" in content
+    or "**Versao**" in content
+    or VERSION_SUFFIX_RE.search(md.stem)):
+    # OK
+```
+
+## Changelog desta rule
+
+| Versão | Data | Alteração |
+|---|---|---|
+| 1.0.0 | 2026-04-18 | Versão inicial — formaliza 4 formatos (A/B/C/D) e critérios de conformidade |

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TEMPLATE_appxmanifest.xml
+  Skill: developer-delphi-windows-msix_V1.0.0
+
+  INSTRUCOES DE USO:
+  1. Copiar para a raiz do projeto como "AppxManifest.xml"
+  2. Substituir TODOS os placeholders marcados com [PLACEHOLDER]
+  3. Sincronizar Publisher com o Subject DN do certificado de assinatura
+  4. Sincronizar Version com MSIX_PackageVersion no .dproj
+  5. Referenciar este arquivo no .dproj via MSIX_AppxManifestFile
+
+  CRITICO — Formato de versao:
+  O quarto componente DEVE ser SEMPRE 0 para submissao na Microsoft Store.
+  Correto: 1.0.0.0 / 1.1.0.0 / 2.0.0.0
+  ERRADO:  1.0.0.1 / 1.0.0.2
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap rescap">
+
+  <!--
+    Identity: identidade unica do pacote.
+    Name: sem espacos; deve coincidir com o Partner Center (para Store)
+    Publisher: DEVE ser identico ao Subject DN do certificado de assinatura
+    Version: formato Major.Minor.Build.0 — quarto componente SEMPRE 0
+    ProcessorArchitecture: x86, x64 ou arm64
+  -->
+  <Identity
+    Name="[PLACEHOLDER_EMPRESA].[PLACEHOLDER_NOMEAPP]"
+    Publisher="CN=[PLACEHOLDER_NOME_EMPRESA], O=[PLACEHOLDER_NOME_EMPRESA], C=BR"
+    Version="[PLACEHOLDER_VERSION_EX_1.0.0.0]"
+    ProcessorArchitecture="x64"/>
+
+  <Properties>
+    <!-- Nome de exibicao na Start Menu e na Microsoft Store -->
+    <DisplayName>[PLACEHOLDER_NOME_EXIBICAO]</DisplayName>
+
+    <!-- Nome do publisher exibido ao usuario -->
+    <PublisherDisplayName>[PLACEHOLDER_NOME_EMPRESA]</PublisherDisplayName>
+
+    <!-- Icone da Store: 50x50 PNG com fundo transparente ou branco -->
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <!--
+      Windows 10 1809 (17763) = minimo para MSIX completo.
+      Versoes de referencia:
+        10.0.17763.0 = Windows 10 1809
+        10.0.19041.0 = Windows 10 2004
+        10.0.22000.0 = Windows 11 21H2
+        10.0.22621.0 = Windows 11 22H2
+        10.0.26100.0 = Windows 11 24H2
+    -->
+    <TargetDeviceFamily
+      Name="Windows.Desktop"
+      MinVersion="10.0.17763.0"
+      MaxVersionTested="10.0.26100.0"/>
+  </Dependencies>
+
+  <Resources>
+    <!-- Idioma principal do aplicativo -->
+    <Resource Language="pt-BR"/>
+    <!-- Adicionar outros idiomas suportados -->
+    <!-- <Resource Language="en-US"/> -->
+    <!-- <Resource Language="es-ES"/> -->
+  </Resources>
+
+  <Capabilities>
+    <!--
+      Adicionar APENAS as capabilities que o app realmente usa.
+      Capabilities em excesso podem causar rejeicao no WACK e na Store.
+    -->
+
+    <!-- internetClient: requisicoes HTTP/HTTPS de saida (mais comum) -->
+    <Capability Name="internetClient"/>
+
+    <!-- Descomentar se o app acessa rede local / banco de dados em LAN -->
+    <!-- <Capability Name="privateNetworkClientServer"/> -->
+
+    <!--
+      runFullTrust: OBRIGATORIO para apps Win32 classicos (Delphi/FPC).
+      Permite acesso irrestrito ao sistema de arquivos, registry, processos.
+      Para Microsoft Store: requer justificativa no processo de submissao.
+      Para sideload: sem restricoes adicionais.
+    -->
+    <rescap:Capability Name="runFullTrust"/>
+
+    <!--
+      broadFileSystemAccess: necessario se o app acessa arquivos fora das
+      pastas padrao (Documentos, Musica, Imagens, Videos).
+      Requer justificativa adicional na Store.
+    -->
+    <!-- <rescap:Capability Name="broadFileSystemAccess"/> -->
+  </Capabilities>
+
+  <Applications>
+    <Application
+      Id="App"
+      Executable="[PLACEHOLDER_NOME_EXE].exe"
+      EntryPoint="Windows.FullTrustApplication">
+      <!--
+        Id: identificador unico dentro do pacote (alfanumerico, sem espacos)
+        Executable: nome do .exe (sem caminho; deve estar na raiz do pacote)
+        EntryPoint: "Windows.FullTrustApplication" e obrigatorio para Win32 com runFullTrust
+      -->
+
+      <uap:VisualElements
+        DisplayName="[PLACEHOLDER_NOME_EXIBICAO]"
+        Description="[PLACEHOLDER_DESCRICAO_CURTA]"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <!--
+          BackgroundColor: "transparent" ou cor hex (#0078D7, #FFFFFF, etc.)
+          Square150x150Logo: icone 150x150 (lista de apps, Start Menu grid)
+          Square44x44Logo: icone 44x44 (barra de tarefas, lista pequena)
+
+          Assets obrigatorios (PNG):
+            Assets\StoreLogo.png          — 50x50
+            Assets\Square44x44Logo.png    — 44x44
+            Assets\Square150x150Logo.png  — 150x150
+            Assets\Wide310x150Logo.png    — 310x150
+            Assets\SplashScreen.png       — 620x300
+        -->
+
+        <!-- Tile largo na Start Menu (recomendado) -->
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
+
+        <!-- Tela de splash exibida durante inicializacao -->
+        <uap:SplashScreen Image="Assets\SplashScreen.png"/>
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <!--
+    EXTENSOES OPCIONAIS — descomente conforme necessario
+
+    <Extensions>
+      // Associacao de tipos de arquivo
+      <uap:Extension Category="windows.fileTypeAssociation">
+        <uap:FileTypeAssociation Name="[PLACEHOLDER_EXTENSAO]">
+          <uap:SupportedFileTypes>
+            <uap:FileType>.[PLACEHOLDER_EXT]</uap:FileType>
+          </uap:SupportedFileTypes>
+        </uap:FileTypeAssociation>
+      </uap:Extension>
+
+      // Protocolo URI customizado
+      <uap:Extension Category="windows.protocol">
+        <uap:Protocol Name="[PLACEHOLDER_PROTOCOLO]">
+          <uap:DisplayName>[PLACEHOLDER_NOME_EXIBICAO] Protocol</uap:DisplayName>
+        </uap:Protocol>
+      </uap:Extension>
+
+      // Tarefa de startup (executar ao login do Windows)
+      <uap:Extension Category="windows.startupTask">
+        <uap:StartupTask
+          TaskId="[PLACEHOLDER_NOMEAPP]Startup"
+          Enabled="false"
+          DisplayName="[PLACEHOLDER_NOME_EXIBICAO] Startup"/>
+      </uap:Extension>
+    </Extensions>
+  -->
+
+</Package>

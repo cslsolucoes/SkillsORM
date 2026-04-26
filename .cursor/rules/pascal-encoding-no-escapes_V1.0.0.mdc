@@ -1,0 +1,84 @@
+---
+alwaysApply: true
+description: "Proíbe escapes decimais #NNN e hexadecimais #$NNNN em strings literais Pascal (.pas/.dpr/.lpr). Ficheiros devem ser guardados em UTF-8 (com ou sem BOM). Aplica-se a todos os artefactos Pascal do projecto."
+globs: ["**/*.pas", "**/*.dpr", "**/*.lpr"]
+---
+
+# Encoding Pascal — sem escapes decimais/hexadecimais em strings literais
+
+## Regra
+
+**Nunca gerar** escapes do tipo `#NNN` (decimal) ou `#$NNNN` (hexadecimal) para representar caracteres Unicode em strings literais Pascal. Usar sempre os caracteres literais UTF-8.
+
+### Exemplos proibidos
+
+```pascal
+// PROIBIDO — escapes decimais
+Caption := 'Usu'#225'rio';          // 'Usuário'
+Label1.Caption := 'Informa'#231#245'es';  // 'Informações'
+S := 'Op'#231#227'o';               // 'Opção'
+ShowMessage('Conex'#227'o bem-sucedida');
+
+// PROIBIDO — escapes hexadecimais de caracteres imprimíveis
+S := #$E3#$A0#$A1;                  // bytes UTF-8 de 'ã' — usar literal
+```
+
+### Forma correcta
+
+```pascal
+// CORRECTO — literais UTF-8
+Caption := 'Usuário';
+Label1.Caption := 'Informações';
+S := 'Opção';
+ShowMessage('Conexão bem-sucedida');
+```
+
+## Excepções legítimas (não gerar escapes, mas aceitar se já existirem)
+
+Os seguintes usos de escapes **são válidos** e não devem ser alterados:
+
+| Caso | Exemplo | Razão |
+|---|---|---|
+| Caracteres de controlo não imprimíveis | `#0`, `#9` (tab), `#10` (LF), `#13` (CR), `#26` (EOF) | Não têm representação literal |
+| Terminador nulo em AnsiString/PChar | `#0` no fim de string | Semântica explícita |
+| Escapes em comentários (texto explicativo) | `{ byte 0x22 = #34 = '"' }` | Apenas documentação |
+| Constantes nomeadas de caracteres especiais | `const NUL = #0; const TAB = #9;` | Prática comum e legível |
+
+## Origem do problema
+
+O IDE Delphi grava escapes `#NNN` automaticamente quando o ficheiro está em ANSI (CP1252) e o utilizador cola ou digita caracteres fora do range ASCII. A solução permanente é:
+
+1. Guardar o ficheiro em **UTF-8** (com BOM) — opção "File → Save As → Encoding: UTF-8 with BOM" no RAD Studio.
+2. Ou editar directamente os bytes no ficheiro sem passar pelo IDE.
+
+Claude Code gera sempre UTF-8 ao escrever ficheiros via ferramenta `Write`/`Edit` — por isso este problema só ocorre quando o IDE regrava o ficheiro.
+
+## Anti-padrões a evitar na geração
+
+| Anti-padrão | Substituição |
+|---|---|
+| `'Informa'#231#245'es'` | `'Informações'` |
+| `'usu'#225'rio'` | `'usuário'` |
+| `#$2713` (checkmark ✓) | `'✓'` |
+| `#$2717` (cross ✗) | `'✗'` |
+| `'conex'#227'o'` | `'conexão'` |
+| `'configura'#231#227'o'` | `'configuração'` |
+
+## Aplicação
+
+- **Código novo gerado por Claude Code:** sempre literais UTF-8, nunca escapes.
+- **Edições em ficheiros existentes:** ao tocar qualquer linha, converter escapes `#NNN` vizinhos para literais (oportunista, não varredura total).
+- **Revisão de PR / smoke:** `grep -rE "#[0-9]{2,3}[^0-9]" src/` deve retornar zero hits em strings (excluindo comentários e casos legítimos acima).
+
+---
+
+## Versão interna
+
+| Campo | Valor |
+|---|---|
+| **FileVersion** | 1.0.0 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog
+
+- 1.0.0 (22/04/2026): Criação. Motivação: durante as ondas V1.7.3–V1.7.5 do ActiveDirectoryORM, o assistente gerou escapes `#NNN` em strings portuguesas — regra adicionada para prevenir recorrência.

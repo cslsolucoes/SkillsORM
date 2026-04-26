@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AndroidManifest.template.xml — Template de exemplo para projetos Delphi FMX
+
+  Este arquivo e usado pelo RAD Studio como base para gerar o AndroidManifest.xml
+  final durante o build. Os placeholders entre % sao substituidos automaticamente.
+
+  PLACEHOLDERS DISPONIVEIS:
+    %package%          → Application ID / Package name (ex.: com.empresa.meuapp)
+    %versionCode%      → Codigo de versao inteiro (ex.: 10)
+    %versionName%      → Nome de versao string (ex.: 1.0.0)
+    %minSdkVersion%    → API minima (ex.: 26)
+    %targetSdkVersion% → API alvo (ex.: 34)
+    %label%            → Nome do app exibido no launcher
+    %libNameValue%     → Nome da biblioteca .so gerada
+    %app_icon%         → Recurso de icone (@drawable/ic_launcher)
+
+  INSTRUCOES:
+  - Localizar este arquivo em: <ProjetoDir>\Android\Debug\<AppName>\
+  - Ou definir caminho customizado em: Project > Options > Building > Android > Manifest
+  - Adicionar permissoes conforme necessario (ver secao <uses-permission>)
+  - Nao remover ou modificar os placeholders — o build falhara
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="%package%"
+  android:versionCode="%versionCode%"
+  android:versionName="%versionName%">
+
+  <!-- SDK minimo e alvo -->
+  <uses-sdk
+    android:minSdkVersion="%minSdkVersion%"
+    android:targetSdkVersion="%targetSdkVersion%"/>
+
+  <!-- ============================================================ -->
+  <!-- PERMISSOES — Nivel 1: declaracao no manifesto               -->
+  <!-- Permissoes "perigosas" requerem tambem solicitacao runtime  -->
+  <!-- ============================================================ -->
+
+  <!-- Rede (Normal — concedida automaticamente) -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+  <!-- Camera (Perigosa — solicitar runtime) -->
+  <!-- <uses-permission android:name="android.permission.CAMERA"/> -->
+
+  <!-- Localizacao (Perigosa — solicitar runtime) -->
+  <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> -->
+  <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/> -->
+
+  <!-- Armazenamento (Perigosa) — API 26-32 -->
+  <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> -->
+  <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+       android:maxSdkVersion="29"/> -->
+
+  <!-- Armazenamento por tipo de midia — API 33+ -->
+  <!-- <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/> -->
+  <!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/> -->
+  <!-- <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/> -->
+
+  <!-- Microfone (Perigosa — solicitar runtime) -->
+  <!-- <uses-permission android:name="android.permission.RECORD_AUDIO"/> -->
+
+  <!-- Notificacoes — API 33+ (Perigosa — solicitar runtime) -->
+  <!-- <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> -->
+
+  <!-- Bluetooth — API 31+ (Perigosa — solicitar runtime) -->
+  <!-- <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/> -->
+  <!-- <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/> -->
+
+  <!-- Contatos (Perigosa — solicitar runtime) -->
+  <!-- <uses-permission android:name="android.permission.READ_CONTACTS"/> -->
+
+  <!-- Vibrar (Normal) -->
+  <!-- <uses-permission android:name="android.permission.VIBRATE"/> -->
+
+  <!-- Wake Lock — impedir tela de desligar (Normal) -->
+  <!-- <uses-permission android:name="android.permission.WAKE_LOCK"/> -->
+
+  <!-- Inicializar com boot (Normal) -->
+  <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> -->
+
+  <!-- ============================================================ -->
+  <!-- FEATURES — declarar hardware necessario                     -->
+  <!-- ============================================================ -->
+
+  <!-- Camera (obrigatoria se usar camera) -->
+  <!-- <uses-feature android:name="android.hardware.camera"
+                  android:required="false"/> -->
+
+  <!-- GPS (obrigatorio se usar localizacao precisa) -->
+  <!-- <uses-feature android:name="android.hardware.location.gps"
+                  android:required="false"/> -->
+
+  <!-- ============================================================ -->
+  <!-- APPLICATION                                                  -->
+  <!-- ============================================================ -->
+  <application
+    android:label="%label%"
+    android:icon="@drawable/ic_launcher"
+    android:allowBackup="true"
+    android:extractNativeLibs="true"
+    android:networkSecurityConfig="@xml/network_security_config">
+
+    <!-- ========================================================== -->
+    <!-- Activity Principal — FMXNativeActivity                    -->
+    <!-- ========================================================== -->
+    <activity
+      android:name="com.embarcadero.firemonkey.FMXNativeActivity"
+      android:label="%label%"
+      android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|screenLayout|density|uiMode"
+      android:exported="true"
+      android:launchMode="singleTop"
+      android:screenOrientation="unspecified">
+
+      <!-- Nome da biblioteca nativa .so gerada pelo Delphi -->
+      <meta-data
+        android:name="android.app.lib_name"
+        android:value="%libNameValue%"/>
+
+      <!-- Intent filter: indica que esta activity e o ponto de entrada -->
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+
+    </activity>
+
+    <!-- ========================================================== -->
+    <!-- Service (descomentar se usar TAndroidService)             -->
+    <!-- ========================================================== -->
+    <!--
+    <service
+      android:name="com.embarcadero.firemonkey.FMXService"
+      android:exported="false">
+      <meta-data
+        android:name="android.app.lib_name"
+        android:value="%libNameValue%Service"/>
+    </service>
+    -->
+
+  </application>
+
+</manifest>

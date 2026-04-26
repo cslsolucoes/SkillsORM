@@ -1,0 +1,33 @@
+{
+  "_template_info": "PRIVADO — NAO VERSIONAR este ficheiro com segredos. Template para .claude/settings.local.json. Fonte: .cursor/Templates/mirror-config/",
+  "_template_version": "1.0.0",
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(pnpm *)",
+      "Bash(yarn *)",
+      "Bash(pip *)",
+      "Bash(pip3 *)",
+      "Bash(python -m pip *)",
+      "Bash(python3 -m pip *)",
+      "Bash(powershell -Command \"Invoke-WebRequest *)",
+      "Bash(powershell -Command \"Invoke-RestMethod *)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"Invoke-WebRequest *)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"Invoke-RestMethod *)",
+      "Bash(rg --files \"{REPO_ROOT}/src\" --glob \"*.pas\")",
+      "Bash(rg --files \"{REPO_ROOT}/src\" --glob \"*.dfm\")",
+      "Bash(rg --files \"{REPO_ROOT}/src\" --glob \"*.fmx\")",
+      "Bash(ls -1 \"{REPO_ROOT}/src/Modulos/Connections\")",
+      "Bash(ls -1 \"{REPO_ROOT}/src/Modulos/Database\")",
+      "Bash(ls -1 \"{REPO_ROOT}/src/Views\")",
+      "Bash(powershell -Command \":*)"
+    ],
+    "additionalDirectories": [
+      "{REPO_ROOT}\\Analise"
+    ]
+  }
+}

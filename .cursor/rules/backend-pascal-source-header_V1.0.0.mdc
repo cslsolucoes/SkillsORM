@@ -1,0 +1,110 @@
+---
+alwaysApply: false
+description: "Cabeçalho padrão obrigatório para fontes Pascal em {BACKEND_ROOT}/ (.pas, .dpr, .lpr). Campos: Project, ProjectVersion, FileVersion, Author, Date e pelo menos uma entrada de Changelog. Globs concretos materializados pelo /init."
+globs: ["projects/**/*.pas", "projects/**/*.dpr", "projects/**/*.lpr"]
+---
+
+# Cabeçalho padrão — fontes Pascal
+
+## Escopo
+
+Aplica-se a **arquivos novos** criados em `{BACKEND_ROOT}/**/*.pas`, `{BACKEND_ROOT}/**/*.dpr`, `{BACKEND_ROOT}/**/*.lpr` (resolvido em tempo de `/init` a partir de `.workspace/context.json.backendRoot` — no GestorERP equivale a `projects/**`). Para fontes existentes, aplicar apenas quando o arquivo for tocado na tarefa atual — **não** fazer varredura retroativa.
+
+**Não se aplica a:**
+
+- Arquivos fora de `{BACKEND_ROOT}/`.
+- Packages de terceiros em `{BACKEND_ROOT}/package/` ou `{PACKAGES_ROOT}/` (mantém o header original do fornecedor).
+- Legados em `legados/` (ou equivalente no clone).
+- `.dfm` / `.lfm` (arquivos de forma — não são código-fonte textual canónico).
+
+## Padrão canónico
+
+```pascal
+{ =============================================================================
+  <UnitName> - <Descrição curta>
+
+  Descrição:
+  <Descrição detalhada em prosa, 1-3 parágrafos>.
+
+  Características:
+  - <característica 1>
+  - <característica 2>
+  - <...>
+
+  Project:        <ProjectName>
+  ProjectVersion: <X.Y.Z>
+  FileVersion:    <X.Y.Z>
+  Author:         <Author>
+  Date:           <DD/MM/YYYY>
+
+  Changelog (file):
+  - <X.Y.Z> (<DD/MM/YYYY>): <descrição da mudança>
+  ============================================================================= }
+```
+
+Template canónico: [.cursor/Templates/source-headers/pascal-unit-header.template](../Templates/source-headers/pascal-unit-header.template).
+
+## Campos obrigatórios
+
+| Campo | Descrição |
+| ----- | --------- |
+| `Project` | Nome canónico do projeto/framework (ex.: `ProvidersORM`, `ActiveDirectoryORM`, nome de módulo do clone — valor padrão vem de `.workspace/context.json.projectName`) |
+| `ProjectVersion` | SemVer do projeto (ex.: `1.6.0`). Acompanha a versão global do pacote |
+| `FileVersion` | SemVer do arquivo — independente do projeto (ex.: arquivo nasce 1.0.0 mesmo em projeto v2.3.4) |
+| `Author` | Autor principal (valor padrão do clone pode vir de `.workspace/context.json` se preenchido) |
+| `Date` | Data da primeira versão do arquivo, formato `DD/MM/YYYY` |
+| `Changelog (file)` | Lista com **pelo menos 1** entrada, formato `- X.Y.Z (DD/MM/YYYY): <texto>` |
+
+## Campos opcionais
+
+- `Descrição:` — prosa curta (pode ser omitida em arquivos triviais).
+- `Características:` — lista com ≥1 item; omitir quando o arquivo é pequeno e autodescrito pela `Descrição`.
+
+## Fluxo de atualização do Changelog
+
+A cada edição **não-trivial** do arquivo (mudança de assinatura pública, refatoração, mudança de comportamento):
+
+1. Incrementar `FileVersion` conforme SemVer (patch / minor / major).
+2. Adicionar **nova linha** no topo do bloco `Changelog (file):` com a nova versão + data + descrição.
+3. Preservar entradas antigas (não apagar histórico).
+
+## Anti-padrões
+
+| Anti-padrão | Correção |
+| ----------- | -------- |
+| Placeholders não substituídos (`<UnitName>`, `{PROJECT_NAME}`) | Substituir por valores reais antes do commit |
+| Header vazio (só `{ ... }` sem campos) | Preencher todos os campos obrigatórios |
+| Data em formato não-BR (`2026-04-16`) | Usar `DD/MM/YYYY` (`16/04/2026`) |
+| Changelog com zero entradas | Garantir ao menos 1 linha `- 1.0.0 (DD/MM/YYYY): ...` |
+| Header duplicado (dois blocos `{ === }`) | Manter somente um no topo do arquivo |
+| `FileVersion` sem incremento após mudança significativa | Aplicar SemVer (bump) e adicionar entrada de Changelog |
+
+## Checklist de aplicação
+
+- [ ] Cabeçalho começa na **linha 1** do arquivo (antes de `unit`, `program`, `library`).
+- [ ] Todos os placeholders do template foram substituídos.
+- [ ] `Project`, `ProjectVersion`, `FileVersion`, `Author`, `Date` preenchidos.
+- [ ] Changelog tem pelo menos a entrada `1.0.0` de criação.
+- [ ] Datas em formato `DD/MM/YYYY`.
+
+## Referência cruzada
+
+| Recurso | Path |
+| ------- | ---- |
+| Template canónico | [.cursor/Templates/source-headers/pascal-unit-header.template](../Templates/source-headers/pascal-unit-header.template) |
+| Nomenclatura de units backend | [.cursor/rules/backend-pascal-unit-naming_V1.3.0.mdc](backend-pascal-unit-naming_V1.3.0.mdc) |
+| Manifesto de templates | `.cursor/Templates/templates-pack-manifest_V*.md` |
+
+---
+
+## Versão interna (ficheiro)
+
+| Campo | Valor |
+| ----- | ----- |
+| **FileVersion** | 1.1.0 |
+| **Política** | `.cursor/VERSION.md` |
+
+## Changelog (este ficheiro)
+
+- 1.1.0 (17/04/2026): Onda 2 do refactor — globs e descrições parametrizadas com `{BACKEND_ROOT}` / `{PACKAGES_ROOT}`; remoção de referência literal a "módulo MXX"; valores concretos passam a ser lidos de `.workspace/context.json`.
+- 1.0.0 (16/04/2026): criação — cabeçalho padrão para fontes Pascal em `projects/**`; template canónico em `.cursor/Templates/source-headers/pascal-unit-header.template`.

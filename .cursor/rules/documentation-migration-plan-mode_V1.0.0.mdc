@@ -1,0 +1,245 @@
+---
+description: "Regra mandatoria que forca apresentacao e aprovacao de plano antes de qualquer migracao, reestruturacao ou reorganizacao de Documentation/, .cursor/skills/ ou .cursor/Templates/ — o utilizador DEVE ver e customizar o plano na interface interactiva antes da execucao"
+alwaysApply: true
+---
+
+# Modo Plano Obrigatorio — Migracao e Reestruturacao de Documentacao
+
+# internal_file_version: 1.1.0
+
+---
+
+## Escopo
+
+Aplica-se **a este projeto** (e a qualquer projeto que use o pack `.cursor/`). Esta rule e um mecanismo de governanca obrigatorio — nao e um template generico. Toda IA (Cursor, Claude Code, ou outro agente) que opere neste workspace esta vinculada a esta regra ao modificar areas protegidas.
+
+**NAO se aplica** a: leituras e consultas (sem alteracao de ficheiros); geracoes de artefactos fora das areas protegidas.
+
+## Skills e agents referenciados
+
+| Recurso | Tipo | Quando referenciado |
+|---------|------|---------------------|
+| `documentation-migration-backup` | skill | Backup e matriz origem/destino antes de migracoes |
+| `documentation-project-scan` | skill | Inventario do estado atual antes do plano |
+| `documentation-project-bootstrap` | skill | Estrutura alvo (13 subpastas) |
+| `documentation-business-rules` | skill | Formato padrão para Regras de Negocio |
+| `doc-agent-orchestrator` | agent | Orquestrador de fluxos documentais |
+
+---
+
+## Proposito
+
+Esta regra impoe um **modo de plano obrigatorio** sempre que o agente AI (Cursor, Claude Code ou qualquer outro) precisar modificar, mover, renomear, fundir ou eliminar ficheiros nas areas protegidas do repositorio. Nenhuma alteracao estrutural pode ser executada sem apresentacao previa de um plano completo e aprovacao explicita do utilizador.
+
+---
+
+## Areas protegidas (escopo da regra)
+
+| Area | Caminho |
+| ---- | ------- |
+| Documentacao do projeto | `Documentation/` (recursivo) |
+| Skills | `.cursor/skills/` (recursivo) |
+| Templates | `.cursor/Templates/` (recursivo) |
+| Agents | `.cursor/agents/` (recursivo) |
+| Rules | `.cursor/rules/` (recursivo) |
+
+> **Qualquer operacao** que crie, modifique, mova, renomeie, funda ou elimine ficheiros nestas pastas esta sujeita a esta regra — sem excecoes.
+
+---
+
+## Regra absoluta: SEMPRE apresentar plano primeiro
+
+### Mesmo que o utilizador diga "execute", "implemente", "faca", "do it", "go ahead":
+
+1. **NAO executar** nenhuma alteracao imediatamente.
+2. **Apresentar o plano completo** conforme descrito abaixo.
+3. **Aguardar aprovacao explicita** (ex.: "aprovado", "ok, execute", "confirmo o plano").
+4. Somente apos aprovacao, criar backup e executar.
+
+### Frases que NAO constituem aprovacao do plano:
+
+- "Migre a documentacao"
+- "Reestruture os ficheiros"
+- "Reorganize as pastas"
+- "Execute a migracao"
+- "Implemente as mudancas"
+
+Estas frases **disparam a apresentacao do plano**, nao a sua execucao.
+
+---
+
+## Estrutura obrigatoria do plano
+
+O plano apresentado ao utilizador DEVE conter todas as seccoes abaixo:
+
+### 1. Resumo da operacao
+
+Descricao concisa (2-3 frases) do que sera feito e por que.
+
+### 2. Inventario completo de ficheiros afetados
+
+Tabela com TODOS os ficheiros que serao tocados:
+
+| # | Ficheiro | Operacao | Motivo |
+|---|----------|----------|--------|
+| 1 | `Documentation/exemplo.md` | Mover para `Documentation/Modulo/` | Reorganizacao por dominio |
+| 2 | `.cursor/skills/skill-x/SKILL.md` | Editar | Atualizar referencia cruzada |
+| N | ... | ... | ... |
+
+### 3. Antes/Depois para cada alteracao
+
+Para cada ficheiro listado, mostrar:
+
+- **Antes:** estado atual (caminho, conteudo relevante, ou estrutura)
+- **Depois:** estado proposto (novo caminho, novo conteudo, ou nova estrutura)
+- **Diferencas:** resumo das mudancas especificas
+
+> Para ficheiros que serao apenas movidos, mostrar caminho antes e depois.
+> Para ficheiros que serao editados, mostrar as seccoes afetadas com diff contextual.
+
+### 4. Dependencias e impactos
+
+- Lista de ficheiros que referenciam os ficheiros afetados (links, imports, includes).
+- Indicacao de quais referencias serao atualizadas automaticamente.
+- Alertas sobre referencias que precisarao de atualizacao manual.
+
+### 5. Estrategia de backup
+
+Descricao da estrategia de backup que sera usada ANTES da execucao:
+
+```text
+Backup: Documentation/_backup_YYYY-MM-DD_HHmmss/
+        .cursor/_backup_YYYY-MM-DD_HHmmss/
+```
+
+### 6. Ordem de execucao
+
+Lista numerada com a sequencia exata de operacoes:
+
+1. Criar pasta de backup
+2. Copiar ficheiros originais para backup
+3. Executar operacao X
+4. Executar operacao Y
+5. Atualizar referencias cruzadas
+6. Validar consistencia
+
+### 7. Criterios de rollback
+
+Condicoes que disparam rollback automatico e procedimento de restauracao.
+
+---
+
+## Personalizacao do plano pelo utilizador
+
+O plano apresentado e **customizavel**. O utilizador pode:
+
+- **Adicionar** modulos ou ficheiros ao escopo
+- **Remover** itens que nao deseja alterar
+- **Alterar** formatos propostos (ex.: Markdown para HTML ou vice-versa)
+- **Ajustar** referencias cruzadas ou caminhos de destino
+- **Reordenar** a sequencia de execucao
+- **Dividir** o plano em fases menores para execucao incremental
+
+Apos qualquer customizacao, o agente DEVE reapresentar o plano atualizado para nova aprovacao.
+
+---
+
+## Template de referencia
+
+O template canonico para planos de migracao de documentacao esta em:
+
+```
+.cursor/plans/documentation-migration-plan_V1.0.md
+```
+
+O agente DEVE consultar este template ao montar o plano, utilizando-o como base estrutural. Se o template nao existir, o agente deve informar o utilizador e seguir a estrutura descrita nesta regra.
+
+---
+
+## Backup obrigatorio antes da execucao
+
+Apos aprovacao do plano e ANTES de qualquer alteracao:
+
+1. Criar directoria de backup com timestamp: `_backup_YYYY-MM-DD_HHmmss/`
+2. Copiar TODOS os ficheiros que serao modificados, movidos ou eliminados
+3. Registar o caminho do backup na primeira mensagem de execucao
+4. Manter o backup ate confirmacao explicita do utilizador de que a migracao foi bem-sucedida
+
+> **NUNCA** eliminar backups automaticamente. Somente o utilizador pode autorizar a remocao.
+
+---
+
+## Fluxo completo (resumo)
+
+```
+Utilizador pede migracao/reestruturacao
+        |
+        v
+[1] Agente analisa escopo e ficheiros afetados
+        |
+        v
+[2] Agente apresenta PLANO COMPLETO (todas as 7 seccoes)
+        |
+        v
+[3] Utilizador revisa e customiza (pode iterar varias vezes)
+        |
+        v
+[4] Utilizador aprova explicitamente → "aprovado" / "confirmo" / "ok, execute"
+        |
+        v
+[5] Agente cria BACKUP de todos os ficheiros afetados
+        |
+        v
+[6] Agente executa o plano na ordem definida
+        |
+        v
+[7] Agente reporta resultado e caminho do backup
+```
+
+---
+
+## Violacoes desta regra
+
+Se o agente executar qualquer alteracao nas areas protegidas SEM apresentar o plano e obter aprovacao:
+
+- A operacao e considerada **invalida**
+- O utilizador pode solicitar **rollback imediato**
+- O agente DEVE restaurar o estado anterior usando o backup (se existir) ou via `git checkout`
+
+---
+
+## Excepcoes
+
+Esta regra **NAO se aplica** a:
+
+- Correcoes de typos isolados (1-2 caracteres) em ficheiros individuais, desde que o utilizador solicite explicitamente a correcao especifica
+- Adicao de conteudo a ficheiros existentes quando o utilizador fornecer o conteudo exato a inserir
+- Operacoes de scaffold via skills que ja possuem o seu proprio fluxo de confirmacao
+
+> Em caso de duvida, o agente DEVE apresentar o plano. E melhor apresentar um plano desnecessario do que executar uma alteracao nao autorizada.
+
+---
+
+## Referencia cruzada
+
+| Recurso | Path |
+| ------- | ---- |
+| Template de plano de migracao | `.cursor/plans/documentation-migration-plan_V1.0.md` |
+| Regra de documentacao | `.cursor/rules/project-documentacao_V1.0.1.mdc` |
+| Skill de migracao com backup | `.cursor/skills/documentation-migration-backup*/SKILL.md` |
+| Skill de scan de documentacao | `.cursor/skills/documentation-project-scan*/SKILL.md` |
+| Manifesto do pack de regras | `.cursor/rules/rules-pack-manifest_V1.0.2.md` |
+
+---
+
+## Versao interna (ficheiro)
+
+| Campo | Valor |
+| ----- | ----- |
+| **FileVersion** | 1.1.0 |
+| **Politica** | `.cursor/VERSION.md` |
+
+## Changelog (este ficheiro)
+
+- 1.1.0 (09/04/2026): Migração V2 — adicionadas seções Escopo e Skills e agents referenciados; internal_file_version atualizado.
+- 1.0.0 (04/04/2026): Criacao da regra de modo plano obrigatorio para migracoes e reestruturacoes de documentacao, skills, templates, agents e rules.

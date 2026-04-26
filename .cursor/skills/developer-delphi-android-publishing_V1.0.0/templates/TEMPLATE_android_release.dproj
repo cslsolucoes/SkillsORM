@@ -1,0 +1,117 @@
+<!--
+  TEMPLATE: PropertyGroups Android Release para .dproj
+
+  INSTRUCOES:
+  1. Substituir [APP_ID] pelo Application ID (ex.: com.empresa.meuapp)
+  2. Substituir [KEYSTORE_PATH] pelo caminho da keystore
+     (relativo ao .dproj, ex.: .\certificates\meuapp.keystore)
+  3. Substituir [KEYSTORE_ALIAS] pelo alias definido no keytool (ex.: meuapp)
+  4. NUNCA colocar as senhas diretamente — usar variaveis de ambiente:
+     - KEYSTORE_PASS → senha da keystore
+     - KEY_ALIAS_PASS → senha do alias
+  5. Substituir [VERSION_CODE] pelo versionCode inicial (ex.: 1)
+  6. Substituir [VERSION_NAME] pelo versionName inicial (ex.: 1.0.0)
+  7. Ajustar [MIN_SDK] e [TARGET_SDK] conforme necessario
+
+  CONVENCAO DE CONFIGURACOES NO RAD STUDIO:
+    Cfg_1 = Debug
+    Cfg_2 = Release
+    (adicional: Cfg_3 se houver terceira configuracao custom)
+
+  IMPORTANTE: Inserir dentro da tag <Project> do .dproj junto com outros PropertyGroups.
+-->
+
+<!-- ============================================================ -->
+<!-- Android 64-bit — BASE (todas as configuracoes)             -->
+<!-- ============================================================ -->
+<PropertyGroup Condition="'$(Platform)'=='Android64'">
+  <!-- Namespaces obrigatorios para Android FMX -->
+  <DCC_Namespace>Androidapi;FMX;System;Xml;Data;$(DCC_Namespace)</DCC_Namespace>
+
+  <!-- Application ID — Package name unico no Play Store -->
+  <!-- DEVE coincidir com o Bundle ID registrado na Play Console -->
+  <Android_ApplicationId>[APP_ID]</Android_ApplicationId>
+
+  <!-- SDK minimo suportado (API 26 = Android 8.0) -->
+  <Android_MinSdkVersion>[MIN_SDK]</Android_MinSdkVersion>
+
+  <!-- SDK alvo — Google Play exige >= 34 para novos apps (2024+) -->
+  <Android_TargetSdkVersion>[TARGET_SDK]</Android_TargetSdkVersion>
+</PropertyGroup>
+
+<!-- ============================================================ -->
+<!-- Android 64-bit — DEBUG                                      -->
+<!-- Debug keystore gerada automaticamente pelo Delphi           -->
+<!-- NAO precisa configurar keystore manualmente para debug      -->
+<!-- ============================================================ -->
+<PropertyGroup Condition="'$(Cfg_1)'!='' and '$(Platform)'=='Android64'">
+  <Android_VersionCode>1</Android_VersionCode>
+  <Android_VersionName>[VERSION_NAME]-debug</Android_VersionName>
+  <DCC_DebugInformation>2</DCC_DebugInformation>
+</PropertyGroup>
+
+<!-- ============================================================ -->
+<!-- Android 64-bit — RELEASE (Play Store)                      -->
+<!-- ============================================================ -->
+<PropertyGroup Condition="'$(Cfg_2)'!='' and '$(Platform)'=='Android64'">
+
+  <!-- VERSAO — incrementar SEMPRE antes de novo upload para Play Store -->
+  <!-- versionCode: inteiro, NUNCA reutilizar -->
+  <Android_VersionCode>[VERSION_CODE]</Android_VersionCode>
+  <!-- versionName: string exibida ao usuario (recomendado: SemVer) -->
+  <Android_VersionName>[VERSION_NAME]</Android_VersionName>
+
+  <!-- ========================================================== -->
+  <!-- KEYSTORE — assinatura do release                          -->
+  <!-- ========================================================== -->
+  <!-- Caminho da keystore (relativo ao diretorio do .dproj) -->
+  <Android_KeyStore>[KEYSTORE_PATH]</Android_KeyStore>
+
+  <!-- Alias da chave dentro da keystore (definido no keytool) -->
+  <Android_KeyStoreAlias>[KEYSTORE_ALIAS]</Android_KeyStoreAlias>
+
+  <!-- SENHAS VIA VARIAVEL DE AMBIENTE — NUNCA hardcodar aqui -->
+  <!-- Definir antes do build: set KEYSTORE_PASS=SuaSenha -->
+  <Android_KeyStorePass>$(KEYSTORE_PASS)</Android_KeyStorePass>
+  <!-- Definir antes do build: set KEY_ALIAS_PASS=SuaSenha -->
+  <Android_KeyAliasPass>$(KEY_ALIAS_PASS)</Android_KeyAliasPass>
+
+  <!-- ========================================================== -->
+  <!-- APP BUNDLE — obrigatorio para novos apps no Play Store    -->
+  <!-- ========================================================== -->
+  <!-- Gerar .aab em vez de apenas .apk -->
+  <Android_GenerateBundle>true</Android_GenerateBundle>
+
+  <!-- ========================================================== -->
+  <!-- OTIMIZACOES DE RELEASE                                    -->
+  <!-- ========================================================== -->
+  <DCC_Optimize>true</DCC_Optimize>
+  <DCC_DebugInformation>0</DCC_DebugInformation>
+  <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+
+  <!-- Remover assertions de debug -->
+  <!-- <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime> -->
+
+</PropertyGroup>
+
+<!-- ============================================================ -->
+<!-- NOTAS DE USO                                                -->
+<!-- ============================================================ -->
+<!--
+  ANTES DE CADA RELEASE:
+  1. Incrementar Android_VersionCode (ex.: de 10 para 11)
+  2. Atualizar Android_VersionName se necessario
+  3. Definir variaveis de ambiente:
+       set KEYSTORE_PASS=SuaSenha
+       set KEY_ALIAS_PASS=SuaSenha
+  4. Build Release → Android 64-bit
+  5. AAB gerado em: .\Android\Release\<NomeProjeto>\bin\<NomeProjeto>.aab
+  6. Verificar: apksigner verify --verbose <app>.aab
+  7. Upload no Google Play Console
+
+  NUNCA:
+  - Reutilizar versionCode
+  - Usar debug keystore para release
+  - Colocar senhas diretamente no .dproj
+  - Versionar o arquivo .keystore no git
+-->

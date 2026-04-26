@@ -1,0 +1,127 @@
+---
+description: "Estrutura de pastas, convenções de nomenclatura, padrões de código e dependências do projeto {PROJECT_NAME}"
+alwaysApply: true
+---
+
+# ESTRUTURA DO PROJETO — {PROJECT_NAME}
+
+**Programa principal:** `{PROJECT_NAME}.dpr` (raiz do workspace).
+**API pública (facades):** `src/Main/` — nunca expor implementações internas diretamente.
+**Fonte canônica de tipos compartilhados:** `src/Commons/` — constantes, tipos de engine, utilitários.
+
+---
+
+## Fundamentos
+
+- **O que é:** {PROJECT_DESCRIPTION}
+- **Stack:** Delphi / Free Pascal (FPC) — compatibilidade obrigatória em todos os módulos de `src/`
+- **Engines de banco:** {DATABASE_ENGINES} — apenas **um** por compilação via `ORM.Defines.inc`
+- **Módulos opcionais ativos:** {OPTIONAL_MODULES}
+
+---
+
+## Convenções obrigatórias
+
+### Nomenclatura
+
+| Elemento | Regra | Exemplo |
+|----------|-------|---------|
+| Interface | prefixo `I` | `IConnection`, `ITable` |
+| Implementação | prefixo `T` | `TConnection`, `TTable` |
+| Factory | método estático `New` | `TConnection.New` |
+| Fluent API | retorna `Self` ou a interface | `.Host('x').Port(5432).Connect` |
+| Unit Commons | `Commons.<Domínio>` | `Commons.Types`, `Commons.Consts` |
+| Unit facade (Main) | `<Módulo>.pas` + `<Módulo>.Interfaces.pas` | `Parameters.pas`, `Loggers.Interfaces.pas` |
+
+### Padrões de código
+
+- **Commons como fonte única:** constantes, tipos de engine/banco/DLL, utilitários só em `src/Commons/`; módulos não duplicam essas definições
+- **Facades em Main:** código de aplicação consome apenas `src/Main/` para acessar módulos (Parameters, Loggers, Database, Exceptions)
+- **Compatibilidade Delphi/FPC:** usar `{$IFDEF FPC}` para código específico de plataforma; sem features exclusivas de um compilador sem bloco condicional
+- **Sem lógica de negócio em Views:** `src/Views/` apenas para formulários de teste/demo
+
+---
+
+## Estrutura de pastas
+
+```
+{PROJECT_NAME}/
+├── src/
+│   ├── Commons/             # Tipos base, constantes, utilitários (Commons.*)
+│   ├── Main/                # Facades — API pública dos módulos
+│   ├── Modulos/             # Implementações por domínio
+│   │   ├── Connections/     # IConnection, TConnection, multi-engine
+│   │   ├── Database/        # ORM: Fields, Tables, Schemas, EntityManager, QueryBuilder
+│   │   ├── Exceptions/      # Exceções centralizadas + exception.db
+│   │   ├── Loggers/         # Log multi-destino (USE_LOGGERS)
+│   │   ├── Parameters/      # Parâmetros: INI, JSON, DB (USE_PARAMENTERS)
+│   │   └── PoolConnections/ # Pool de conexões (USE_POOLCONNECTIONS)
+│   └── Views/               # Formulários de teste/demo (ufrm*)
+├── Documentation/           # Documentação canônica estruturada
+├── Analise/                 # Documentação por classe (scaffold via skill)
+├── Data/                    # Configs, bancos de teste, scripts SQL
+├── Compiled/                # Saída de build (EXE, DCU, DCP)
+└── dll/                     # DLLs de drivers de banco (win32/, win64/)
+```
+
+---
+
+## Changelogs
+
+### Por projeto — `CHANGELOG.md` (raiz)
+
+- Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/) + [SemVer](https://semver.org/)
+- Seções: `Adicionado`, `Corrigido`, `Alterado`, `Documentação`
+- Ao liberar versão, criar entrada `## [X.Y.Z] - AAAA-MM-DD`
+
+### Por unit — cabeçalho dos `.pas`
+
+```pascal
+{ Project: {PROJECT_NAME}
+  FileVersion: X.Y.Z
+  Changelog (file):
+    - X.Y.Z (DD/MM/AAAA): Descrição da mudança.
+    - X.Y.Z-1 (DD/MM/AAAA): Mudança anterior. }
+```
+
+---
+
+## Diretivas de compilação (`ORM.Defines.inc`)
+
+| Diretiva | Ativa quando |
+|----------|-------------|
+| `USE_FIREDAC` | Engine FireDAC (Delphi) |
+| `USE_UNIDAC` | Engine UniDAC |
+| `USE_ZEOS` | Engine Zeos (FPC/Delphi) |
+| `USE_SQLDB` | Engine SQLdb (FPC nativo) |
+| `USE_ATTRIBUTES` | Mapeamento classe↔tabela via RTTI |
+| `USE_ENTITY_MANAGER` | EntityManager (requer USE_ATTRIBUTES) |
+| `USE_QUERY_BUILDER` | QueryBuilder fluente |
+| `USE_PARAMENTERS` | Módulo Parameters |
+| `USE_LOGGERS` | Módulo Loggers |
+| `USE_POOLCONNECTIONS` | Pool de conexões |
+
+---
+
+## Hierarquia ORM (ordem de dependência)
+
+```
+Field (Nível 1)
+  └─ Fields (Nível 2)
+       └─ Table (Nível 3)
+            └─ Tables (Nível 4)
+                 └─ Connection (Nível 5)
+                      └─ PoolConnections
+                           └─ Attributes / EntityManager (opcional)
+```
+
+---
+
+## Skill de referência
+
+Consultar ao implementar qualquer módulo: skill **`documentation-project-expert`** (`.cursor/skills/project-expert_V*/SKILL.md`).
+
+---
+
+**Changelog (este arquivo):**
+- 1.0.0 ({DATE}): Criação — gerado por skill `project-init-rules-generator` durante `/init` do projeto {PROJECT_NAME}.

@@ -1,0 +1,76 @@
+# =============================================================================
+# .cursorignore — {PROJECT_NAME}
+# internal_template_version: 1.0.0
+#
+# Reduz indexação e file watchers do Cursor IDE. Cursor respeita .gitignore
+# por padrão; este ficheiro complementa com pastas pesadas que não devem
+# ser indexadas pelo IDE.
+# =============================================================================
+
+# --- Build outputs (Delphi + FPC) ---
+Compiled/
+lib/
+__history/
+__recovery/
+*.exe
+*.bpl
+*.bpi
+*.dcp
+*.dcu
+*.drc
+*.identcache
+*.local
+*.map
+*.rsm
+*.tvsconfig
+*.~*
+
+# --- FPC/Lazarus ---
+*.compiled
+*.o
+*.ppu
+*.or
+*.a
+*.lrj
+*.res.tmp
+
+# --- IDE / editores ---
+.vscode/.history/
+.vs/
+*.swp
+
+# --- Caches de sessão CLI de bancos (skill project-open-database-cli) ---
+MSSqlcmd/ss_*.md
+MySQL/ss_*.md
+SQLite/ss_*.md
+PostgreSQL/ss_*.md
+Firebird/ss_*.md
+
+# --- Código legado / backup ---
+legados/
+backup/
+Backup/
+bkp/
+*.bkp
+*.rar
+*.zip
+*.7z
+
+# --- Documentação arquivada ---
+Documentation/Backup/
+
+# --- Binários e libs de terceiros ---
+dll/
+package/
+MySQL/bin/
+MySQL/lib/
+MySQL/libexec/
+MySQL/share/
+
+# --- Dados sensíveis ---
+config/*.ini.local
+config/*.json.local
+.env
+.env.local
+*.pem
+*.key

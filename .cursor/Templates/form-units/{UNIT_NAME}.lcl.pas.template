@@ -1,0 +1,47 @@
+{ =============================================================================
+  {UNIT_NAME} - Formulário LCL (Lazarus)
+
+  Descrição:
+  Formulário LCL {FORM_CLASS} — edite esta seção para descrever a finalidade
+  do formulário (Free Pascal + Lazarus, cross-platform).
+
+  Características:
+  - Framework: LCL (Lazarus Component Library)
+  - Classe: T{FORM_CLASS}
+  - Instância: {FORM_INSTANCE}
+
+  Project:        {PROJECT_NAME}
+  ProjectVersion: {PROJECT_VERSION}
+  FileVersion:    1.0.0
+  Author:         Claiton de Souza Linhares
+  Date:           {DATE}
+
+  Changelog (file):
+  - 1.0.0 ({DATE}): criação via bootstrap-form-unit.ps1.
+  ============================================================================= }
+unit {UNIT_NAME};
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs;
+
+type
+  T{FORM_CLASS} = class(TForm)
+  private
+
+  public
+
+  end;
+
+var
+  {FORM_INSTANCE}: T{FORM_CLASS};
+
+implementation
+
+{$R *.lfm}
+
+end.

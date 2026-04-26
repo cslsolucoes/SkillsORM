@@ -1,0 +1,2519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillsORM — Skills Pack</title>
+  <style>
+    :root {
+      --blue: #4361ee;
+      --blue-l: #eff6ff;
+      --blue-b: #bfdbfe;
+      --orange: #ea580c;
+      --orange-l: #fff7ed;
+      --orange-b: #fed7aa;
+      --yellow: #ca8a04;
+      --yellow-l: #fefce8;
+      --yellow-b: #fde68a;
+      --green: #16a34a;
+      --green-l: #f0fdf4;
+      --green-b: #bbf7d0;
+      --purple: #7c3aed;
+      --purple-l: #fdf4ff;
+      --purple-b: #e9d5ff;
+      --sky: #0369a1;
+      --sky-l: #e0f2fe;
+      --sky-b: #bae6fd;
+      --gray: #6b7280;
+      --ink: #0f172a;
+      --border: #e5e7eb;
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: var(--ink);
+      font-size: 14px;
+      zoom: 1.5;
+      /* scale global (50%) mantendo proporções */
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1e1b4b 100%);
+      color: #fff;
+      padding: 36px 32px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(99, 102, 241, .18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-logo {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      color: #93c5fd;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .hero-title span {
+      color: #60a5fa;
+    }
+
+    .hero-tagline {
+      font-size: 13.5px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+      max-width: 640px;
+      line-height: 1.6;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hstat {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .hstat b {
+      color: #60a5fa;
+      font-size: 15px;
+      font-weight: 800;
+      display: block;
+      line-height: 1.15;
+    }
+
+    /* ── TABS ── */
+    .tabs-wrap {
+      background: #fff;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .tabs {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 0;
+    }
+
+    .tab-btn {
+      padding: 13px 18px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--gray);
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+
+    @supports not (zoom: 1) {
+      body {
+        transform: scale(1.5);
+        transform-origin: top left;
+        width: calc(100% / 1.5);
+      }
+    }
+
+    .tab-btn:hover {
+      color: var(--blue);
+    }
+
+    .tab-btn.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+
+    /* ── PAGE / PANELS ── */
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px 44px;
+    }
+
+    .tab-panel {
+      display: none;
+      padding-top: 28px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ── SECTION HEADER ── */
+    .sec-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .sec-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .sec-sub {
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    /* ── PIPELINE ── */
+    .pipeline {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .pipe-step {
+      flex: 1;
+      min-width: 118px;
+      background: #fff;
+      border: 1.5px solid var(--blue-b);
+      border-radius: var(--radius);
+      padding: 12px 10px;
+      text-align: center;
+      position: relative;
+    }
+
+    .pipe-step+.pipe-step {
+      margin-left: 6px;
+    }
+
+    .pipe-step+.pipe-step::before {
+      content: '→';
+      position: absolute;
+      left: -13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #93c5fd;
+      font-weight: 700;
+    }
+
+    .pipe-cmd {
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--blue-l);
+      color: var(--blue);
+      padding: 3px 8px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .pipe-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 3px 0 2px;
+    }
+
+    .pipe-desc {
+      font-size: 9.5px;
+      color: var(--gray);
+      line-height: 1.4;
+    }
+
+    .pipe-skill {
+      font-size: 9px;
+      color: var(--purple);
+      background: var(--purple-l);
+      border: 1px solid var(--purple-b);
+      border-radius: 4px;
+      padding: 2px 5px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .pipe-auto {
+      font-size: 8px;
+      background: #fef9c3;
+      color: #713f12;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-top: 3px;
+      display: inline-block;
+    }
+
+    .crosscut-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fafafa;
+      border: 1.5px dashed #d1d5db;
+      border-radius: 8px;
+      padding: 8px 14px;
+      margin-top: 10px;
+    }
+
+    .crosscut-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+
+    .crosscut-badge {
+      font-size: 10px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      color: #374151;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* ── SCENARIOS ── */
+    .scenarios {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .scenario {
+      border-radius: 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+    }
+
+    .scenario-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .step {
+      font-size: 10px;
+      color: var(--gray);
+      padding: 4px 0;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+    .step-num {
+      font-weight: 700;
+      color: #9ca3af;
+      min-width: 14px;
+    }
+
+    .step-cmd {
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 9px;
+      color: var(--blue);
+      background: var(--blue-l);
+      padding: 0 4px;
+      border-radius: 3px;
+    }
+
+    /* ── INTEGRATION NOTE ── */
+    .integration {
+      margin-top: 14px;
+      background: #fffbeb;
+      border: 1px solid var(--yellow-b);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 11px;
+      color: #92400e;
+      line-height: 1.7;
+    }
+
+    .integration strong {
+      color: #78350f;
+    }
+
+    /* ── COMMAND TABLE ── */
+    .cmd-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 16px;
+    }
+
+    .cmd-table th {
+      background: #f8fafc;
+      text-align: left;
+      padding: 8px 10px;
+      font-weight: 700;
+      color: var(--gray);
+      border-bottom: 2px solid var(--border);
+      font-size: 11px;
+    }
+
+    .cmd-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+
+    .cmd-table tr:hover td {
+      background: #fafbff;
+    }
+
+    .cmd-mono {
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .cmd-mono-infra {
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--sky);
+    }
+
+    .agent-ref {
+      font-size: 10px;
+      color: #374151;
+      font-family: 'SF Mono', Consolas, monospace;
+      background: #dcfce7;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .skill-ref {
+      font-size: 10px;
+      color: var(--purple);
+      font-family: 'SF Mono', Consolas, monospace;
+      background: var(--purple-l);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .badge-wf {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: var(--blue-l);
+      color: var(--blue);
+    }
+
+    .badge-inf {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: var(--sky-l);
+      color: var(--sky);
+    }
+
+    .table-section-header td {
+      background: #f1f5f9;
+      font-weight: 700;
+      font-size: 11px;
+      color: #475569;
+      padding: 6px 10px;
+      border-top: 2px solid var(--border);
+    }
+
+    /* ── FAMILY GRID ── */
+    .family-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .family-card {
+      background: #fff;
+      border-radius: 9px;
+      padding: 13px;
+      border: 1.5px solid var(--border);
+      transition: all 0.15s;
+    }
+
+    .family-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 12px rgba(67, 97, 238, .1);
+    }
+
+    .family-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .family-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .family-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .fb-blue {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .fb-green {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .fb-purple {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    .fb-orange {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .fb-gray {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .fb-sky {
+      background: var(--sky-l);
+      color: var(--sky);
+    }
+
+    .bar-wrap {
+      background: #e5e7eb;
+      border-radius: 4px;
+      height: 5px;
+      margin-bottom: 10px;
+    }
+
+    .bar-fill {
+      height: 5px;
+      border-radius: 4px;
+    }
+
+    .sub-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .sub-chip {
+      font-size: 9.5px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #555;
+    }
+
+    /* Subfamily detail grid */
+    .subfamily-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .subfamily-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 13px;
+    }
+
+    .sf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .sf-name {
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .sf-count {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 9px;
+    }
+
+    /* ── ARCH COMPARISON ── */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .arch-box {
+      background: #fff;
+      border-radius: 9px;
+      padding: 16px;
+      border: 1.5px solid var(--border);
+    }
+
+    .arch-box h4 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .arch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 12px;
+    }
+
+    .arch-row:last-child {
+      border-bottom: none;
+    }
+
+    .arch-val {
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .arch-val-red {
+      font-weight: 700;
+      color: #e11d48;
+    }
+
+    /* ── AGENTS ── */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 10px;
+    }
+
+    .agent-card {
+      background: #fff;
+      border: 1.5px solid var(--green-b);
+      border-radius: var(--radius);
+      padding: 12px 13px;
+    }
+
+    .agent-card-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--green-b);
+    }
+
+    .agent-tag {
+      font-size: 9px;
+      color: #166534;
+      font-family: 'SF Mono', Consolas, monospace;
+      background: #dcfce7;
+      padding: 1px 5px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 1px 2px 0 0;
+      line-height: 1.65;
+    }
+
+    .agent-tag-blue {
+      font-size: 9px;
+      color: var(--sky);
+      font-family: 'SF Mono', Consolas, monospace;
+      background: var(--sky-l);
+      padding: 1px 5px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 1px 2px 0 0;
+      line-height: 1.65;
+    }
+
+    .agent-tag-purple {
+      font-size: 9px;
+      color: var(--purple);
+      font-family: 'SF Mono', Consolas, monospace;
+      background: var(--purple-l);
+      padding: 1px 5px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 1px 2px 0 0;
+      line-height: 1.65;
+    }
+
+    .agent-tag-orange {
+      font-size: 9px;
+      color: var(--orange);
+      font-family: 'SF Mono', Consolas, monospace;
+      background: var(--orange-l);
+      padding: 1px 5px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 1px 2px 0 0;
+      line-height: 1.65;
+    }
+
+    .agent-group-head {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin: 18px 0 8px;
+    }
+
+    /* ── INFRA CARDS ── */
+    .infra-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 10px;
+    }
+
+    .infra-card {
+      background: #fff;
+      border: 1.5px solid var(--sky-b);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+    }
+
+    .infra-cmd {
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--sky);
+      background: var(--sky-l);
+      padding: 3px 9px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .infra-name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .infra-desc {
+      font-size: 10.5px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .infra-note {
+      font-size: 9.5px;
+      color: var(--sky);
+      margin-top: 5px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 40px;
+      padding: 16px 20px;
+      background: var(--ink);
+      color: #94a3b8;
+      font-size: 10px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer strong {
+      color: #e2e8f0;
+    }
+  </style>
+
+  <style id="skills-tab-css">
+    #tab-skills {
+      padding: 0 0 2rem 0;
+    }
+
+    #tab-skills .sk-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .04);
+    }
+
+    #tab-skills .sk-search {
+      flex: 1;
+      min-width: 180px;
+      max-width: 320px;
+      padding: .4rem .75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .06);
+      color: var(--ink);
+      font-size: .85rem;
+      outline: none;
+    }
+
+    #tab-skills .sk-search:focus {
+      border-color: var(--blue);
+    }
+
+    #tab-skills .sk-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+
+    #tab-skills .sk-cat-btn {
+      padding: .28rem .65rem;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all .15s;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    #tab-skills .sk-cat-btn.active {
+      border-color: var(--ink);
+    }
+
+    #tab-skills .sk-stats {
+      margin-left: auto;
+      font-size: .75rem;
+      color: var(--ink);
+      opacity: .6;
+    }
+
+    #tab-skills .sk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: .9rem;
+      padding: 1.2rem 1.5rem;
+    }
+
+    #tab-skills .sk-card {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      transition: box-shadow .15s;
+    }
+
+    #tab-skills .sk-card:hover {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+    }
+
+    #tab-skills .sk-card.superseded {
+      opacity: .5;
+    }
+
+    #tab-skills .sk-card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+
+    #tab-skills .sk-name {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--ink);
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    #tab-skills .sk-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: .14rem .5rem;
+      border-radius: 999px;
+      font-size: .66rem;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #tab-skills .sk-ver {
+      background: rgba(255, 255, 255, .1);
+      color: var(--ink);
+      opacity: .7;
+    }
+
+    #tab-skills .sk-cat-badge-developer-delphi,
+    #tab-skills .sk-cat-badge-developer-delphi-assembly {
+      background: var(--blue-l);
+      color: var(--blue-b);
+    }
+
+    #tab-skills .sk-cat-badge-documentation {
+      background: var(--green-l);
+      color: var(--green);
+    }
+
+    #tab-skills .sk-cat-badge-governance,
+    #tab-skills .sk-cat-badge-governance-process,
+    #tab-skills .sk-cat-badge-governance-spec,
+    #tab-skills .sk-cat-badge-governance-artifact,
+    #tab-skills .sk-cat-badge-governance-people {
+      background: var(--purple-l);
+      color: var(--purple);
+    }
+
+    #tab-skills .sk-cat-badge-quality {
+      background: var(--orange-l);
+      color: var(--orange);
+    }
+
+    #tab-skills .sk-cat-badge-version {
+      background: rgba(255, 255, 255, .08);
+      color: var(--gray);
+    }
+
+    #tab-skills .sk-cat-badge-developer-web {
+      background: var(--sky-l);
+      color: var(--sky);
+    }
+
+    #tab-skills .sk-cat-badge-project {
+      background: var(--orange-l);
+      color: var(--orange);
+    }
+
+    #tab-skills .sk-cat-badge-unknown {
+      background: rgba(255, 255, 255, .06);
+      color: var(--gray);
+    }
+
+    #tab-skills .sk-superseded-badge {
+      background: rgba(220, 50, 50, .18);
+      color: #e05555;
+    }
+
+    #tab-skills .sk-refs-badge {
+      background: rgba(255, 255, 255, .1);
+      color: var(--ink);
+      opacity: .75;
+    }
+
+    #tab-skills .sk-desc {
+      font-size: .77rem;
+      color: var(--ink);
+      opacity: .75;
+      line-height: 1.45;
+    }
+
+    #tab-skills .sk-files-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+      align-items: center;
+      margin-top: .1rem;
+    }
+
+    #tab-skills .sk-files-label {
+      font-size: .68rem;
+      font-weight: 700;
+      opacity: .6;
+      color: var(--ink);
+    }
+
+    #tab-skills .sk-chip {
+      font-size: .65rem;
+      padding: .1rem .38rem;
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--ink);
+      opacity: .8;
+    }
+
+    #tab-skills .sk-hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-logo">SkillsORM · Skills Pack · Skills Manifest V1.24.0 · Config 2.0.0</div>
+    <div class="hero-title">Desenvolvimento Delphi<br><span>com assistência completa de IA</span></div>
+    <div class="hero-tagline">Ciclo completo SSOT: da escrita ao laudo, unificando a robustez do VCL (Windows) com a
+      versatilidade do FMX para Windows, Linux e macOS. Ecossistema baseado em VS Code e Cursor, com SSOT propagado por
+      24 scripts PS1/Python. Configuração do pack: <b>2.0.0</b>.</div>
+    <div class="hero-stats">
+      <div class="hstat"><b>213</b>Skills ativas</div>
+      <div class="hstat"><b>221</b>Físicas</div>
+      <div class="hstat"><b>36</b>Agentes</div>
+      <div class="hstat"><b>14</b>Commands</div>
+      <div class="hstat"><b>12</b>Rules</div>
+    </div>
+  </div>
+
+  <!-- TABS NAV -->
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('ciclo',this)">🔄 Ciclo de Vida</button>
+      <button class="tab-btn" onclick="switchTab('familias',this)">📦 Famílias</button>
+      <button class="tab-btn" onclick="switchTab('inteligencia',this)">🧠 Inteligência</button>
+      <button class="tab-btn" onclick="switchTab('fundacao',this)">⚙️ Implementação Técnica</button>
+      <button class="tab-btn" onclick="switchTab('skills',this)">📚 Skills</button>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <!-- ══════════════════════════════════════════════════════ TAB: O CICLO -->
+    <div id="tab-ciclo" class="tab-panel active">
+
+      <div class="sec-header">
+        <div class="sec-title">🔄 Ciclo de Vida</div>
+        <div class="sec-sub">7 commands de Workflow · cada um delega a um agente especializado</div>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipe-step">
+          <div class="pipe-cmd">/new-project</div>
+          <div class="pipe-label">Bootstrap</div>
+          <div class="pipe-desc">Scaffold Delphi/FPC · build config · claudeignore</div>
+          <div class="pipe-skill">coding-workflow</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-cmd">/spec</div>
+          <div class="pipe-label">Especificar</div>
+          <div class="pipe-desc">SPEC por engenharia reversa · rastreável</div>
+          <div class="pipe-skill">project-spec</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-cmd">/write</div>
+          <div class="pipe-label">Escrever</div>
+          <div class="pipe-desc">Nova unit, serviço, form, interface — bilíngue</div>
+          <div class="pipe-skill">coding-workflow</div>
+          <div class="pipe-auto">▶ invoca /tdd auto</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-cmd">/tdd</div>
+          <div class="pipe-label">Testar</div>
+          <div class="pipe-desc">Suite DUnitX · padrões · mocks · AAA</div>
+          <div class="pipe-skill">testing-dunitx V1.1</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-cmd">/doc</div>
+          <div class="pipe-label">Documentar</div>
+          <div class="pipe-desc">Análise classe por classe · 7 seções · índice FTS5</div>
+          <div class="pipe-skill">documentation-*</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-cmd">/review</div>
+          <div class="pipe-label">Revisar</div>
+          <div class="pipe-desc">Code smells · SOLID · violações de padrão</div>
+          <div class="pipe-skill">coding-standards</div>
+        </div>
+        <div class="pipe-step">
+          <div class="pipe-cmd">/audit</div>
+          <div class="pipe-label">Auditar</div>
+          <div class="pipe-desc">Laudo técnico completo · estimativas · bilíngue</div>
+          <div class="pipe-skill">project-audit</div>
+        </div>
+      </div>
+
+      <div class="crosscut-bar" style="margin-top:10px;">
+        <span class="crosscut-label">⟳ SEMPRE ATIVO</span>
+        <span class="crosscut-badge">developer-delphi-coding-standards</span>
+        <span style="font-size:10px;color:#9ca3af;">— carregado automaticamente · prefixos obrigatórios · formatação ·
+          comandos proibidos</span>
+      </div>
+
+      <!-- SCENARIOS -->
+      <div style="margin-top:22px;">
+        <div class="sec-header" style="margin-top:0;">
+          <div class="sec-title" style="font-size:14px;">📋 Cenários de uso</div>
+          <div class="sec-sub">como os 7 commands se encadeiam na prática</div>
+        </div>
+        <div class="scenarios">
+          <div class="scenario">
+            <div class="scenario-title">🏗️ Projeto legado</div>
+            <div class="step"><span class="step-num">1</span><span><span class="step-cmd">/audit</span> → laudo completo
+                do estado atual</span></div>
+            <div class="step"><span class="step-num">2</span><span><span class="step-cmd">/spec</span> → documenta o
+                sistema existente</span></div>
+            <div class="step"><span class="step-num">3</span><span><span class="step-cmd">/review</span> → revisão
+                pontual de módulos</span></div>
+            <div class="step"><span class="step-num">4</span><span><span class="step-cmd">/write</span> + refactor
+                guiado por padrões</span></div>
+          </div>
+          <div class="scenario">
+            <div class="scenario-title">✨ Nova feature Delphi</div>
+            <div class="step"><span class="step-num">1</span><span>coding-standards ativo automaticamente</span></div>
+            <div class="step"><span class="step-num">2</span><span><span class="step-cmd">/write</span> → writer cria
+                código com interfaces</span></div>
+            <div class="step"><span class="step-num">3</span><span>tester auto-invocado → suite DUnitX gerada</span>
+            </div>
+            <div class="step"><span class="step-num">4</span><span><span class="step-cmd">/review</span> → validação
+                SOLID e padrões</span></div>
+          </div>
+          <div class="scenario">
+            <div class="scenario-title">🚀 Projeto novo</div>
+            <div class="step"><span class="step-num">1</span><span><span class="step-cmd">/new-project</span> →
+                bootstrap interativo P1..P9</span></div>
+            <div class="step"><span class="step-num">2</span><span>claudeignore + build configs gerados</span></div>
+            <div class="step"><span class="step-num">3</span><span><span class="step-cmd">/spec</span> → arquitetura
+                upfront documentada</span></div>
+            <div class="step"><span class="step-num">4</span><span><span class="step-cmd">/write</span> + <span
+                  class="step-cmd">/tdd</span> iterativo</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FULL COMMAND TABLE -->
+      <div style="margin-top:24px;">
+        <div class="sec-header" style="margin-top:0;">
+          <div class="sec-title" style="font-size:14px;">📋 Inventário completo de commands</div>
+          <div class="sec-sub">14 ativos · 7 Workflow + 7 Execution · todos em SSOT .cursor/commands/</div>
+        </div>
+        <table class="cmd-table">
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Nome</th>
+              <th>Agente delegado</th>
+              <th>Skills principais</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-section-header">
+              <td colspan="5">🔄 Workflow — delegam a agente especializado</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono">/audit</span></td>
+              <td>Auditoria técnica</td>
+              <td><span class="agent-ref">auditor</span></td>
+              <td><span class="skill-ref">project-audit</span></td>
+              <td><span class="badge-wf">Workflow</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono">/spec</span></td>
+              <td>Spec por engenharia reversa</td>
+              <td><span class="agent-ref">spec-writer</span></td>
+              <td><span class="skill-ref">project-spec</span></td>
+              <td><span class="badge-wf">Workflow</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono">/write</span></td>
+              <td>Gerar código bilíngue</td>
+              <td><span class="agent-ref">writer</span></td>
+              <td><span class="skill-ref">coding-workflow</span> <span class="skill-ref">coding-standards</span></td>
+              <td><span class="badge-wf">Workflow</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono">/tdd</span></td>
+              <td>Suite DUnitX</td>
+              <td><span class="agent-ref">tester</span></td>
+              <td><span class="skill-ref">testing-dunitx V1.1</span></td>
+              <td><span class="badge-wf">Workflow</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono">/review</span></td>
+              <td>Code review</td>
+              <td><span class="agent-ref">writer</span></td>
+              <td><span class="skill-ref">coding-standards</span></td>
+              <td><span class="badge-wf">Workflow</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono">/doc</span></td>
+              <td>Documentar classes e units</td>
+              <td><span class="agent-ref">class-scanner · class-writer · class-indexer</span></td>
+              <td><span class="skill-ref">documentation-class-analysis</span></td>
+              <td><span class="badge-wf">Workflow</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono">/new-project</span></td>
+              <td>Bootstrap interativo</td>
+              <td><span class="agent-ref">writer</span></td>
+              <td><span class="skill-ref">coding-workflow</span></td>
+              <td><span class="badge-wf">Workflow</span></td>
+            </tr>
+            <tr class="table-section-header">
+              <td colspan="5">🔧 Execution — commands diretos / scripts</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">/autostart</span></td>
+              <td>Auto-start bootstrap</td>
+              <td><span style="font-size:10px;color:#6b7280;">— direto</span></td>
+              <td><span class="skill-ref">project-autostart-bootstrap</span></td>
+              <td><span class="badge-inf">Execution</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">/iniciar</span></td>
+              <td>Iniciar sessão</td>
+              <td><span style="font-size:10px;color:#6b7280;">— direto</span></td>
+              <td><span class="skill-ref">autostart-bootstrap</span></td>
+              <td><span class="badge-inf">Execution</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">/syncdb</span></td>
+              <td>Re-indexar bases FTS5</td>
+              <td><span style="font-size:10px;color:#6b7280;">— script Python</span></td>
+              <td><span class="skill-ref">pack_index_db.py</span></td>
+              <td><span class="badge-inf">Execution</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">/sync-cursor-pack</span></td>
+              <td>Propagar pack entre projetos</td>
+              <td><span style="font-size:10px;color:#6b7280;">— script PS1</span></td>
+              <td><span class="skill-ref">sync-cursor-pack.ps1</span></td>
+              <td><span class="badge-inf">Execution</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">/consolidar</span></td>
+              <td>Auditoria read-only</td>
+              <td><span style="font-size:10px;color:#6b7280;">— direto</span></td>
+              <td><span class="skill-ref">validate_pack.py</span></td>
+              <td><span class="badge-inf">Execution</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">/migration-plan</span></td>
+              <td>Plano de migração documental</td>
+              <td><span style="font-size:10px;color:#6b7280;">— direto</span></td>
+              <td><span class="skill-ref">doc-migration-plan</span></td>
+              <td><span class="badge-inf">Execution</span></td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">/validate-docs</span></td>
+              <td>Validar documentação</td>
+              <td><span style="font-size:10px;color:#6b7280;">— direto</span></td>
+              <td><span class="skill-ref">check_docs_version</span></td>
+              <td><span class="badge-inf">Execution</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="integration">
+        <strong>Pack E12 completo (213 ativas · 36 agents · 14 commands):</strong>
+        E9 (VCL ×3 · FireDAC ×4 · JSON · Crypto · Indy ×4) fornece a <em>referência técnica Delphi</em>.
+        E10 (project-audit · project-spec · coding-workflow · testing-dunitx · claudeignore) define o <em>processo</em>.
+        E11 (Vue 3 ×7 · Vue 2 ×3 · Web/Node ×7) cobre o <em>frontend e Node</em>.
+        E12 completou o Indy com <strong>indy-ftp</strong> e <strong>indy-tcp</strong> — stack de networking Delphi 100%
+        coberta.
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ TAB: FAMÍLIAS -->
+    <div id="tab-familias" class="tab-panel">
+
+      <div class="sec-header">
+        <div class="sec-title">📦 Famílias de Skills</div>
+        <div class="sec-sub">213 skills ativas distribuídas em 6 famílias + sub-grupos</div>
+      </div>
+
+      <!-- FAMILY OVERVIEW CARDS -->
+      <div class="family-grid">
+
+        <div class="family-card">
+          <div class="family-header">
+            <span class="family-name">developer-delphi-*</span>
+            <span class="family-badge fb-blue">116 ativas <span
+                style="font-weight:400;font-size:9.5px;color:#6b7280;">(119 físicas)</span></span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-fill" style="width:95%;background:#4361ee;"></div>
+          </div>
+          <div class="sub-list">
+            <span class="sub-chip">horse (16)</span>
+            <span class="sub-chip">fmx (7)</span>
+            <span class="sub-chip">assembly (11)</span>
+            <span class="sub-chip">language (6)</span>
+            <span class="sub-chip">vcl (3 ✨)</span>
+            <span class="sub-chip">firedac (4 ✨)</span>
+            <span class="sub-chip">indy (4 ✨)</span>
+            <span class="sub-chip">json (1 ✨)</span>
+            <span class="sub-chip">crypto (1 ✨)</span>
+            <span class="sub-chip">fastreport (1 ✨)</span>
+            <span class="sub-chip">ci-cd (1 ✨)</span>
+            <span class="sub-chip">shared-libs (4 🔀)</span>
+            <span class="sub-chip">linux (3 🔀)</span>
+            <span class="sub-chip">win-services (3 🔀)</span>
+            <span class="sub-chip">patterns (4)</span>
+            <span class="sub-chip">rtl (4)</span>
+            <span class="sub-chip">rest-dataware (4)</span>
+            <span class="sub-chip">active-directory (4)</span>
+            <span class="sub-chip">mobile (5)</span>
+            <span class="sub-chip">threading (2)</span>
+            <span class="sub-chip">testing (3)</span>
+            <span class="sub-chip">+12 mais</span>
+          </div>
+        </div>
+
+        <div class="family-card">
+          <div class="family-header">
+            <span class="family-name">documentation-*</span>
+            <span class="family-badge fb-green">30 skills</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-fill" style="width:28%;background:#22c55e;"></div>
+          </div>
+          <div class="sub-list">
+            <span class="sub-chip">project (6)</span>
+            <span class="sub-chip">migration (2)</span>
+            <span class="sub-chip">architecture</span>
+            <span class="sub-chip">business-rules</span>
+            <span class="sub-chip">api-openapi</span>
+            <span class="sub-chip">portal-html</span>
+            <span class="sub-chip">class-analysis</span>
+            <span class="sub-chip">versioning</span>
+            <span class="sub-chip">roadmap</span>
+            <span class="sub-chip">+11 mais</span>
+          </div>
+        </div>
+
+        <div class="family-card">
+          <div class="family-header">
+            <span class="family-name">governance-*</span>
+            <span class="family-badge fb-purple">21 skills</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-fill" style="width:20%;background:#7c3aed;"></div>
+          </div>
+          <div class="sub-list">
+            <span class="sub-chip">spec (5)</span>
+            <span class="sub-chip">artifact (4)</span>
+            <span class="sub-chip">team (3)</span>
+            <span class="sub-chip">pack-sync</span>
+            <span class="sub-chip">sdlc-lifecycle</span>
+            <span class="sub-chip">release</span>
+            <span class="sub-chip">change-request</span>
+            <span class="sub-chip">+5 mais</span>
+          </div>
+        </div>
+
+        <div class="family-card">
+          <div class="family-header">
+            <span class="family-name">quality-*</span>
+            <span class="family-badge fb-orange">10 skills</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-fill" style="width:9%;background:#f59e0b;"></div>
+          </div>
+          <div class="sub-list">
+            <span class="sub-chip">code-review</span>
+            <span class="sub-chip">test-strategy</span>
+            <span class="sub-chip">bug-triage</span>
+            <span class="sub-chip">refactoring-safe</span>
+            <span class="sub-chip">regression-guard</span>
+            <span class="sub-chip">hotfix</span>
+            <span class="sub-chip">tech-debt</span>
+            <span class="sub-chip">acceptance</span>
+            <span class="sub-chip">security-audit ✨</span>
+          </div>
+        </div>
+
+        <div class="family-card">
+          <div class="family-header">
+            <span class="family-name">version-*</span>
+            <span class="family-badge fb-gray">6 skills</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-fill" style="width:6%;background:#6b7280;"></div>
+          </div>
+          <div class="sub-list">
+            <span class="sub-chip">semver-product</span>
+            <span class="sub-chip">release-notes</span>
+            <span class="sub-chip">breaking-change</span>
+            <span class="sub-chip">deprecation</span>
+            <span class="sub-chip">migration-assistant</span>
+            <span class="sub-chip">orchestrator</span>
+          </div>
+        </div>
+
+        <div class="family-card">
+          <div class="family-header">
+            <span class="family-name">developer-web-* + vuejs-*</span>
+            <span class="family-badge fb-sky">17 ativas <span style="font-weight:400;font-size:9.5px;color:#6b7280;">(21
+                físicas)</span></span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-fill" style="width:16%;background:#0ea5e9;"></div>
+          </div>
+          <div class="sub-list">
+            <span class="sub-chip">vuejs-language-core (V1.1 ✨)</span>
+            <span class="sub-chip">vuejs-routing (V1.1 ✨)</span>
+            <span class="sub-chip">vuejs-components (V1.1 ✨)</span>
+            <span class="sub-chip">vuejs-forms-validation ✨</span>
+            <span class="sub-chip">vuejs-api-integration ✨</span>
+            <span class="sub-chip">vuejs-testing ✨</span>
+            <span class="sub-chip">vuejs-vue2-options-api ✨</span>
+            <span class="sub-chip">vuejs-vue2-state-router ✨</span>
+            <span class="sub-chip">vuejs-vue2-migration ✨</span>
+            <span class="sub-chip">nodejs-api</span>
+            <span class="sub-chip">build-tooling</span>
+            <span class="sub-chip">testing-debug</span>
+            <span class="sub-chip">+5 mais</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DEVELOPER-DELPHI SUBFAMILIES -->
+      <div style="margin-top:6px;">
+        <div class="sec-header" style="margin-top:0;">
+          <div class="sec-title" style="font-size:14px;">⚙️ Sub-famílias Delphi em destaque</div>
+          <div class="sec-sub">116 ativas · grupos com cobertura completa marcados ✅</div>
+        </div>
+        <div class="subfamily-grid">
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#9a3412;">🌐 Horse (HTTP)</span>
+              <span class="sf-count" style="background:#ffedd5;color:#9a3412;">16 skills ✅</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">orchestrator</span><span class="sub-chip">core</span>
+              <span class="sub-chip">jwt</span><span class="sub-chip">cors</span>
+              <span class="sub-chip">basic-auth</span><span class="sub-chip">compression</span>
+              <span class="sub-chip">logger</span><span class="sub-chip">logger-console</span>
+              <span class="sub-chip">logger-logfile</span><span class="sub-chip">security</span>
+              <span class="sub-chip">serialization</span><span class="sub-chip">paginate</span>
+              <span class="sub-chip">etag</span><span class="sub-chip">+3 mais</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#0369a1;">📡 Indy 10</span>
+              <span class="sf-count" style="background:#e0f2fe;color:#0369a1;">4 skills ✅</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">indy-http (§1-§14 ✨)</span>
+              <span class="sub-chip">indy-email (§1-§12 ✨)</span>
+              <span class="sub-chip">indy-ftp 🆕 E12</span>
+              <span class="sub-chip">indy-tcp 🆕 E12</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#9a3412;">🗄️ FireDAC</span>
+              <span class="sf-count" style="background:#ffedd5;color:#9a3412;">4 skills ✅</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">orchestrator</span><span class="sub-chip">connection</span>
+              <span class="sub-chip">queries</span><span class="sub-chip">transactions</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#9a3412;">🖥️ VCL</span>
+              <span class="sf-count" style="background:#ffedd5;color:#9a3412;">3 skills ✅</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">vcl-orchestrator</span>
+              <span class="sub-chip">vcl-forms</span>
+              <span class="sub-chip">vcl-components</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#6d28d9;">📐 Assembly x86/x64</span>
+              <span class="sf-count" style="background:#ede9fe;color:#5b21b6;">11 skills</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">fundamentals</span><span class="sub-chip">data-types</span>
+              <span class="sub-chip">arithmetic</span><span class="sub-chip">bitwise</span>
+              <span class="sub-chip">control-flow</span><span class="sub-chip">functions</span>
+              <span class="sub-chip">simd-sse</span><span class="sub-chip">string-ops</span>
+              <span class="sub-chip">memory</span><span class="sub-chip">+2 mais</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#0f766e;">📱 FMX (Cross-Plat.)</span>
+              <span class="sf-count" style="background:#ccfbf1;color:#0f766e;">7 skills</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">layout-orchestrator</span>
+              <span class="sub-chip">forms-controls</span>
+              <span class="sub-chip">animations</span>
+              <span class="sub-chip">styles-themes</span>
+              <span class="sub-chip">live-bindings</span>
+              <span class="sub-chip">platform-services</span>
+              <span class="sub-chip">platform-specific</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#374151;">🔧 REST-DataWare</span>
+              <span class="sf-count" style="background:#f3f4f6;color:#374151;">4 skills</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">orchestrator</span><span class="sub-chip">server</span>
+              <span class="sub-chip">client</span><span class="sub-chip">auth</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#374151;">🔐 Active Directory</span>
+              <span class="sf-count" style="background:#f3f4f6;color:#374151;">4 skills</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">orchestrator</span><span class="sub-chip">authentication</span>
+              <span class="sub-chip">ldap-queries</span><span class="sub-chip">group-policies</span>
+            </div>
+          </div>
+
+          <div class="subfamily-card">
+            <div class="sf-header">
+              <span class="sf-name" style="color:#374151;">📐 Language Core</span>
+              <span class="sf-count" style="background:#f3f4f6;color:#374151;">6 skills</span>
+            </div>
+            <div class="sub-list">
+              <span class="sub-chip">generics</span><span class="sub-chip">anonymous-methods</span>
+              <span class="sub-chip">rtti</span><span class="sub-chip">attributes</span>
+              <span class="sub-chip">operator-overload</span><span class="sub-chip">advanced-types</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ARCHITECTURE COMPARISON -->
+      <div style="margin-top:22px;">
+        <div class="sec-header" style="margin-top:0;">
+          <div class="sec-title" style="font-size:14px;">🏛️ Ciclo de Vida × Implementação Técnica</div>
+          <div class="sec-sub">o ciclo de vida orquestra · a implementação técnica sustenta — SSOT em .cursor/</div>
+        </div>
+        <div class="arch-grid">
+          <div class="arch-box" style="border-left: 4px solid #4361ee;">
+            <h4>🔄 Ciclo de Vida</h4>
+            <div class="arch-row"><span>Etapas do ciclo</span><span class="arch-val">7</span></div>
+            <div class="arch-row"><span>Commands workflow</span><span class="arch-val">7</span></div>
+            <div class="arch-row"><span>Agents especializados</span><span class="arch-val">36</span></div>
+            <div class="arch-row"><span>Skills de processo</span><span class="arch-val">9</span></div>
+          </div>
+          <div class="arch-box" style="border-left: 4px solid #22c55e;">
+            <h4>⚙️ Implementação Técnica</h4>
+            <div class="arch-row"><span>Skills técnicas ativas</span><span class="arch-val">213</span></div>
+            <div class="arch-row"><span>Rules (.mdc)</span><span class="arch-val">12</span></div>
+            <div class="arch-row"><span>Scripts (PS1 + Python)</span><span class="arch-val">24</span></div>
+            <div class="arch-row"><span>Commands execução</span><span class="arch-val">14</span></div>
+            <div class="arch-row"><span>Manifesto</span><span class="arch-val">V1.24.0</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ TAB: INTELIGÊNCIA -->
+    <div id="tab-inteligencia" class="tab-panel">
+
+      <div class="sec-header">
+        <div class="sec-title">🧠 A Inteligência — 36 Agentes</div>
+        <div class="sec-sub">5 grupos · cada agente tem foco de atuação exclusivo + skills pré-carregadas</div>
+      </div>
+
+      <div class="agent-group-head">⚙️ Delphi Workflow — 4 agentes</div>
+      <div class="agents-grid">
+        <div class="agent-card">
+          <div class="agent-card-title">🔍 Auditor</div>
+          <div style="font-size:10px;color:var(--gray);margin-bottom:6px;">Laudo técnico · complexidade · bilíngue</div>
+          <span class="agent-tag">project-audit</span>
+          <span class="agent-tag">coding-standards</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title">📝 Spec-Writer</div>
+          <div style="font-size:10px;color:var(--gray);margin-bottom:6px;">Engenharia reversa → SPEC rastreável</div>
+          <span class="agent-tag">project-spec</span>
+          <span class="agent-tag">documentation-*</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title">✏️ Writer</div>
+          <div style="font-size:10px;color:var(--gray);margin-bottom:6px;">Geração de código Delphi · padrões SOLID
+          </div>
+          <span class="agent-tag">coding-workflow</span>
+          <span class="agent-tag">coding-standards</span>
+          <span class="agent-tag">+ skill técnica</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title">🧪 Tester</div>
+          <div style="font-size:10px;color:var(--gray);margin-bottom:6px;">Suite DUnitX · mocks · AAA pattern</div>
+          <span class="agent-tag">testing-dunitx V1.1</span>
+          <span class="agent-tag">coding-standards</span>
+        </div>
+      </div>
+
+      <div class="agent-group-head" style="margin-top:22px;">🔩 Delphi ORM Domain — 11 agentes</div>
+      <div class="agents-grid">
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">🎯 delphi-orchestrator</div>
+          <span class="agent-tag-orange">top-level</span>
+          <span class="agent-tag-orange">routes requests</span>
+          <span class="agent-tag-orange">selects sub-agent</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">📦 modules-orchestrator</div>
+          <span class="agent-tag-orange">Modulos/</span>
+          <span class="agent-tag-orange">cross-module coord</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">🖥️ views-orchestrator</div>
+          <span class="agent-tag-orange">Views/ layer</span>
+          <span class="agent-tag-orange">VCL forms coord</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">🔌 connections-expert</div>
+          <span class="agent-tag-orange">IConnection</span>
+          <span class="agent-tag-orange">multi-engine</span>
+          <span class="agent-tag-orange">FireDAC/UniDAC</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">🗃️ database-expert</div>
+          <span class="agent-tag-orange">ORM fields</span>
+          <span class="agent-tag-orange">tables/schemas</span>
+          <span class="agent-tag-orange">QueryBuilder</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">⚠️ exceptions-expert</div>
+          <span class="agent-tag-orange">exception.db</span>
+          <span class="agent-tag-orange">centralized errors</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">📋 loggers-expert</div>
+          <span class="agent-tag-orange">multi-destino</span>
+          <span class="agent-tag-orange">log pipeline</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">🏛️ orm-architect</div>
+          <span class="agent-tag-orange">EntityManager</span>
+          <span class="agent-tag-orange">interfaces</span>
+          <span class="agent-tag-orange">design decisions</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">⚙️ parameters-expert</div>
+          <span class="agent-tag-orange">IniFile/JSON/DB</span>
+          <span class="agent-tag-orange">param strategy</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">🔄 poolconnections-expert</div>
+          <span class="agent-tag-orange">connection pool</span>
+          <span class="agent-tag-orange">lifecycle mgmt</span>
+        </div>
+        <div class="agent-card">
+          <div class="agent-card-title" style="color:#9a3412;">🪟 views-expert</div>
+          <span class="agent-tag-orange">ufrm* units</span>
+          <span class="agent-tag-orange">no business logic</span>
+        </div>
+      </div>
+
+      <div class="agent-group-head" style="margin-top:22px;">🟢 Vue · Web — 5 agentes</div>
+      <div class="agents-grid">
+        <div class="agent-card" style="border-color:var(--green-b);">
+          <div class="agent-card-title">🎯 vuejs-orchestrator</div>
+          <span class="agent-tag">Vue top-level</span>
+          <span class="agent-tag">routes to core/routing</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--green-b);">
+          <div class="agent-card-title">⚡ vuejs-core-expert</div>
+          <span class="agent-tag">Composition API</span>
+          <span class="agent-tag">reactivity</span>
+          <span class="agent-tag">components</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--green-b);">
+          <div class="agent-card-title">🔀 vuejs-routing-state</div>
+          <span class="agent-tag">Vue Router 4</span>
+          <span class="agent-tag">Pinia</span>
+          <span class="agent-tag">forms/validation</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--green-b);">
+          <div class="agent-card-title">✅ web-quality-expert</div>
+          <span class="agent-tag">Vitest/Playwright</span>
+          <span class="agent-tag">a11y</span>
+          <span class="agent-tag">perf</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--green-b);">
+          <div class="agent-card-title">📦 web-runtime-build</div>
+          <span class="agent-tag">Vite/Webpack</span>
+          <span class="agent-tag">Node.js API</span>
+          <span class="agent-tag">deployment</span>
+        </div>
+      </div>
+
+      <div class="agent-group-head" style="margin-top:22px;">📚 Documentação — 12 agentes</div>
+      <div class="agents-grid">
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">🎯 doc-orchestrator</div>
+          <span class="agent-tag-orange">top-level docs</span>
+          <span class="agent-tag-orange">routes to sub-agents</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">🏛️ architecture</div>
+          <span class="agent-tag-orange">arch docs</span>
+          <span class="agent-tag-orange">ADRs</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">🔍 class-scanner</div>
+          <span class="agent-tag-orange">scans .pas files</span>
+          <span class="agent-tag-orange">extracts interfaces</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">📇 class-indexer</div>
+          <span class="agent-tag-orange">builds class index</span>
+          <span class="agent-tag-orange">FTS5 db</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">✏️ class-writer</div>
+          <span class="agent-tag-orange">writes class docs</span>
+          <span class="agent-tag-orange">templates</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">📏 cursor-rules</div>
+          <span class="agent-tag-orange">generates .mdc</span>
+          <span class="agent-tag-orange">rules authoring</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">🚚 migration</div>
+          <span class="agent-tag-orange">doc migration plans</span>
+          <span class="agent-tag-orange">origin/dest matrix</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">⚔️ conflict-resolution</div>
+          <span class="agent-tag-orange">resolves doc conflicts</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">🔎 review</div>
+          <span class="agent-tag-orange">doc quality review</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">🗺️ roadmap</div>
+          <span class="agent-tag-orange">roadmap generation</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">📐 rules</div>
+          <span class="agent-tag-orange">rule authoring aid</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--yellow-b);">
+          <div class="agent-card-title" style="color:var(--yellow);">🗄️ superseded</div>
+          <span class="agent-tag-orange">tracks deprecated docs</span>
+        </div>
+      </div>
+
+      <div class="agent-group-head" style="margin-top:22px;">🏛️ Orquestradores Globais — 4 agentes</div>
+      <div class="agents-grid">
+        <div class="agent-card" style="border-color:var(--purple-b);">
+          <div class="agent-card-title" style="color:var(--purple);">🎯 developer-orchestrator</div>
+          <span class="agent-tag-purple">top-level dev</span>
+          <span class="agent-tag-purple">Delphi + Web</span>
+          <span class="agent-tag-purple">routes all dev tasks</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--purple-b);">
+          <div class="agent-card-title" style="color:var(--purple);">⚖️ governance-orchestrator</div>
+          <span class="agent-tag-purple">governance-*</span>
+          <span class="agent-tag-purple">spec/artifact/team</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--purple-b);">
+          <div class="agent-card-title" style="color:var(--purple);">✅ quality-orchestrator</div>
+          <span class="agent-tag-purple">quality-*</span>
+          <span class="agent-tag-purple">review/triage/debt</span>
+        </div>
+        <div class="agent-card" style="border-color:var(--purple-b);">
+          <div class="agent-card-title" style="color:var(--purple);">🏷️ version-orchestrator</div>
+          <span class="agent-tag-purple">version-*</span>
+          <span class="agent-tag-purple">semver/release-notes</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ TAB: FUNDAÇÃO -->
+    <div id="tab-fundacao" class="tab-panel">
+
+      <div class="sec-header">
+        <div class="sec-title">⚙️ Execution — Implementação Técnica Profunda</div>
+        <div class="sec-sub">7 commands de Execution + 24 scripts (10 PS1 + 14 Python) + 12 rules · mantêm o pack
+          saudável e sincronizado</div>
+      </div>
+
+      <div class="infra-grid">
+        <div class="infra-card">
+          <div><span class="infra-cmd">/autostart</span></div>
+          <div class="infra-name" style="margin-top:6px;">Auto-start Bootstrap</div>
+          <div class="infra-desc">Valida espelhos (bootstrap-mirror-symlinks.ps1), detecta *.dpr/*.lpr, aciona criação
+            interativa P1..P9 se necessário.</div>
+          <div class="infra-note">▸ Rule: project-autostart-bootstrap_V1.0.1</div>
+        </div>
+        <div class="infra-card">
+          <div><span class="infra-cmd">/iniciar</span></div>
+          <div class="infra-name" style="margin-top:6px;">Iniciar sessão</div>
+          <div class="infra-desc">Variante leve do autostart — valida ambiente e exibe estado do projeto sem criar
+            arquivos novos.</div>
+          <div class="infra-note">▸ alias de /autostart para sessões recorrentes</div>
+        </div>
+        <div class="infra-card">
+          <div><span class="infra-cmd">/syncdb</span></div>
+          <div class="infra-name" style="margin-top:6px;">Sincronizar índices FTS5</div>
+          <div class="infra-desc">Re-indexa 3 bases SQLite — pack (.cursor/), workspace (.workspace/) e docs locais
+            (.docs/) — com hash SHA-256 incremental.</div>
+          <div class="infra-note">▸ Script: pack_index_db.py V1.1.0</div>
+        </div>
+        <div class="infra-card">
+          <div><span class="infra-cmd">/sync-cursor-pack</span></div>
+          <div class="infra-name" style="margin-top:6px;">Propagar pack entre projetos</div>
+          <div class="infra-desc">Copia skills, agents, templates e scripts de .cursor/ do projeto fonte para projetos
+            destino, preservando versionamento.</div>
+          <div class="infra-note">▸ Script: sync-cursor-pack.ps1</div>
+        </div>
+        <div class="infra-card">
+          <div><span class="infra-cmd">/consolidar</span></div>
+          <div class="infra-name" style="margin-top:6px;">Auditoria read-only do pack</div>
+          <div class="infra-desc">Verifica 1548 checks: versionamento de skills/rules, symlinks, nomenclatura,
+            convenções. Gera relatório PASS/FAIL com criticidade.</div>
+          <div class="infra-note">▸ Script: validate_pack.py · 1548 checks · 0 CRITICAL</div>
+        </div>
+        <div class="infra-card">
+          <div><span class="infra-cmd">/migration-plan</span></div>
+          <div class="infra-name" style="margin-top:6px;">Plano de migração documental</div>
+          <div class="infra-desc">Analisa gaps na Documentation/, propõe fases com matriz origem/destino, dependências
+            entre documentos e estimativas.</div>
+          <div class="infra-note">▸ Template: documentation-migration-plan_V1.0.md</div>
+        </div>
+        <div class="infra-card">
+          <div><span class="infra-cmd">/validate-docs</span></div>
+          <div class="infra-name" style="margin-top:6px;">Validar documentação</div>
+          <div class="infra-desc">Verifica estrutura, formatos, FileVersion, links internos e conformidade com as 12
+            rules do pack .cursor/.</div>
+          <div class="infra-note">▸ Script: check_docs_version · rule: documentation-file-versioning</div>
+        </div>
+      </div>
+
+      <!-- SCRIPTS BOOTSTRAP -->
+      <div style="margin-top:24px;">
+        <div class="sec-header" style="margin-top:0;">
+          <div class="sec-title" style="font-size:14px;">🔧 Scripts de Bootstrap (10 PS1 + 14 Python = 24)</div>
+          <div class="sec-sub">todos em .cursor/scripts/ · nunca editar diretamente os espelhos</div>
+        </div>
+        <table class="cmd-table">
+          <thead>
+            <tr>
+              <th>Script</th>
+              <th>Tipo</th>
+              <th>Responsabilidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-section-header">
+              <td colspan="3">⚙️ Bootstrap — inicialização e ambiente</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">bootstrap-mirror-symlinks.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Cria/valida symlinks .claude/ → .cursor/, .vscode/ → .cursor/ etc.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">bootstrap_mirror_symlinks.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Versão Python do mirror-symlinks para ambientes não-Windows</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">bootstrap-autostart-mirrors.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Autostart de sessão: valida espelhos e aciona bootstrap se necessário</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">bootstrap_autostart_mirrors.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Versão Python do autostart-mirrors</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">bootstrap-build-config.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Gera/valida .dpr, .dproj, dcc32.cfg, dcc64.cfg, .lpr, .lpi</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">bootstrap-form-unit.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Gera form units VCL/FMX/LCL sob demanda com classe e DFM</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">Bootstrap-Reset.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Reset completo do ambiente de bootstrap</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">bootstrap_reset.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Versão Python do reset de bootstrap</td>
+            </tr>
+            <tr class="table-section-header">
+              <td colspan="3">🔄 Sincronização e propagação</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">sync-cursor-pack.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Sincroniza pack .cursor/ entre projetos via PS1</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">sync_cursor_pack.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Versão Python da sincronização do pack</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">scaffold-modules-backend.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Scaffold de estrutura de módulos backend (src/Modulos/)</td>
+            </tr>
+            <tr class="table-section-header">
+              <td colspan="3">✅ Validação e integridade</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">validate_pack.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>1548 checks: integridade de skills, rules, agents, symlinks (0 CRITICAL)</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">validate_consolidated.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Validação consolidada pós-onda: cross-refs, frontmatter, encoding</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">validate-skills-consistency.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Consistência de nomes, versões e categorias entre skills</td>
+            </tr>
+            <tr class="table-section-header">
+              <td colspan="3">📇 Indexação e busca</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">pack_index_db.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>FTS5 SQLite: indexação incremental do pack com SHA-256</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">database_session_manager.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Gerencia sessões de banco SQLite das 3 bases (pack/workspace/docs)</td>
+            </tr>
+            <tr class="table-section-header">
+              <td colspan="3">🔧 Geração e transformação</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">gen_pack_inventory.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Gera inventário completo do pack em JSON/Markdown (on-demand; SSOT de indexação =
+                <code>.cursor/index.db</code>)
+              </td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">gen_project_index.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Gera índice de projeto com skills, agents e rules ativos</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">gen_fileversion.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Utilitário de bump de FileVersion em arquivos .md/.mdc</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">gen_audit_badge.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Gera badges de auditoria SVG para skills e agents</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">transform-headers-backend.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Transforma cabeçalhos de source Pascal para padrão canônico</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">transform-headers-adorm.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Transformação de cabeçalhos específica para projeto ActiveDirectoryORM</td>
+            </tr>
+            <tr class="table-section-header">
+              <td colspan="3">📦 Utilitários</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">decompile-chm.ps1</span></td>
+              <td><span class="badge-inf">PS1</span></td>
+              <td>Extrai conteúdo de .chm (Indy10, VCL docs) para HTML navegável</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">decompile_chm.py</span></td>
+              <td><span class="badge-wf">Python</span></td>
+              <td>Versão Python do decompile-chm</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- RULES -->
+      <div style="margin-top:24px;">
+        <div class="sec-header" style="margin-top:0;">
+          <div class="sec-title" style="font-size:1rem;">📏 Rules (12)</div>
+          <div class="sec-sub">Políticas alwaysApply + globs + template que guiam cada sessão de trabalho</div>
+        </div>
+        <table class="cmd-table" style="margin-top:12px;">
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>Escopo</th>
+              <th>Responsabilidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="cmd-mono-infra">project-autostart-bootstrap_V1.0.1</span></td>
+              <td><span class="badge-wf">always</span></td>
+              <td>Valida espelhos, detecta *.dpr/*.lpr, aciona criação interativa P1..P9 na abertura da sessão.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">documentation-migration-plan-mode_V1.0.0</span></td>
+              <td><span class="badge-wf">always</span></td>
+              <td>Exige plano completo com inventário antes de criar/mover/fundir arquivos em áreas protegidas.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">backend-pascal-unit-naming_V1.6.0</span></td>
+              <td><span class="badge-wf">always</span></td>
+              <td>Nomenclatura canônica ModuleConcept.Feature.pas; §4.3 conexões BD/LDAP usam infixo .Connection.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">artifact-placement-policy_V1.1.0</span></td>
+              <td><span class="badge-wf">always</span></td>
+              <td>Classifica artefatos: .cursor/ (SSOT), .workspace/ (instância), .docs/ (docs locais). Frontmatter
+                obrigatório.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">pascal-encoding-no-escapes_V1.0.0</span></td>
+              <td><span class="badge-wf">always</span></td>
+              <td>Proíbe escapes #NNN/#$NNNN em strings Pascal; usar literais UTF-8. Exceções: #0 #9 #10 #13.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">local_arquivos_V1.0</span></td>
+              <td><span class="badge-wf">always</span></td>
+              <td>SSOT em .cursor/; nunca editar .claude/.vscode/.continue diretamente — são espelhos via symlinks.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">pack-inventory-autoupdate_V1.0.0</span></td>
+              <td><span class="badge-inf">globs</span></td>
+              <td>Atualiza manifests de inventário ao detectar mudanças em .cursor/ (skills/agents/rules/scripts).</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">scripts-nomenclature_V1.3.0</span></td>
+              <td><span class="badge-inf">globs</span></td>
+              <td>Nomenclatura obrigatória para scripts: kebab-case PS1, snake_case Python, sufixo de versão.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">backend-pascal-source-header_V1.0.0</span></td>
+              <td><span class="badge-inf">globs</span></td>
+              <td>Exige cabeçalho padrão em fontes Pascal novas com placeholders de projeto e versão.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">documentation-file-versioning_V1.0.0</span></td>
+              <td><span class="badge-inf" style="background:rgba(168,85,247,.18);color:#c084fc;">tmpl</span></td>
+              <td>Formaliza 4 formas aceitas de versão em .md/.mdc: FileVersion, internal_file_version, **Versão**,
+                sufixo _V{X.Y.Z}.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">project-documentacao_V1.0.1</span></td>
+              <td><span class="badge-inf" style="background:rgba(168,85,247,.18);color:#c084fc;">tmpl</span></td>
+              <td>Template de estrutura de documentação de projeto — seções obrigatórias e organização canônica.</td>
+            </tr>
+            <tr>
+              <td><span class="cmd-mono-infra">project-plans-persist_V1.0.0</span></td>
+              <td><span class="badge-inf" style="background:rgba(100,100,100,.2);color:#aaa;">ctx</span></td>
+              <td>Garante persistência de planos em .cursor/plans/ com versionamento e referência cruzada.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <!-- ═══════════════════════════════════════════════════ TAB: SKILLS -->
+    <div id="tab-skills" class="tab-panel">
+      <div class="sk-toolbar">
+        <input type="text" class="sk-search" id="skSearch" placeholder="Filtrar por nome ou categoria..."
+          oninput="skFilter()">
+        <div class="sk-filters" id="skCatFilters"></div>
+        <span class="sk-stats" id="skStats"></span>
+      </div>
+      <div class="sk-grid" id="skGrid"></div>
+    </div>
+
+  </div><!-- .page -->
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <div
+    style="text-align:center;padding:2rem 1rem;font-size:.75rem;color:var(--gray,#888);border-top:1px solid rgba(255,255,255,.08);margin-top:2rem;">
+    SkillsORM · Skills Manifest V1.24.0 · Config 2.0.0 · 221 Skills · 36 Agents · 12 Rules · 14 Commands · 24 Scripts ·
+    2026-04-25
+  </div>
+  <script>
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(function (p) {
+        if (p) p.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(function (b) {
+        if (b) b.classList.remove('active');
+      });
+      var panel = document.getElementById('tab-' + id);
+      if (panel) panel.classList.add('active');
+      if (btn) btn.classList.add('active');
+      if (id === 'skills') {
+        setTimeout(function () {
+          if (typeof skillsTabInit === 'function' && !window._skillsInitDone) {
+            window._skillsInitDone = true;
+            skillsTabInit();
+          }
+        }, 20);
+      }
+    }
+  </script>
+  <script>
+    var _skillsInitDone = false;
+    const SKILLS_DATA = [
+      { name: 'developer-assembly-instructions_V1.0.0', cat: '', status: '', desc: 'Referência do conjunto de instruções x86/x64 — utilizável com assembler Delphi, NASM, GAS e similares.', tmpl: 'TEMPLATE_atomic_inc.pas, TEMPLATE_loop_array.pas, TEMPLATE_loop_nasm.asm, TEMPLATE_memset_asm.pas', ex: '', hasRefs: false },
+      { name: 'developer-assembly-registers_V1.0.0', cat: '', status: '', desc: 'GPRs, segmento, flags, SSE/AVX em x86/x64. Aplicável a Delphi assembler, NASM, GAS.', tmpl: 'TEMPLATE_func_preserva.pas, TEMPLATE_metodo_asm.pas, TEMPLATE_registradores.asm', ex: '', hasRefs: false },
+      { name: 'developer-assembly-stack-call_V1.0.0', cat: '', status: '', desc: 'Stack e convenções de chamada x86/x64 — prologue, epilogue, register vs stack calling conventions, Windows x64 ABI, Syst', tmpl: 'TEMPLATE_funcao_asm_32.pas, TEMPLATE_funcao_asm_64.pas, TEMPLATE_funcao_nasm.asm, TEMPLATE_funcao_noframe.pas', ex: '', hasRefs: false },
+      { name: 'developer-assembly-x86-fundamentals_V1.0.0', cat: '', status: '', desc: 'Fundamentos x86/x64 — modos de endereçamento, segmentos, modo real vs protegido. Independente de assembler.', tmpl: 'TEMPLATE_asm_minimo.pas, TEMPLATE_cpuid_check.pas, TEMPLATE_nasm_basico.asm', ex: '', hasRefs: false },
+      { name: 'developer-delphi-active-directory-estrutura_V1.0.0', cat: 'project', status: '', desc: 'Mapa de arquivos e camadas do módulo ActiveDirectoryORM — onde ficam IActiveDirectoryConnection, TActiveDirectoryService', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-active-directory-expert_V1.0.0', cat: 'project', status: '', desc: 'Referência arquitetural do módulo ActiveDirectoryORM — IActiveDirectoryConnection (fluent builder), IActiveDirectoryServ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-active-directory-orchestrator_V1.0.0', cat: 'project', status: '', desc: 'Ponto de entrada para as skills de integração LDAP/Active Directory em Delphi. Use quando o usuário mencionar Active Dir', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-active-directory-roteiro_V1.0.0', cat: 'project', status: '', desc: 'Roteiros práticos de uso do módulo ActiveDirectoryORM — configuração fluente (LDAP/LDAPS, OUs, JSON/TStringList), autent', tmpl: '', ex: 'roteiro_auth.md, roteiro_config.md, roteiro_queries.md, roteiro_write.md', hasRefs: false },
+      { name: 'developer-delphi-android-publishing_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Publicação de apps Android no Google Play: criação de keystore via keytool, configuração de assinatura no .dproj, geraçã', tmpl: 'TEMPLATE_android_release.dproj, TEMPLATE_keystore_commands.sh', ex: 'android_aab_generation.md, android_keystore_creation.md, android_playstore_upload.md', hasRefs: false },
+      { name: 'developer-delphi-android-setup_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Configuração completa da plataforma Android para projetos Delphi FMX: Android SDK/NDK via SDK Manager, AndroidManifest.t', tmpl: 'TEMPLATE_AndroidManifest.xml, TEMPLATE_android_permissions.pas', ex: 'android_manifest_template.xml, android_permissions_runtime.pas, android_sdk_setup.md', hasRefs: false },
+      { name: 'developer-delphi-assembly-calling-conventions_V1.0.0', cat: 'developer-delphi-assembly', status: '', desc: 'Convenções de chamada em Assembly para Delphi — register, stdcall, cdecl, safecall, pascal, winapi e Windows x64 ABI. Ta', tmpl: 'TEMPLATE_conv_register.pas, TEMPLATE_conv_stdcall.pas, TEMPLATE_sysv_nasm.asm, TEMPLATE_winapi_call.pas', ex: '', hasRefs: false },
+      { name: 'developer-delphi-assembly-debugging_V1.0.0', cat: 'developer-delphi-assembly', status: '', desc: 'Depuração de assembly em Delphi — CPU View do IDE (disassembly, registradores, stack, FPU/SSE), INT 3 como breakpoint ma', tmpl: 'TEMPLATE_debug_benchmark.pas, TEMPLATE_int3_break.pas', ex: '', hasRefs: false },
+      { name: 'developer-delphi-assembly-expressions_V1.0.0', cat: 'developer-delphi-assembly', status: '', desc: 'Expressões assembly Delphi em tempo de compilacao — OFFSET, TYPE, SIZE, VMTOFFSET, DMTINDEX, PTR, LEA com enderecamento ', tmpl: 'TEMPLATE_acesso_campo.pas, TEMPLATE_chamada_virtual.pas', ex: '', hasRefs: false },
+      { name: 'developer-delphi-assembly-functions_V1.0.0', cat: 'developer-delphi-assembly', status: '', desc: 'Funcoes e procedures puramente assembly em Delphi — keyword `assembler`, pseudo-ops x64 (.PARAMS, .PUSHNV, .SAVENV, .NOF', tmpl: 'TEMPLATE_func_assembler.pas, TEMPLATE_func_simd.pas, TEMPLATE_func_x64.pas', ex: '', hasRefs: false },
+      { name: 'developer-delphi-assembly-inline_V1.0.0', cat: 'developer-delphi-assembly', status: '', desc: 'Assembly inline em Delphi — blocos asm..end dentro de procedures/functions Pascal, acesso a variaveis locais e campos de', tmpl: 'TEMPLATE_inline_loop.pas, TEMPLATE_inline_resultado.pas, TEMPLATE_inline_string_op.pas', ex: '', hasRefs: false },
+      { name: 'developer-delphi-assembly-orchestrator_V1.1.0', cat: 'developer-delphi-assembly', status: '', desc: 'Orquestradora da Familia Assembly Delphi (J1-J10) — mapa de 10 micro-skills, quando usar asm inline vs. externo, checkli', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-assembly-simd-avx_V1.0.0', cat: 'developer-delphi-assembly', status: '', desc: 'SIMD em Delphi — SSE2, SSE4.1, AVX (YMM 256-bit) e AVX-512 (ZMM 512-bit). Registradores XMM/YMM/ZMM, instrucoes vetoriza', tmpl: 'TEMPLATE_avx2_loop.pas, TEMPLATE_avx512_masked.pas, TEMPLATE_simd_dispatch.pas, TEMPLATE_sse_dot_product.pas', ex: '', hasRefs: false },
+      { name: 'developer-delphi-build-toolchain_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Use when the user asks about compiling the project (Delphi, FPC, Go, Python), build commands, config files (dcc32.cfg, f', tmpl: '', ex: 'compile.md, database.md', hasRefs: false },
+      { name: 'developer-delphi-ci-cd-github_V1.0.0', cat: 'developer-delphi', status: '', desc: 'CI/CD para projetos Delphi no GitHub Actions: workflows YAML, compilação com dcc32/dcc64, FPC/Lazarus, execução de DUnit', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-claudeignore_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Cria e mantém automaticamente o arquivo .claudeignore em projetos Delphi, ignorando binários (.dcu/.exe/.dll/.bpl), comp', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-coding-standards_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Delphi Style Guide completo: prefixos obrigatórios (F/A/L/C_/T/I/E/P), comandos proibidos (with/Break/Continue/Exit/Real', tmpl: '', ex: '', hasRefs: true },
+      { name: 'developer-delphi-coding-workflow_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Escrita de código Delphi novo seguindo rigorosamente todos os padrões: classes de serviço, repositório, model, form, uni', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-crypto-security_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Criptografia e segurança em Delphi: System.Hash (MD5, SHA1, SHA256, SHA512), System.NetEncoding (Base64, URL encoding), ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-debugging-techniques_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Técnicas avançadas de depuração em Delphi — breakpoints condicionais, watches, CPU View, FastMM4, EurekaLog/MadExcept, O', tmpl: 'TEMPLATE_debug_helper.pas', ex: 'breakpoints_condicionais.pas, output_debug.pas, watches_avancados.pas', hasRefs: false },
+      { name: 'developer-delphi-docs-to-structured-code_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Converte documentação canônica em codificação estruturada por projeto/módulo com rastreabilidade e validação Delphi/FPC.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-documentation-governance_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Governança documental das skills e artefatos: padrão de conteúdo, changelog, rastreabilidade e fontes.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-firedac-connection_V1.0.0', cat: 'developer-delphi', status: '', desc: 'TFDConnection, drivers FireDAC, configuração de conexão por código e por arquivo .ini, connection pooling, multi-banco (', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-firedac-orchestrator_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Orquestrador da família FireDAC — ponto de entrada para conexão, queries, datasets e transações. Ativar quando o usuário', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-firedac-queries_V1.0.0', cat: 'developer-delphi', status: '', desc: 'TFDQuery, TFDTable, execução de SQL, parâmetros nomeados, navegação de datasets, edição de dados, campos calculados, fil', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-firedac-transactions_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Controle de transações FireDAC: StartTransaction, Commit, Rollback, savepoints, CachedUpdates, ApplyUpdates, Array DML, ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-fmx-animations_V1.0.0', cat: '', status: '', desc: 'Animações FMX no Delphi: TAnimator (runtime), TFloatAnimation / TColorAnimation (design-time e runtime), todos os TInter', tmpl: 'TEMPLATE_animacao_entrada.pas, TEMPLATE_animacao_saida.pas, TEMPLATE_hover_card.pas', ex: 'animacao_cascata.pas, animacoes_basicas.pas, animacoes_cor.pas, animacoes_declarativas.pas, hover_animation.pas, interpolacoes.pas, lazy_load_pattern.pas, tab_switch_animation.pas', hasRefs: false },
+      { name: 'developer-delphi-fmx-components_V1.0.0', cat: '', status: '', desc: 'Componentes FMX avançados — TMultiView, LiveBindings, inputs especializados e padrões do projeto.', tmpl: 'TEMPLATE_form_binding.pas, TEMPLATE_listview_items.pas, TEMPLATE_multiview_drawer.pas', ex: 'dialogs_fmx.pas, edit_components.pas, listview_custom.pas, livebindings_basico.pas, progressbar_arc.pas, tmultiview_uso.pas', hasRefs: false },
+      { name: 'developer-delphi-fmx-containers_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Containers FMX: TRectangle, TLayout, TAlignLayout, Fill/Stroke, XRadius, Padding/Margins, tipografia FMX (TLabel, TText,', tmpl: 'TEMPLATE_card_layout.pas, TEMPLATE_header_footer.pas, TEMPLATE_sidebar.pas', ex: 'align_fill.pas, layout_basico.pas, padding_margins.pas, responsive_layout.pas, tipografia_fmx.pas', hasRefs: false },
+      { name: 'developer-delphi-fmx-effects_V1.0.0', cat: '', status: '', desc: 'Efeitos GPU FMX — sombras, blur, glow, reflexo e overlay fosco para modais. Família A — FMX Layout.', tmpl: 'TEMPLATE_card_sombra.pas, TEMPLATE_glow_button.pas, TEMPLATE_overlay_fosco.pas', ex: 'blur_effect.pas, fundo_fosco_overlay.pas, glow_effect.pas, inner_glow.pas, reflexo_effect.pas, shadow_effect.pas', hasRefs: false },
+      { name: 'developer-delphi-fmx-frames_V1.0.0', cat: '', status: '', desc: 'TFrame no FireMonkey — criação, embedding, herança visual, ciclo de vida e padrões do projeto.', tmpl: 'TEMPLATE_frame_crud.pas, TEMPLATE_frame_listagem.pas, TEMPLATE_frame_modal.pas', ex: 'frame_basico.pas, frame_destruir_tudo.pas, frame_heranca.pas, frame_lazy_create.pas, frame_modal.pas, frame_parametros.pas', hasRefs: false },
+      { name: 'developer-delphi-fmx-layout_V1.1.0', cat: 'developer-delphi', status: '', desc: 'Orquestradora da Família A — FMX Layout. Delega para 6 micro-skills especializadas. Cobre hierarquia de containers, Alig', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-fmx-patterns_V1.0.0', cat: '', status: '', desc: 'Padrões visuais e de interação FMX no projeto — responsividade, modais, feedback e navegação.', tmpl: 'TEMPLATE_arc_progress.pas, TEMPLATE_crud_completo.pas, TEMPLATE_drag_form.pas', ex: 'arcprogress_chart.pas, crud_padrao.pas, drag_sem_titlebar.pas, estilo_customizado.pas', hasRefs: false },
+      { name: 'developer-delphi-horse-orchestrator_V1.0.0', cat: 'project', status: '', desc: 'Orquestrador da família Horse para Delphi/FPC. Ponto de entrada único para Horse (servidor HTTP), middlewares (CORS, JWT', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-indy-email_V1.0.0', cat: 'developer-delphi', status: '', desc: 'E-mail com Indy no Delphi: TIdSMTP, TIdMessage, TIdAttachment, STARTTLS, SSL/TLS, autenticação PLAIN/LOGIN/NTLM, TIdIMAP', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-indy-ftp_V1.0.0', cat: 'developer-delphi', status: '', desc: 'FTP e FTPS com Indy no Delphi: TIdFTP, upload, download, listagem de diretório, criação e remoção de pastas, renomeação,', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-indy-http_V1.0.0', cat: 'developer-delphi', status: '', desc: 'HTTP/HTTPS com Indy no Delphi: TIdHTTP, GET, POST, PUT, DELETE, headers, cookies, redirects, proxies, TLS/SSL com TIdSSL', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-indy-tcp_V1.0.0', cat: 'developer-delphi', status: '', desc: 'TCP raw com Indy no Delphi: TIdTCPClient, TIdTCPServer, TIdCmdTCPServer, leitura e escrita de bytes/strings/streams, fra', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-ios-publishing_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Publicação de app iOS com Delphi (App Store, Enterprise interno e MDM), cobrindo dproj, provisioning, certificados, IPA ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-ios-setup_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Configuração completa da plataforma iOS para projetos Delphi FMX: PAServer, certificados Apple, provisioning profiles, S', tmpl: 'TEMPLATE_ios_connection_profile.dproj', ex: 'ios_certificate.md, ios_provisioning.md, ios_setup_paserver.md', hasRefs: false },
+      { name: 'developer-delphi-json-serialization_V1.0.0', cat: 'developer-delphi', status: '', desc: 'JSON em Delphi: System.JSON, TJSONObject, TJSONArray, TJSONValue, parsing, serialização/desserialização de objetos, REST', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-master-orchestrator_V1.1.0', cat: 'developer-delphi', status: '', desc: 'Orquestra as skills do kit Delphi/FPC por cenário de desenvolvimento, mapeando todas as famílias A—K, com árvore de deci', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-mobile-orchestrator_V1.1.0', cat: 'developer-delphi', status: '', desc: 'Orquestrador mobile Delphi FMX: ponto de entrada único para desenvolvimento iOS e Android. Roteia para skills especializ', tmpl: 'TEMPLATE_mobile_dproj.xml', ex: 'mobile_platforms_config.md, mobile_project_setup.md', hasRefs: false },
+      { name: 'developer-delphi-modular-backend-scaffold_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Scaffold completo de módulo backend MXX Delphi/FPC: geração de arquivos de build (.dpr/.dproj/.lpr/.lpi/.lps/cfg/opts), ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-packaging-delivery_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Empacotamento, versionamento e entrega de artefatos Delphi/FPC com critérios de release.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-programming-conditional-defines_V1.1.0', cat: 'developer-delphi', status: '', desc: 'Use when the user asks about compilation directives (USE_*, ORM.Defines.inc), how to enable/disable modules or engines, ', tmpl: '', ex: 'diretivas_compilacao.md', hasRefs: false },
+      { name: 'developer-delphi-programming-oop-fluent_V1.0.0', cat: 'project', status: '', desc: 'Padrão transversal obrigatório — toda programação no projeto deve ser orientada a objeto com fluência total. Usar ao cri', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-programming-oop-naming_V1.0.0', cat: 'project', status: '', desc: 'Convenção de nomenclatura OOP para módulos e submódulos Delphi: TModulo/IModulo, prefixo Commons. em Commons/, Controlle', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-project-audit_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Laudo técnico profissional completo de projetos Delphi: análise de arquitetura, Clean Code, Code Smells, SOLID, memória,', tmpl: '', ex: '', hasRefs: true },
+      { name: 'developer-delphi-project-spec_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Geração automática de documentos de especificação de software (SPEC) por engenharia reversa do código-fonte Delphi: ator', tmpl: '', ex: '', hasRefs: true },
+      { name: 'developer-delphi-providers-loggers_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Use when the user asks about the Loggers module — multi-destination logging (Database, CSV, TextFile, XML, JSON, HTTP, E', tmpl: '', ex: 'loggers_uso.md', hasRefs: false },
+      { name: 'developer-delphi-providers-orm-usage_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Use when the user asks how to use the ProvidersORM framework — Attributes mode (class-to-table mapping, EntityManager, I', tmpl: '', ex: 'roteiro_attributes.md', hasRefs: false },
+      { name: 'developer-delphi-providers-parameters_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Use when the user asks about the Parameters module — loading config from INI, JSON, or Database; IParameters/TParameters', tmpl: '', ex: 'parametros_uso.md', hasRefs: false },
+      { name: 'developer-delphi-reporting-fastreport_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Relatórios FastReport no Delphi: TfrxReport, TfrxDBDataset, TfrxPreviewForm, design em tempo de execução, variáveis, par', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-rest-dataware-estrutura_V1.0.0', cat: 'project', status: '', desc: 'Mapa de pastas, localização de arquivos e ordem de compilação do framework REST DataWare V2.1. Cobre CORE/Source/ (subpa', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-rest-dataware-expert_V1.0.0', cat: 'project', status: '', desc: 'Arquitetura, APIs e componentes do framework REST DataWare (RDW) V2.1. Cobre as 5 camadas (Transport/Core/Database/Utils', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-rest-dataware-orchestrator_V1.0.0', cat: 'project', status: '', desc: 'Ponto de entrada para a família developer-delphi-rest-dataware-*. Classifica demandas de REST DataWare (RDW) e delega pa', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-rest-dataware-roteiro_V1.0.0', cat: 'project', status: '', desc: 'Roteiros práticos de uso do framework REST DataWare (RDW) V2.1 — configurar servidor REST (Indy/SSL/pooling), consultas ', tmpl: '', ex: 'roteiro_auth.md, roteiro_client.md, roteiro_drivers.md, roteiro_massive.md, roteiro_server.md', hasRefs: false },
+      { name: 'developer-delphi-servers-libraries-orchestrator_V1.1.0', cat: '', status: '', desc: 'Orquestradora da Família M — Serviços e Bibliotecas Delphi. Mapeia Horse, REST-DataWare, JWT, OpenSSL e afins.', tmpl: 'TEMPLATE_server_library_project_setup.md', ex: '', hasRefs: false },
+      { name: 'developer-delphi-testing-and-quality_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Estratégia de testes e qualidade para Delphi/FPC, incluindo gates de compilação e exemplos mínimos compiláveis.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-testing-dunitx_V1.0.0', cat: 'developer-delphi', status: 'superseded', desc: 'Testes unitários com DUnitX em Delphi — fixtures, assertions, TestCase parametrizado, mocking com Delphi-Mocks e isolame', tmpl: 'TEMPLATE_mock_service.pas, TEMPLATE_test_fixture.pas', ex: 'assertions.pas, mock_interface.pas, setup_teardown.pas, test_case_attribute.pas, test_fixture_basico.pas, test_isolation.pas', hasRefs: false },
+      { name: 'developer-delphi-testing-dunitx_V1.1.0', cat: 'developer-delphi', status: '', desc: 'Testes unitários com DUnitX em Delphi — fixtures, assertions, TestCase parametrizado, mocking com Delphi-Mocks e isolame', tmpl: 'TEMPLATE_mock_service.pas, TEMPLATE_test_fixture.pas', ex: 'assertions.pas, mock_interface.pas, setup_teardown.pas, test_case_attribute.pas, test_fixture_basico.pas, test_isolation.pas', hasRefs: true },
+      { name: 'developer-delphi-testing-integration_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Testes de integração em Delphi — banco real com rollback automatico (FireDAC/SQLite), fixtures de dados, smoke tests de ', tmpl: 'TEMPLATE_http_stub.pas, TEMPLATE_integration_db.pas', ex: 'db_real_test.pas, filesystem_test.pas, smoke_test.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-architecture-and-design_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Arquitetura modular, facades, DI/IoC por interfaces, padrões Fluent/Factory e estratégia de evolução de schema.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-architecture-modules_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Modularização em Delphi — units, packages BPL (runtime/design-time), namespaces, resolução de dependências circulares, p', tmpl: 'TEMPLATE_bpl_loader.pas, TEMPLATE_modulo_interface.pas', ex: 'bpl_module.pas, circular_dep.pas, modulo_isolado.pas, unit_namespaces.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-build_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Build por linha de comando (Delphi/FPC) com baseline de compatibilidade, tabela de divergências e quality gates.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-dataset-serialize_V1.0.0', cat: 'project', status: '', desc: 'Serialização JSON↔DataSet com dataset-serialize em Delphi/FPC. Cobre ToJSONObject, ToJSONArray, LoadFromJSON, MergeFromJ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-error-handling-and-diagnostics_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Taxonomia de exceções por domínio, diagnóstico e práticas seguras de tratamento de erro em Delphi/FPC.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-basic-auth_V1.0.0', cat: 'project', status: '', desc: 'Middleware HTTP Basic Authentication para Horse. Cobre HorseBasicAuthentication (callback de validação, configuração THo', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-clientip_V1.0.0', cat: 'project', status: '', desc: 'Utilitário de extração de IP real do cliente para Horse. Cobre ClientIP(Req) com prioridade de cabeçalhos (CF-Connecting', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-compression_V1.0.0', cat: 'project', status: '', desc: 'Middleware de compressão HTTP GZIP/DEFLATE para Horse. Cobre Compression() (padrão, com threshold, com tipos específicos', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-core_V1.0.0', cat: 'project', status: '', desc: 'Framework HTTP Horse para Delphi/Lazarus (FPC). Cobre THorse (routing, Use, Listen, Group), THorseRequest (Params, Query', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-cors_V1.0.0', cat: 'project', status: '', desc: 'Middleware CORS para Horse. Cobre HorseCORS/CORS, HorseCORSConfig (AllowedOrigin, AllowedMethods, AllowedHeaders, Allowe', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-etag_V1.0.0', cat: 'project', status: '', desc: 'Middleware ETag para Horse — caching condicional HTTP. Cobre eTag middleware (cálculo automático de hash, If-None-Match,', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-exception-logger_V1.0.0', cat: 'project', status: '', desc: 'Middleware de log de exceções para Horse. Cobre THorseExceptionLogger.New (formato padrão e com format/dir), variáveis d', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-handle-exception_V1.0.0', cat: 'project', status: '', desc: 'Middleware HandleException do Horse para capturar exceções não tratadas e devolver respostas JSON de erro consistentes. ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-jwt_V1.0.0', cat: 'project', status: '', desc: 'Middleware JWT Bearer para Horse. Cobre HorseJWT (global e por rota), THorseJWTConfig (SkipRoutes, Header, IsRequiredSub', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-logger_V1.0.0', cat: 'project', status: '', desc: 'Infraestrutura de logging por providers para Horse. Cobre THorseLoggerManager (RegisterProvider, HorseCallback), contrat', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-logger-console_V1.0.0', cat: 'project', status: '', desc: 'Provider de log em console (stdout) para horse-logger. Cobre THorseLoggerProviderConsole (New, New(config)) e THorseLogg', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-logger-logfile_V1.0.0', cat: 'project', status: '', desc: 'Provider de log em ficheiro para horse-logger. Cobre THorseLoggerProviderLogFile (New, New(config)) e THorseLoggerLogFil', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-octet-stream_V1.0.0', cat: 'project', status: '', desc: 'Middleware de streaming binário para Horse (application/octet-stream). Cobre OctetStream middleware, Res.Send<TStream>, ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-paginate_V1.0.0', cat: 'project', status: '', desc: 'Middleware de paginação de respostas JSON para Horse. Cobre Paginate (padrão com summary, gpoDoNotIncludeSummary sem wra', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-horse-security_V1.0.0', cat: 'project', status: '', desc: 'Segurança JWT/JOSE para APIs Horse em Delphi. Cobre delphi-jose-jwt (TJWT, TJOSE, TJWTClaims, TJOSEConsumerBuilder) e gb', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-http-client-rest_V1.0.0', cat: 'project', status: '', desc: 'Cliente HTTP REST para Delphi/Lazarus com RESTRequest4Delphi. Cobre TRequest/IRequest (BaseURL, Get, Post, Put, Delete, ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-language-advanced_V1.1.0', cat: '', status: '', desc: 'Recursos avançados da linguagem Delphi — closures, operator overloading, inline functions, anonymous methods.', tmpl: 'TEMPLATE_builder_anon.pas, TEMPLATE_event_handler.pas, TEMPLATE_pipeline.pas', ex: 'anon_methods.pas, closures.pas, exit_params.pas, operator_overloading.pas, proc_references.pas, record_operators.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-language-core_V1.1.0', cat: 'developer-delphi', status: '', desc: 'Orquestradora Família B — Linguagem Object Pascal: direciona para a micro-skill correta (types, oop, generics, rtti, adv', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-language-generics_V1.1.0', cat: '', status: '', desc: 'Generics em Delphi — classes/métodos genéricos, constraints, TList/TDictionary, Nullable<T>, Result<T,E>.', tmpl: 'TEMPLATE_generic_list.pas, TEMPLATE_generic_result.pas, TEMPLATE_nullable.pas', ex: 'constraints.pas, generics_basicos.pas, generic_collections.pas, generic_factory.pas, generic_methods.pas, generic_repository.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-language-oop_V1.1.0', cat: '', status: '', desc: 'OOP em Delphi — classes, interfaces, herança, polimorfismo, encapsulamento e padrões de projeto.', tmpl: 'TEMPLATE_classe_base.pas, TEMPLATE_helper_string.pas, TEMPLATE_interface_fluente.pas', ex: 'classes_basicas.pas, class_methods.pas, helpers.pas, heranca_polimorfismo.pas, interfaces_fluentes.pas, interfaces_impl.pas, operadores.pas, visibility.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-language-rtti_V1.1.0', cat: '', status: '', desc: 'RTTI em Delphi — TRttiContext, TRttiProperty, TCustomAttribute, TValue e mapeamento JSON-objeto.', tmpl: 'TEMPLATE_attribute_custom.pas, TEMPLATE_auto_inject.pas, TEMPLATE_rtti_mapper.pas', ex: 'attributes.pas, rtti_auto_bind.pas, rtti_basico.pas, rtti_json_map.pas, rtti_metodos.pas, rtti_propriedades.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-language-types_V1.1.0', cat: '', status: '', desc: 'Tipos do Object Pascal/Delphi — primitivos, records, enums, sets, ponteiros e tipos avançados.', tmpl: 'TEMPLATE_array_helpers.pas, TEMPLATE_enum_flags.pas, TEMPLATE_record_dto.pas', ex: 'arrays_dinamicos.pas, arrays_estaticos.pas, enumerados.pas, pointers_basico.pas, records_avancados.pas, records_basicos.pas, strings_unicode.pas, tipos_primitivos.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-linux-daemon_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Implementar daemons UNIX em Linux com Delphi e FPC — fork/setsid, signal handling (SIGTERM/SIGHUP/SIGPIPE) em Delphi (Po', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-linux-servers_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Guia completo para desenvolver, compilar e implantar servidores e daemons Linux com Delphi (RAD Studio 12+) e FPC/Lazaru', tmpl: 'TEMPLATE_daemon.service, TEMPLATE_linux_console_daemon.pas, TEMPLATE_paserver.service', ex: 'console_daemon_basic.pas, dcclinux64_build_guide.md, fpc_linux_daemon.pas, paserver_linux_setup.md', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-linux-setup_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Configurar o ambiente de cross-compile Delphi/FPC para Linux — pré-requisitos no Windows e no servidor Linux, instalação', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-patterns-behavioral_V1.1.0', cat: '', status: '', desc: 'Padrões comportamentais em Delphi — Strategy, Observer, Command, Chain of Responsibility, Mediator, State.', tmpl: 'TEMPLATE_command_undo.pas, TEMPLATE_observer_multicast.pas, TEMPLATE_strategy.pas', ex: 'chain_of_resp.pas, command.pas, iterator.pas, mediator.pas, observer.pas, state.pas, strategy.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-patterns-composition_V1.1.0', cat: '', status: '', desc: 'Orquestradora da Família C — Design Patterns Delphi. Mapeia as 3 micro-skills de padrões por categoria.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-patterns-creational_V1.1.0', cat: '', status: '', desc: 'Padrões de criação em Delphi — Factory Method, Abstract Factory, Builder fluente, Singleton, Prototype, Object Pool.', tmpl: 'TEMPLATE_builder_fluente.pas, TEMPLATE_factory_interface.pas, TEMPLATE_singleton_safe.pas', ex: 'abstract_factory.pas, builder_pattern.pas, factory_method.pas, object_pool.pas, prototype.pas, singleton.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-patterns-structural_V1.1.0', cat: '', status: '', desc: 'Padrões estruturais em Delphi — Composite, Decorator, Adapter, Proxy, Facade, Bridge via interface.', tmpl: 'TEMPLATE_adapter_legacy.pas, TEMPLATE_decorator_chain.pas', ex: 'adapter.pas, bridge.pas, composite.pas, decorator.pas, facade.pas, proxy.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-performance-and-architecture_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Performance e arquitetura em Delphi/FPC — profiling, pool de objetos, lazy loading, otimização de memória, decisões estr', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-performance-and-memory_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Otimização de desempenho e gestão de memória cross-compiler (FastMM, HeapTrc/CMem, padrões preventivos).', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-performance-profiling_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Profiling e benchmarking em Delphi — TStopwatch, FastMM5, AQTime/Sampling Profiler, QueryPerformanceCounter, hotspots em', tmpl: 'TEMPLATE_benchmark.pas, TEMPLATE_leak_test.pas', ex: 'fastmm5_config.pas, memory_leak_patterns.pas, stopwatch.pas, string_concat_perf.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-rtl-and-units_V1.1.0', cat: '', status: '', desc: 'Orquestradora da Família D — RTL e I/O Delphi. Cobre coleções genéricas, streams/IO e strings.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-rtl-collections_V1.1.0', cat: '', status: '', desc: 'Coleções genéricas RTL Delphi — TList<T>, TDictionary<K,V>, TObjectList<T>, comparadores e padrões LINQ-like.', tmpl: 'TEMPLATE_cache_lru.pas, TEMPLATE_repository_list.pas', ex: 'linq_style.pas, tdictionary.pas, tlist_generica.pas, tobjectlist.pas, tqueue_tstack.pas, tsortedlist.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-rtl-streams-io_V1.1.0', cat: '', status: '', desc: 'I/O com streams no RTL Delphi — TFileStream, TMemoryStream, TIOUtils, encoding, compressão e serialização.', tmpl: 'TEMPLATE_binary_serializer.pas, TEMPLATE_file_processor.pas', ex: 'binary_io.pas, file_stream.pas, ioutils.pas, stream_encoding.pas, tstream_basico.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-rtl-strings_V1.1.0', cat: '', status: '', desc: 'Strings no RTL Delphi — TStringHelper, TStringBuilder, TRegEx, Format, encoding UTF-8 e conversões.', tmpl: 'TEMPLATE_string_format.pas, TEMPLATE_string_parser.pas', ex: 'format_strings.pas, regex_delphi.pas, string_builder.pas, string_conversion.pas, string_encoding.pas, string_helpers.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-shared-libraries_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Guia completo para criar, exportar, carregar e consumir bibliotecas dinâmicas (.dll/.so) com Delphi e FPC — cobrindo fro', tmpl: 'TEMPLATE_library_project.pas, TEMPLATE_loadlibrary_wrapper.pas, TEMPLATE_plugin_interface.pas', ex: 'dll_memory_manager_guide.md, dlopen_consumer_linux.pas, interface_plugin_host.pas, interface_plugin_impl.pas, library_basic_exports.pas, loadlibrary_consumer_win.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-shared-libraries-linux_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Carregar e consumir shared objects (.so) em Linux com Delphi (Posix.Dlfcn) e FPC (dynlibs) — dlopen, dlsym, dlclose, fla', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-shared-libraries-plugins_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Sistema de plugins extensível via interfaces COM-compatible em Delphi/FPC — unit de interfaces partilhada, IPlugin/IPlug', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-shared-libraries-windows_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Criar, exportar e carregar DLLs em Windows com Delphi e FPC — projeto library, cláusula exports, DllProc, LoadLibrary/Ge', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-threading-advanced_V1.1.0', cat: '', status: '', desc: 'Concorrência avançada em Delphi — PPL, TTask, TParallel.For, IFuture e padrões producer-consumer.', tmpl: 'TEMPLATE_parallel_map.pas, TEMPLATE_task_pipeline.pas', ex: 'async_await_pattern.pas, lock_free.pas, parallel_aggregate.pas, tparallel.pas, ttask_ppl.pas, tthreadedqueue.pas', hasRefs: false },
+      { name: 'developer-delphi-to-fpc-threading-basics_V1.1.0', cat: '', status: '', desc: 'Concorrência básica em Delphi — TThread, sincronização (TCriticalSection, TMonitor, TEvent) e Synchronize.', tmpl: 'TEMPLATE_producer_consumer.pas, TEMPLATE_worker_thread.pas', ex: 'sync_events.pas, tcriticalsection.pas, thread_local_storage.pas, tmonitor.pas, tthread_anonymous.pas, tthread_basico.pas', hasRefs: false },
+      { name: 'developer-delphi-vcl-components_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Componentes VCL individuais e data-aware: TEdit, TButton, TComboBox, TListBox, TMemo, TPanel, TPageControl, TTabSheet, T', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-vcl-forms_V1.0.0', cat: 'developer-delphi', status: '', desc: 'TForm, ciclo de vida de formulários VCL, MDI/SDI, modais, formulários dinâmicos, estilos VCL (themes), ActionList, exceç', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-vcl-orchestrator_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Orquestrador da família VCL (Visual Component Library) — coordena forms, componentes e controles data-aware. Ativar quan', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-windows-codesigning_V1.0.0', cat: '', status: '', desc: 'Code Signing para aplicativos Windows com Delphi/FPC — certificados auto-assinados, OV/EV e distribuição.', tmpl: 'TEMPLATE_signing_script.ps1', ex: 'ci_signing_pipeline.md, codesigning_test.ps1, signtool_usage.md', hasRefs: false },
+      { name: 'developer-delphi-windows-msix_V1.0.0', cat: '', status: '', desc: 'Empacotamento MSIX para aplicativos Delphi/FPC — .dproj, AppxManifest.xml, Deployment Manager, sideloading, WACK, Sparse', tmpl: 'TEMPLATE_appxmanifest.xml, TEMPLATE_deploy_msix.ps1, TEMPLATE_msix_release.dproj', ex: 'appxmanifest_walkthrough.md, deployment_manager_guide.md, msix_dproj_config.md, sideload_testing.ps1, wack_pre_submission.md', hasRefs: false },
+      { name: 'developer-delphi-windows-services_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Guia completo para criar, instalar, depurar e manter Windows Services com Delphi usando TService, TEventLogger, Named Pi', tmpl: 'TEMPLATE_service_worker_thread.pas, TEMPLATE_tservice.pas', ex: 'tservice_basic.pas, tservice_debug_guide.md, tservice_install_guide.md, tservice_named_pipe_server.pas', hasRefs: false },
+      { name: 'developer-delphi-windows-services-advanced_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Operação avançada de Windows Services em Delphi — contas de serviço (tabela de decisão), recovery actions (watchdog SCM)', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-windows-services-setup_V1.0.0', cat: 'developer-delphi', status: '', desc: 'Criar, configurar e implantar Windows Services em Delphi com TService — wizard, estrutura .dpr, tabela de eventos, padrã', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-delphi-windows-store-publishing_V1.0.0', cat: '', status: '', desc: 'Publicação na Microsoft Store — Partner Center, Package Identity, metadados, WACK, staged rollout, TWindowsStore, workfl', tmpl: 'TEMPLATE_store_release.dproj, TEMPLATE_windows_store.pas', ex: 'partner_center_setup.md, staged_rollout.md, store_metadata_guide.md, store_update_workflow.md, windows_store_component.pas', hasRefs: false },
+      { name: 'developer-vuejs-api-integration_V1.0.0', cat: 'developer-web', status: '', desc: 'Integração de APIs REST em Vue 3 com Axios ou Fetch nativo. Cobre composables de requisição, interceptors, tratamento de', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-components-reactivity_V1.0.0', cat: 'developer-web', status: '', desc: 'Arquitetura de componentes VueJS com Composition API + script setup, composables e nota de escalabilidade SSR/SSG.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-components-reactivity_V1.1.0', cat: 'developer-web', status: '', desc: 'Arquitetura de componentes VueJS com Composition API + script setup, composables e nota de escalabilidade SSR/SSG.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-forms-validation_V1.0.0', cat: 'developer-web', status: '', desc: 'Formulários reativos e validação em Vue 3 com VeeValidate + Zod ou Vuelidate. Cobre criação de campos controlados, esque', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-language-core_V1.0.0', cat: 'developer-web', status: '', desc: 'Fundamentos de JavaScript moderno para VueJS, incluindo decisão JS vs TypeScript, nomenclatura e práticas de código.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-language-core_V1.1.0', cat: 'developer-web', status: '', desc: 'Fundamentos de JavaScript moderno para VueJS, incluindo decisão JS vs TypeScript, nomenclatura e práticas de código.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-master-orchestrator_V1.0.0', cat: 'developer-web', status: '', desc: 'Orquestra skills do kit VueJS/NodeJS por cenário, garantindo ordem de execução, risco e evidências de qualidade.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-master-orchestrator_V1.1.0', cat: 'developer-web', status: '', desc: 'Orquestra skills do kit VueJS/NodeJS por cenário, garantindo ordem de execução, risco e evidências de qualidade.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-routing-state_V1.0.0', cat: 'developer-web', status: '', desc: 'Roteamento e gerenciamento de estado em VueJS com Vue Router e Pinia, incluindo guards e lazy loading.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-routing-state_V1.1.0', cat: 'developer-web', status: '', desc: 'Roteamento e gerenciamento de estado em VueJS com Vue Router e Pinia, incluindo guards e lazy loading.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-testing_V1.0.0', cat: 'developer-web', status: '', desc: 'Testes unitários e de componente em Vue 3 com Vitest e Vue Test Utils. Cobre setup de ambiente, testes de composables, c', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-vue2-options-api_V1.0.0', cat: 'developer-web', status: '', desc: 'Options API em Vue 2 — data, computed, methods, watch, lifecycle hooks, props, eventos e mixins. Para projetos legados q', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-vue2-state-router_V1.0.0', cat: 'developer-web', status: '', desc: 'Gerenciamento de estado com Vuex 3 e roteamento com Vue Router 3 em projetos Vue 2. Cobre módulos Vuex, getters, actions', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-vuejs-vue2-to-vue3-migration_V1.0.0', cat: 'developer-web', status: '', desc: 'Guia prático de migração de Vue 2 para Vue 3. Cobre breaking changes, substituição de Options API por Composition API, m', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-web-build-tooling-quality_V1.0.0', cat: 'developer-web', status: '', desc: 'Build, qualidade e variáveis de ambiente para VueJS/NodeJS com Vite e comandos npm obrigatórios.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-web-docs-to-structured-code_V1.0.0', cat: 'developer-web', status: '', desc: 'Converte documentação funcional/técnica em implementação estruturada VueJS/NodeJS com rastreabilidade completa.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-web-documentation-governance_V1.0.0', cat: 'developer-web', status: '', desc: 'Governança de documentação para o kit web, com changelog, rastreabilidade de fontes e regras de risco.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-web-nodejs-api-middleware_V1.0.0', cat: 'developer-web', status: '', desc: 'Runtime NodeJS e padrões de integração HTTP/API para aplicações VueJS, incluindo Axios, interceptors e cancellation.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-web-packaging-deployment_V1.0.0', cat: 'developer-web', status: '', desc: 'Empacotamento e deploy de aplicações VueJS com estratégia de release, CSP e checklist operacional.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-web-performance-accessibility_V1.0.0', cat: 'developer-web', status: '', desc: 'Performance, acessibilidade e prevenção de memory leaks em SPA VueJS.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'developer-web-testing-debugging_V1.0.0', cat: 'developer-web', status: '', desc: 'Estratégia de testes e depuração para aplicações VueJS, incluindo error handling global e observabilidade de falhas.', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-analysis-index_V1.1.0', cat: 'documentation', status: '', desc: 'Cria ou atualiza documentos de análise/índice em `Documentation/Analise/` com estrutura rastreável e acionável.', tmpl: 'TEMPLATE_Docs_Analise.md', ex: '', hasRefs: false },
+      { name: 'documentation-api-openapi_V1.1.0', cat: 'documentation', status: '', desc: 'Cria ou atualiza documentação de API no formato de referência OpenAPI/Swagger (resumo acionável) dentro do padrão `Docum', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-architecture_V1.1.0', cat: 'documentation', status: '', desc: 'Cria ou atualiza documentos de arquitetura dentro de `Documentation/Arquitetura/` no template canônico.', tmpl: 'TEMPLATE_Docs_Arquitetura.md', ex: '', hasRefs: false },
+      { name: 'documentation-business-rules_V3.1.0', cat: 'documentation', status: '', desc: 'Cria ou atualiza documentos de Regras de Negócio em `Documentation/Regras de Negocio/` — um arquivo por regra, subpasta ', tmpl: 'TEMPLATE_Docs_RN.md', ex: 'Padrao_RN-M01-001_exemplo.md, Padrao_RN-M05-001_exemplo.md', hasRefs: false },
+      { name: 'documentation-class-analysis-generator_V1.1.0', cat: 'documentation', status: '', desc: 'Gera documentação completa por classe/interface com conteudo detalhado (O que e, Caracteristicas, Engine, Funcionalidade', tmpl: 'TEMPLATE_ClassName_Full_Documentation.md', ex: '', hasRefs: false },
+      { name: 'documentation-general_rules_V2.0.0', cat: 'documentation', status: '', desc: 'Convenções transversais de documentação entre skills (ordem de invocação, changelog em Markdown portátil, pacote para ou', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-master-orchestrator_V1.1.0', cat: 'documentation', status: '', desc: 'Ponto de entrada para todos os workflows de documentação — bootstrap, design OOP inicial, análise de código, conteúdo ca', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-migration-backup_V1.1.0', cat: 'documentation', status: '', desc: 'Migra documentação existente para a estrutura canônica de `Documentation/` movendo artefatos para destinos finais corret', tmpl: 'TEMPLATE_Docs_Backup_README.md', ex: '', hasRefs: false },
+      { name: 'documentation-migration-plan_V1.1.0', cat: 'documentation', status: '', desc: 'Planeia migrações de documentação — analisa o estado atual de Documentation/, identifica artefatos que precisam ser movi', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-oop-first_V1.0.0', cat: 'documentation', status: '', desc: 'Ao elaborar documentação para um projeto que ainda não possui código-fonte, o design OOP vem primeiro. Antes de escrever', tmpl: 'TEMPLATE_oop_project_design.md', ex: '', hasRefs: false },
+      { name: 'documentation-overview-architecture_V1.1.0', cat: 'documentation', status: '', desc: 'Guia para produzir documentação Overview (visao geral de projeto) e Architecture (arquitetura profunda por componente) n', tmpl: 'TEMPLATE_Docs_Overview.md', ex: 'ProvidersORM_Overview.md, ProvidersORM_Overview_Arquitetura.md', hasRefs: false },
+      { name: 'documentation-portal-html_V1.2.0', cat: 'documentation', status: '', desc: 'Skill para planear e gerar o portal HTML estático em Documentation/html/ (templates TEMPLATE_Docs_html_*), com delegação', tmpl: 'TEMPLATE_Docs_html_docs-data.js, TEMPLATE_Docs_html_index.html, TEMPLATE_Docs_html_README.md', ex: 'docs-data_exemplo.js, index_exemplo.html', hasRefs: false },
+      { name: 'documentation-project-bootstrap_V2.1.0', cat: 'documentation', status: '', desc: 'Inicializa o ecossistema documental em um projeto novo criando a estrutura canônica `Documentation/`, gerando o hub `REA', tmpl: 'TEMPLATE_Docs_LOGICA_DATABASE.md, TEMPLATE_Docs_ROTEIROS_CONSOLIDADO.md', ex: 'README_Hub_exemplo.md', hasRefs: false },
+      { name: 'documentation-project-examples-template_V1.1.0', cat: 'documentation', status: '', desc: 'Template genérico e portátil para exemplos de uso do projecto — padrão central de uso com múltiplas variantes (pool, con', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-expert_V1.0.0', cat: 'documentation', status: '', desc: 'Expert in Projeto v2.0 for Delphi/Free Pascal. Use when working on ORM architecture, Connection/Pool, Fields/Tables hier', tmpl: '', ex: 'README.md', hasRefs: false },
+      { name: 'documentation-project-feature_V1.1.0', cat: 'documentation', status: '', desc: 'Analisa qualquer projeto para criar ou revisar uma pasta `Analise/` com cobertura por funcionalidade (organização, regra', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-fundamentals-template_V1.1.0', cat: 'documentation', status: '', desc: 'Template genérico e portátil para fundamentos do projecto — identidade e stack principal, convenção de changelog (projec', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-plan-subplans_V1.0.0', cat: 'documentation', status: '', desc: 'Para um projeto existente (qualquer pasta com .dpr/.lpr ou source), gera um plano-mestre de criação de documentação e o ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-roadmap-template_V1.1.0', cat: 'documentation', status: '', desc: 'Template genérico e portátil para roadmap estratégico de projecto — visão, objectivos, fases detalhadas com entregáveis ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-scan_V1.1.0', cat: 'documentation', status: '', desc: 'Executa uma varredura (scanner padrão) para descobrir artefatos documentais e lacunas no ecossistema `Documentation/` (o', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-structure_V1.0.0', cat: 'documentation', status: '', desc: '>-', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-structure-template_V1.1.0', cat: 'documentation', status: '', desc: 'Template genérico e portátil para documentação da estrutura de arquivos de um projecto — árvore de directórios do reposi', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-project-update_V1.1.0', cat: 'documentation', status: '', desc: 'Propaga o pack `.cursor/` entre projectos — copia scripts, skills, Templates, agents; limpa orfaos; verifica coerencia. ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-readme-hub_V1.1.0', cat: 'documentation', status: '', desc: 'Atualiza o hub de documentação `Documentation/README_Vx.y.md` como índice curto, coerente e sincronizado com o mapa fina', tmpl: 'TEMPLATE_Docs_README_Hub.md, TEMPLATE_Docs_README_Simples.md', ex: '', hasRefs: false },
+      { name: 'documentation-roadmap-from-docs_V1.1.0', cat: 'documentation', status: '', desc: 'Gera um roadmap detalhado de documentação a partir da pasta `Documentation/` (hub `README_Vx.y.md`, Arquitetura, Regras ', tmpl: 'TEMPLATE_Docs_Roadmap.md', ex: '', hasRefs: false },
+      { name: 'documentation-rules_creator_V1.1.0', cat: 'documentation', status: '', desc: 'Cria ou recria regras em `.cursor/rules/` apenas com conteúdo específico do workspace atual; conteúdo portátil roteia pa', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-schema-reorder_V1.0.0', cat: 'documentation', status: '', desc: 'Renumeração atómica e cascata do esquema canónico de RNs (MXX) em Documentation/ + `.cursor/` + `.workspace/`. Usar quan', tmpl: '', ex: '', hasRefs: false },
+      { name: 'documentation-screen-sketches_V1.1.0', cat: 'documentation', status: '', desc: 'Gera rascunhos/documentação de telas e fluxos em `Documentation/Esboco_Telas/` com conteúdo claro, rastreável e operacio', tmpl: 'TEMPLATE_Docs_EsbocTelas.md', ex: '', hasRefs: false },
+      { name: 'documentation-versioning-changelog_V1.1.0', cat: 'documentation', status: '', desc: 'Atualiza o changelog documental em `Documentation/Versionamento/CHANGELOG.md` com entradas formatadas, registrando inici', tmpl: 'TEMPLATE_Docs_Changelog.md', ex: '', hasRefs: false },
+      { name: 'governance-artifact-dependency-map_V1.0.0', cat: 'governance-artifact', status: '', desc: 'Mapa de dependências externas do Providers.2.1.0 — engines de banco (FireDAC, UniDAC, Zeos, SQLdb), componentes VCL/FMX ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-artifact-inventory_V1.0.0', cat: 'governance-artifact', status: '', desc: 'Inventário centralizado de artefatos do Providers.2.1.0 — lista binários, documentos, scripts e configurações com versão', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-artifact-traceability_V1.0.0', cat: 'governance-artifact', status: '', desc: 'Rastreabilidade bidirecional no Providers.2.1.0 — mapeia requisito ↔ SPEC ↔ código ↔ teste ↔ documentação, detectando re', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-change-request_V1.0.0', cat: 'governance-process', status: '', desc: 'Gestão de solicitação de mudança com análise de impacto — processa qualquer pedido de alteração em módulo existente do P', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-constitution-policies_V1.0.0', cat: 'governance-process', status: '', desc: 'Skill consolidada que reúne as três políticas constitucionais de documentação — integração rules/docs/skills, resolução ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-incident-response_V1.0.0', cat: 'governance-process', status: '', desc: 'Resposta a incidente em produção — processo estruturado para classificar severidade (P0-P3), isolar impacto, identificar', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-master-orchestrator_V1.0.0', cat: 'governance-process', status: '', desc: 'Ponto de entrada para todos os workflows de governança de processo — SDLC, specs, artefatos, políticas, release manageme', tmpl: 'TEMPLATE_change_request.md, TEMPLATE_dependency_map.md, TEMPLATE_incident_report.md, TEMPLATE_raci_matrix.md, TEMPLATE_release_checklist.md, TEMPLATE_spec_prd.md', ex: '', hasRefs: false },
+      { name: 'governance-pack-checklist-validation_V1.0.0', cat: 'governance-process', status: '', desc: 'Checklist de validação para verificar que os espelhos (.claude/, .vscode/, .continue/, .opencode/) estão correctamente c', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-pack-sync_V1.1.0', cat: 'governance-process', status: '', desc: 'Sincroniza o pack .cursor/ de um projeto fonte (SSOT) para um ou mais projetos destino — copia skills/agents/templates/s', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-refactoring-compatibility-policy_V1.0.0', cat: 'governance-process', status: '', desc: 'Política OBRIGATÓRIA ao analisar, consolidar, estruturar, refatorar, renomear ou evoluir código existente em QUALQUER li', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-release-management_V1.0.0', cat: 'governance-process', status: '', desc: 'Fluxo completo de release do Providers.2.1.0 — coordena freeze, compilação Delphi+FPC para todas as plataformas, execuçã', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-sdlc-lifecycle_V1.0.0', cat: 'governance-process', status: '', desc: '>-', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-spec-evolution_V1.0.0', cat: 'governance-spec', status: '', desc: 'Gerencia a evolução controlada de especificações existentes (PRD, TSD, SPEC), garantindo rastreabilidade de mudanças, an', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-spec-prd-generator_V1.0.0', cat: 'governance-spec', status: '', desc: 'Gera PRD.md (Product Requirements Document) a partir de briefing não-estruturado do usuário — transforma entradas brutas', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-spec-reviewer_V1.0.0', cat: 'governance-spec', status: '', desc: 'Auditor independente da SPEC — identifica gaps técnicos (segurança, edge cases de banco, comportamento sob carga, rollba', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-spec-technical-writer_V1.0.0', cat: 'governance-spec', status: '', desc: 'Converte PRD aprovado em SPEC técnica estruturada (SPEC.json + SPEC.md) decomposta em sprints, features, steps, edge_cas', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-spec-validator_V1.0.0', cat: 'governance-spec', status: '', desc: 'Valida a implementação real contra a SPEC aprovada — gera relatório de conformidade com percentual de features implement', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-team-ai-human-workflow_V1.0.0', cat: 'governance-people', status: '', desc: 'Define e documenta a política de autonomia do agent — quais ações o agent executa automaticamente, quais requerem confir', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-team-onboarding_V1.0.0', cat: 'governance-people', status: '', desc: 'Onboarding de desenvolvedor e agent no projeto Providers.2.1.0 — checklist e guia de setup do ambiente, estrutura do pro', tmpl: '', ex: '', hasRefs: false },
+      { name: 'governance-team-raci-matrix_V1.0.0', cat: 'governance-people', status: '', desc: 'Matriz RACI humano + IA por tipo de tarefa do Providers.2.1.0 — define quem é Responsável, Aprovador, Consultado e Infor', tmpl: '', ex: '', hasRefs: false },
+      { name: 'project-consolidate-cursor_V1.1.0', cat: 'project', status: '', desc: 'Auditoria completa do pack .cursor/ (skills, rules, agents, commands, Templates, scripts). Executa 6 checks - versioname', tmpl: '', ex: 'relatorio.md', hasRefs: false },
+      { name: 'project-consolidate-documentation_V1.0.0', cat: 'project', status: '', desc: 'Auditoria completa de Documentation/ (Analise, Arquitetura, BancoDados, RegrasNegocio, Roteiro, Versionamento, etc.). Ex', tmpl: '', ex: 'relatorio.md', hasRefs: false },
+      { name: 'project-consolidate-orchestrator_V1.0.0', cat: 'project', status: '', desc: 'Orquestrador de consolidação/auditoria do workspace. Recebe "consolidar", "/consolidar" ou "consolidar <alvo>" e roteia ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'project-consolidate-source_V1.0.0', cat: 'project', status: '', desc: 'Auditoria completa de projects/ (Pascal Delphi/FPC - .dpr, .lpr, .pas, .dproj, .lpi). Executa 6 checks - cabeçalhos padr', tmpl: '', ex: 'relatorio.md', hasRefs: false },
+      { name: 'project-decompile-chm_V1.0.0', cat: '', status: '', desc: '>-', tmpl: '', ex: '', hasRefs: false },
+      { name: 'project-init-rules-generator_V1.0.0', cat: '', status: '', desc: 'Gera rules Cursor personalizadas para o projeto durante /init. Copia os 4 templates de templates/ (dentro desta skill), ', tmpl: 'projeto_documentacao_V2.0.mdc, projeto_estrutura_V2.0.mdc, projeto_orm_V2.0.mdc, projeto_paths_V2.0.mdc', ex: '', hasRefs: false },
+      { name: 'project-master-orchestrator_V1.2.0', cat: 'project', status: '', desc: 'Ponto de entrada para as skills de convenções e estrutura do projeto — ORM, compilação, bancos CLI, diretivas, roteiros,', tmpl: '', ex: '', hasRefs: false },
+      { name: 'project-open-database-cli_V1.0.0', cat: 'project', status: '', desc: 'Skill multi-SGBD para operar bancos de dados (SQL Server, MySQL, SQLite, PostgreSQL, Firebird) via CLI. Cobre conexão, c', tmpl: '', ex: 'explorar_banco.md', hasRefs: false },
+      { name: 'project-query-docs-index_V1.0.0', cat: 'project', status: '', desc: 'Consulta rápida das três bases SQLite (FTS5) do workspace via `pack_index_db.py --query` — `.cursor/index.db` (skills, a', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-acceptance-testing_V1.0.0', cat: 'quality', status: '', desc: 'Transforma acceptance_criteria da SPEC em casos de teste executáveis — verifica que a implementação satisfaz os critério', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-bug-triage_V1.0.0', cat: 'quality', status: '', desc: 'Classifica, prioriza e encaminha bugs reportados segundo severidade, impacto e área, produzindo um ticket estruturado co', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-code-review-checklist_V1.0.0', cat: 'quality', status: '', desc: 'Checklist estruturado para revisão de código antes de merge — cobre memory management, exceções, nomenclatura, SQL injec', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-hotfix-workflow_V1.0.0', cat: 'quality', status: '', desc: 'Guia o fluxo completo de hotfix em produção — desde a criação do branch de correção emergencial até o merge em main e re', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-master-orchestrator_V1.0.0', cat: 'quality', status: '', desc: 'Ponto de entrada para todos os workflows de qualidade de processo — estratégia de testes, aceite, regressão, code review', tmpl: 'TEMPLATE_acceptance_test_case.md, TEMPLATE_bug_report.md, TEMPLATE_code_review_checklist.md, TEMPLATE_hotfix_runbook.md, TEMPLATE_test_strategy_matrix.md', ex: '', hasRefs: false },
+      { name: 'quality-refactoring-safe_V1.0.0', cat: 'quality', status: '', desc: 'Define e executa refatorações de código com segurança: avalia risco, escolhe estratégia (inline / strangler fig / branch', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-regression-guard_V1.0.0', cat: 'quality', status: '', desc: 'Guarda de regressão — captura snapshot do comportamento atual antes de qualquer alteração e verifica preservação após a ', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-security-audit_V1.0.0', cat: 'quality', status: '', desc: 'Auditoria de segurança de código: identificar SQL injection, XSS, senhas hardcoded, dados sensíveis em log, autenticação', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-tech-debt-tracker_V1.0.0', cat: 'quality', status: '', desc: 'Registra, classifica e prioriza dívida técnica no backlog, vinculando cada item a seu custo de manutenção e ao caminho d', tmpl: '', ex: '', hasRefs: false },
+      { name: 'quality-test-strategy_V1.0.0', cat: 'quality', status: '', desc: 'Define qual tipo de teste usar em qual camada — unitário, integração, aceite — para Delphi/FPC (DUnit, FPCUnit, TestInsi', tmpl: '', ex: '', hasRefs: false },
+      { name: 'schema-reorder-governance_V1.0.0', cat: 'governance', status: '', desc: 'Governa as áreas protegidas do repositório (Documentation/, .cursor/skills/, .cursor/rules/, .cursor/agents/, .cursor/Te', tmpl: '', ex: '', hasRefs: false },
+      { name: 'version-breaking-change-guard_V1.0.0', cat: 'version', status: '', desc: 'Avalia impacto de breaking change ANTES de aplicar — mapeia todos os consumidores da API a ser quebrada na codebase do p', tmpl: '', ex: '', hasRefs: false },
+      { name: 'version-deprecation-policy_V1.0.0', cat: 'version', status: '', desc: 'Processo para deprecar APIs do projeto sem quebrar usuários — adiciona marcador deprecated com mensagem e prazo, documen', tmpl: '', ex: '', hasRefs: false },
+      { name: 'version-master-orchestrator_V1.0.0', cat: 'version', status: '', desc: 'Ponto de entrada para todos os workflows de versionamento — semver, breaking changes, deprecação, guias de upgrade e not', tmpl: 'TEMPLATE_breaking_change_impact.md, TEMPLATE_deprecation_notice.md, TEMPLATE_migration_guide.md, TEMPLATE_release_notes.md', ex: '', hasRefs: false },
+      { name: 'version-migration-assistant_V1.0.0', cat: 'version', status: '', desc: 'Gera guias de migração passo a passo para versões com breaking changes, incluindo scripts de transformação de código, ch', tmpl: '', ex: '', hasRefs: false },
+      { name: 'version-release-notes_V1.0.0', cat: 'version', status: '', desc: 'Gera release notes estruturadas a partir do changelog e dos commits da release, organizando por categoria (breaking chan', tmpl: '', ex: '', hasRefs: false },
+      { name: 'version-semver-product_V1.0.0', cat: 'version', status: '', desc: 'Aplica versionamento semântico ao produto — decide quando bumpar MAJOR/MINOR/PATCH, define o que é breaking change no co', tmpl: '', ex: '', hasRefs: false }
+    ];
+
+    const CAT_COLORS = {
+      'developer-delphi': 'developer-delphi',
+      'developer-delphi-assembly': 'developer-delphi-assembly',
+      'documentation': 'documentation',
+      'governance': 'governance',
+      'governance-process': 'governance-process',
+      'governance-spec': 'governance-spec',
+      'governance-artifact': 'governance-artifact',
+      'governance-people': 'governance-people',
+      'quality': 'quality',
+      'version': 'version',
+      'developer-web': 'developer-web',
+      'project': 'project',
+      '': 'unknown'
+    };
+
+    const CAT_LABELS = {
+      'developer-delphi': 'Delphi',
+      'developer-delphi-assembly': 'Assembly',
+      'documentation': 'Documentation',
+      'governance': 'Governance',
+      'governance-process': 'Gov: Process',
+      'governance-spec': 'Gov: Spec',
+      'governance-artifact': 'Gov: Artifact',
+      'governance-people': 'Gov: People',
+      'quality': 'Quality',
+      'version': 'Version',
+      'developer-web': 'Web/Vue',
+      'project': 'Project',
+      '': 'Other'
+    };
+
+    let activeCategory = '';
+
+    function versionFromName(name) {
+      const m = name.match(/_V(\d+\.\d+\.\d+)$/);
+      return m ? 'v' + m[1] : '';
+    }
+    function displayName(name) {
+      return name.replace(/_V\d+\.\d+\.\d+$/, '');
+    }
+
+    function catClass(cat) {
+      return 'sk-cat-badge-' + (CAT_COLORS[cat] || 'unknown');
+    }
+
+    function makeChips(str) {
+      if (!str || !str.trim()) return '';
+      return str.split(',').map(function (f) {
+        return '<span class="sk-chip">' + f.trim().replace(/</g, '&lt;') + '</span>';
+      }).join('');
+    }
+
+    function renderCards() {
+      const grid = document.getElementById('skGrid');
+      grid.innerHTML = '';
+      const q = (document.getElementById('skSearch').value || '').toLowerCase().trim();
+      let visible = 0;
+      SKILLS_DATA.forEach(function (s) {
+        const matchText = (s.name + ' ' + s.cat).toLowerCase();
+        const matchQ = !q || matchText.indexOf(q) !== -1;
+        const matchCat = !activeCategory || s.cat === activeCategory;
+        if (!matchQ || !matchCat) return;
+        visible++;
+        const ver = versionFromName(s.name);
+        const dname = displayName(s.name);
+        const isSuperseded = s.status === 'superseded';
+        const catLabel = CAT_LABELS[s.cat] || s.cat || 'Other';
+        const catCls = catClass(s.cat);
+
+        let html = '<div class="sk-card' + (isSuperseded ? ' superseded' : '') + '">';
+        // Header row
+        html += '<div class="sk-card-head">';
+        html += '<span class="sk-name">' + dname.replace(/</g, '&lt;') + '</span>';
+        if (ver) html += '<span class="sk-badge sk-ver">' + ver + '</span>';
+        html += '<span class="sk-badge ' + catCls + '">' + catLabel + '</span>';
+        if (isSuperseded) html += '<span class="sk-badge sk-superseded-badge">superseded</span>';
+        if (s.hasRefs) html += '<span class="sk-badge sk-refs-badge">&#128218; Refs</span>';
+        html += '</div>';
+        // Description
+        if (s.desc) {
+          var d = s.desc.length > 120 ? s.desc.substring(0, 120) + '...' : s.desc;
+          html += '<div class="sk-desc">' + d.replace(/</g, '&lt;') + '</div>';
+        }
+        // Templates
+        if (s.tmpl) {
+          html += '<div class="sk-files-row"><span class="sk-files-label">&#128196; Templates:</span>' + makeChips(s.tmpl) + '</div>';
+        }
+        // Exemplos
+        if (s.ex) {
+          html += '<div class="sk-files-row"><span class="sk-files-label">&#128203; Exemplos:</span>' + makeChips(s.ex) + '</div>';
+        }
+        html += '</div>';
+        grid.insertAdjacentHTML('beforeend', html);
+      });
+      document.getElementById('skStats').textContent = visible + ' / ' + SKILLS_DATA.length + ' skills';
+    }
+
+    function renderCatButtons() {
+      const cats = {};
+      SKILLS_DATA.forEach(function (s) { cats[s.cat] = (cats[s.cat] || 0) + 1; });
+      const container = document.getElementById('skCatFilters');
+      const allBtn = document.createElement('button');
+      allBtn.className = 'sk-cat-btn active';
+      allBtn.style.cssText = 'background:rgba(255,255,255,.1);color:var(--ink)';
+      allBtn.textContent = 'Todos (' + SKILLS_DATA.length + ')';
+      allBtn.onclick = function () {
+        activeCategory = '';
+        document.querySelectorAll('#skCatFilters .sk-cat-btn').forEach(function (b) { b.classList.remove('active'); });
+        allBtn.classList.add('active');
+        renderCards();
+      };
+      container.appendChild(allBtn);
+
+      const CAT_BTN_COLORS = {
+        'developer-delphi': 'background:var(--blue-l);color:var(--blue-b)',
+        'developer-delphi-assembly': 'background:var(--blue-l);color:var(--blue-b)',
+        'documentation': 'background:var(--green-l);color:var(--green)',
+        'governance': 'background:var(--purple-l);color:var(--purple)',
+        'governance-process': 'background:var(--purple-l);color:var(--purple)',
+        'governance-spec': 'background:var(--purple-l);color:var(--purple)',
+        'governance-artifact': 'background:var(--purple-l);color:var(--purple)',
+        'governance-people': 'background:var(--purple-l);color:var(--purple)',
+        'quality': 'background:var(--orange-l);color:var(--orange)',
+        'version': 'background:rgba(255,255,255,.08);color:var(--gray)',
+        'developer-web': 'background:var(--sky-l);color:var(--sky)',
+        'project': 'background:var(--orange-l);color:var(--orange)',
+        '': 'background:rgba(255,255,255,.06);color:var(--gray)'
+      };
+
+      Object.keys(cats).sort().forEach(function (cat) {
+        const btn = document.createElement('button');
+        btn.className = 'sk-cat-btn';
+        btn.style.cssText = CAT_BTN_COLORS[cat] || 'background:rgba(255,255,255,.06);color:var(--gray)';
+        btn.textContent = (CAT_LABELS[cat] || cat || 'Other') + ' (' + cats[cat] + ')';
+        btn.onclick = function () {
+          activeCategory = cat;
+          document.querySelectorAll('#skCatFilters .sk-cat-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          renderCards();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    window.skFilter = function () { renderCards(); };
+
+    function skillsTabInit() {
+      renderCatButtons();
+      renderCards();
+    }
+  </script>
+</body>
+
+</html>

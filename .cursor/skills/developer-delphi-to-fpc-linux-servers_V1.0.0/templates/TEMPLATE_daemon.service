@@ -1,0 +1,196 @@
+# TEMPLATE_daemon.service
+# ========================
+# Template systemd unit para daemon genérico Delphi/FPC.
+# Todas as opções relevantes estão documentadas com comentários.
+#
+# Instruções de uso:
+#   1. Copiar para /etc/systemd/system/NOME-DO-DAEMON.service
+#   2. Substituir todas as ocorrências de 'meu-daemon' e 'meudaemon' pelo nome real
+#   3. Editar conforme necessário
+#   4. sudo systemctl daemon-reload
+#   5. sudo systemctl enable meu-daemon
+#   6. sudo systemctl start meu-daemon
+#
+# Pré-requisitos:
+#   sudo useradd -r -m -d /opt/meu-daemon -s /bin/false meudaemon
+#   sudo mkdir -p /opt/meu-daemon /etc/meu-daemon /var/log/meu-daemon
+#   sudo chown -R meudaemon:meudaemon /opt/meu-daemon /var/log/meu-daemon
+
+[Unit]
+# ── Identificação ──
+Description=Meu Daemon Delphi/FPC — Descrição curta do serviço
+Documentation=https://url/documentacao
+
+# ── Ordenação de arranque ──
+# After= : iniciar DEPOIS destes targets/serviços (dependência de ordem)
+After=network.target
+
+# Wants= : preferência mas não obrigatório (se falhar, este serviço arranca na mesma)
+Wants=network-online.target
+
+# Requires= : dependência obrigatória (se falhar, este serviço não arranca)
+# Requires=postgresql.service redis.service
+
+# Before= : iniciar ANTES deste serviço
+# Before=nginx.service
+
+# ── Condições de arranque ──
+# ConditionPathExists=/etc/meu-daemon/config.ini
+# ConditionFileNotEmpty=/etc/meu-daemon/config.ini
+
+[Service]
+# ══════════════════════════════════════════
+# TIPO DE SERVIÇO — Escolher um:
+# ══════════════════════════════════════════
+#
+# simple   → Processo principal é o ExecStart. Não faz fork.
+#            Recomendado para daemons Delphi/FPC novos (Type=simple + sem fork no código).
+#
+# forking  → Daemon clássico UNIX com double-fork. Requer PIDFile= abaixo.
+#            Usar quando o código já faz fork() internamente.
+#
+# notify   → Como simple, mas processo notifica o systemd quando está pronto.
+#            Requer sd_notify("READY=1") no código (via libsystemd).
+#
+# oneshot  → Processo executa e termina. Para scripts de inicialização.
+#
+Type=simple
+# PIDFile=/var/run/meu-daemon.pid    ← obrigatório com Type=forking
+
+# ── Identidade ──
+User=meudaemon
+Group=meudaemon
+
+# ── Directório de trabalho ──
+WorkingDirectory=/opt/meu-daemon
+
+# ── Variáveis de ambiente ──
+# Inline (sem secrets):
+# Environment="APP_ENV=production"
+# Environment="LOG_LEVEL=info"
+
+# Ficheiro de ambiente (para passwords e secrets):
+# EnvironmentFile=/etc/meu-daemon/meu-daemon.env
+# Prefixo - = não falhar se o ficheiro não existir:
+# EnvironmentFile=-/etc/meu-daemon/optional.env
+
+# ── Execução ──
+ExecStart=/opt/meu-daemon/MeuDaemon \
+  --config /etc/meu-daemon/config.ini \
+  --log /var/log/meu-daemon/daemon.log
+
+# Comandos opcionais antes de iniciar:
+# ExecStartPre=/usr/bin/test -f /etc/meu-daemon/config.ini
+# ExecStartPre=-/opt/meu-daemon/migrate-db.sh
+
+# Reload via SIGHUP (usado por 'systemctl reload'):
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Comandos opcionais após parar:
+# ExecStopPost=/bin/rm -f /var/run/meu-daemon.pid
+# ExecStopPost=-/opt/meu-daemon/cleanup.sh
+
+# ══════════════════════════════════════════
+# POLÍTICA DE RESTART
+# ══════════════════════════════════════════
+#
+# on-failure   → reiniciar se exit code ≠ 0, kill, ou timeout (recomendado)
+# always       → reiniciar sempre
+# on-abnormal  → reiniciar se kill ou timeout (não em saída normal com erro)
+# no           → não reiniciar nunca
+#
+Restart=on-failure
+RestartSec=5
+
+# Limite de restarts: máximo 5 restarts em 60 segundos
+# (após atingir o limite, o serviço entra em estado 'failed')
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# ── Timeouts ──
+# Tempo máximo para o processo arrancar antes de ser considerado falhou
+TimeoutStartSec=30
+
+# Tempo máximo para parar limpo (SIGTERM) antes de SIGKILL forçado
+TimeoutStopSec=30
+
+# ── Output e Logging ──
+# journal    → logs no systemd journal (journalctl -u meu-daemon)
+# syslog     → encaminhar para syslog (/var/log/syslog ou rsyslog)
+# file:PATH  → gravar directamente num ficheiro
+# null       → descartar output
+# append:PATH → acrescentar a um ficheiro
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=meu-daemon
+
+# ══════════════════════════════════════════
+# LIMITES DE RECURSOS
+# ══════════════════════════════════════════
+
+# Número máximo de ficheiros abertos (file descriptors)
+# Padrão do sistema: 1024. Para servidores de rede: 65536+
+LimitNOFILE=65536
+
+# Número máximo de processos/threads
+LimitNPROC=512
+
+# Core dump (0 = desactivar — recomendado em produção)
+LimitCORE=0
+
+# Memória virtual máxima (ex.: 4G para limitar consumo de memória)
+# LimitAS=4G
+
+# Tamanho máximo de stack por thread
+# LimitSTACK=8M
+
+# ══════════════════════════════════════════
+# SEGURANÇA E SANDBOXING
+# ══════════════════════════════════════════
+
+# Não adquirir novos privilégios via setuid/setgid
+NoNewPrivileges=true
+
+# Proteger sistema de ficheiros de sistema contra escrita
+# strict = /usr, /boot, /efi em leitura apenas; precisa de ReadWritePaths
+# full   = adiciona /etc em leitura apenas
+# true   = apenas /usr em leitura apenas
+ProtectSystem=strict
+
+# Proteger directórios home de outros utilizadores
+ProtectHome=true
+
+# /tmp e /var/tmp privados (isolados deste serviço)
+PrivateTmp=true
+
+# Sem acesso a dispositivos físicos (/dev/sd*, /dev/mem, etc.)
+PrivateDevices=true
+
+# Paths onde o daemon precisa de escrever (necessário com ProtectSystem=strict)
+ReadWritePaths=/opt/meu-daemon/data
+ReadWritePaths=/var/log/meu-daemon
+ReadWritePaths=/var/run
+
+# Paths de leitura apenas (além dos de sistema)
+ReadOnlyPaths=/etc/meu-daemon
+
+# Filtro de system calls (whitelist de chamadas permitidas — avançado)
+# @system-service = conjunto padrão para serviços de sistema
+# SystemCallFilter=@system-service
+# SystemCallArchitectures=native
+
+# Namespace de rede privado (isolamento completo de rede — raramente útil para servidores)
+# PrivateNetwork=true
+
+# Capability bounding set (remover capabilities desnecessárias)
+# CapabilityBoundingSet=CAP_NET_BIND_SERVICE  ← só para bind em porta <1024
+
+# ── Watchdog (opcional — detecta daemons que travaram) ──
+# Requer sd_notify("WATCHDOG=1") periódico no código + Type=notify
+# WatchdogSec=60
+
+[Install]
+# WantedBy define em que target o serviço é iniciado:
+# multi-user.target = modo normal (sem GUI) — correcto para daemons de servidor
+# graphical.target  = modo com GUI — raramente usado para daemons de servidor
+WantedBy=multi-user.target

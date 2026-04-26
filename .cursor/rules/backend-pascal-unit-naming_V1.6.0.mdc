@@ -1,0 +1,297 @@
+---
+alwaysApply: true
+description: "Backend Pascal unit naming policy V1.6.0 (genérico, qualquer projeto modular): ModuleConcept.Feature[.SubFeature] in English, Commons. prefix for Commons/ files, Controllers (not EntryPoint), project file naming, Core/ encapsulation, flat Modulos/Controllers/ as default, Modulos/Services/ as sole connection-access layer, compile-time framework defines optional, Connection files naming mandatory for DB/LDAP connection creation (<Domain>.Connection.<SubConcept>.pas with companion Interfaces). Also covers .cursor/ artifact naming conventions. Mapa concreto de módulos deste clone vive em .workspace/rules/<projectId>-*-naming_V*.mdc."
+globs: ["projects/backend/**/*.pas", "projects/backend/**/*.dpr", "projects/backend/**/*.dproj", ".cursor/**"]
+---
+
+# Backend Pascal Unit Naming + `.cursor/` Artifact Naming · V1.6.0
+
+## Changelog
+
+- **V1.6.0 (2026-04-20):** New §4.3 **"Connection files naming"** — any file that **creates or opens** a connection to a database (SQL/NoSQL) or directory service (LDAP/AD) must use the infix pattern `<Domain>.Connection.<SubConcept>.pas` with a companion `.Interfaces.pas`. Applies only to connection *creators* (not consumers that receive `IConnection` via DI). Examples: `Database.Connection.SqlServer.pas`, `Ldap.Connection.ActiveDirectory.pas`, `Core.Connection.Factory.pas`.
+- **V1.5.0 (2026-04-20):** Controllers plano (`Modulos/Controllers/*.pas`) passa a default — subpastas por framework (`Controllers/Horse/`, `Controllers/RDW/`) ficam reservadas para casos raros de multi-framework real. A escolha de framework HTTP e seus defines (`-DUSE_HORSE`, `-DUSE_RESTDATAWARE`, …) passam a decisão da instância do projecto em `.workspace/rules/<projectId>-*-naming_V*.mdc` — o pack genérico não prescreve um default. Cristalizada regra transversal: `Modulos/Services/` é o único local com acesso a conexão (ORM/BD); `Modulos/Controllers/` só expõe endpoints HTTP (parse/serialize).
+- V1.4.0 (2026-04-17): Split MXX concreto para `.workspace/rules/`.
+
+## Scope
+
+Applies to:
+
+1. Backend Delphi/FPC files under `{BACKEND_ROOT}/` (resolved per-clone from `.workspace/context.json.backendRoot`) for any modular backend project.
+2. All new artifacts created in `.cursor/` (rules, skills, agents, templates).
+
+**Out of scope (goes to `.workspace/rules/`):** concrete module maps (per-clone decomposition such as `M01-<DomainName>`, `M02-<DomainName>` etc.), server framework default choice for the current clone, concrete package install paths.
+
+---
+
+## 1. Pascal file naming — canonical format
+
+```text
+ModuleConcept.Feature[.SubFeature].pas
+```
+
+### Rules for the first segment (ModuleConcept)
+
+| Rule | Description |
+|---|---|
+| Origin | English translation of the module folder concept — NOT the folder name or module code |
+| Simple modules | Single concept: `Customer`, `Company`, `Finance`, `Reference`, `Audit` |
+| Compound modules | Decompose by responsibility — each file uses the concept of its subdomain |
+| Commons/ folder | Files in `Commons/` always start with `Commons.` prefix: `Commons.<Concept>.<SubClass>.<Feature>.pas` |
+| Prohibited | Layer names as first segment (`Core`, `Modulos`, `Domain`, `Infrastructure`), module code prefixes (`Mnn`), Portuguese or project-language text |
+
+### Module-to-concept map
+
+The concrete table (module folder → English concept) is **per-project** and lives in the clone-specific file `.workspace/rules/<projectId>-<module-pattern>-naming_V*.mdc` (e.g., `activedirectoryorm-naming_V1.0.0.mdc`). This generic rule only defines the *format* — the instantiated map is loaded from the workspace.
+
+### Generic valid examples
+
+```
+Commons.<Domain>.Domain.Entities.pas
+Commons.<Domain>.Domain.Types.pas
+Commons.<Domain>.Service.<Operation>.pas
+Commons.<Domain>.Integration.<ExternalSystem>.pas
+Commons.Message.Response.pas
+Commons.Audit.pas
+Commons.Audit.Writer.pas
+<Domain>.Controller.<Resource>.pas
+<Domain>.Controller.ServerMain.pas
+<Domain>.Controller.ServerMain.<Framework>.pas
+<Domain>.Services.<Entity>.pas
+<Domain>.Repository.<Backend>.pas
+MainService.pas
+MainService.Interfaces.pas
+MainService.<Feature>.pas
+```
+
+### Invalid examples
+
+```
+<Domain>.Domain.Entities.pas         ← missing Commons. prefix when file lives in Commons/
+<PortugueseName>.Services.Auth.pas   ← non-English
+M01.<Domain>.<Feature>.pas           ← module code in name
+<Domain>.pas                         ← too generic (ok only as module root entry point)
+<Domain>.EntryPoint.<Resource>.pas   ← use Controller, not EntryPoint
+<Domain>.Repository.<Entity>.pas     ← prefer <Domain>.Services.<Entity>.pas for DB layer
+```
+
+### Disambiguation: Services vs Service
+
+| Prefix | Location | Meaning |
+|---|---|---|
+| `<Domain>.Services.*` | `Modulos/Services/` | Database repositories — data access layer |
+| `Commons.<Domain>.Service.*` | `Commons/` | Business logic — domain service layer |
+
+These are **different layers** with similar-sounding names. The repository layer uses plural `Services`; the domain layer uses singular `Service`.
+
+---
+
+## 2. Interface file pairing rule (ORM convention)
+
+- Root: `ModuleConcept.Feature.pas` — implementation/classes
+- Interface pair: `ModuleConcept.Feature.Interfaces.pas` — interfaces of the pair
+- Sub-features: `ModuleConcept.Feature.SubFeature.pas` (Types, Consts, Exceptions, Registry…)
+- **Mandatory:** `X.Interfaces.pas` can only exist if `X.pas` exists as its base
+- The `.Interfaces.pas` companion contains the **main interface AND all its builder interfaces** (for fluent API support)
+- Types-only files (Domain.Entities, Domain.Types, Messages) do NOT need a `.Interfaces.pas` companion
+- Prohibited in file names: `FactoryInterface`, `IFactory`, `I` prefix in file name
+
+---
+
+## 3. `Commons/` folder content policy
+
+Files in `Commons/` always use the `Commons.` prefix. A module's `Commons/` may contain:
+
+| Allowed | Example |
+|---|---|
+| Domain types and entities | `Commons.<Domain>.Domain.Entities.pas`, `Commons.<Domain>.Domain.Types.pas` |
+| Cross-cutting auth utilities | `Commons.<Domain>.Auth.Jwt.pas`, `Commons.<Domain>.Auth.SHA256.pas` |
+| Request/context utilities | `Commons.<Domain>.Auth.RequestContext.pas` |
+| Integration adapters | `Commons.<Domain>.Integration.<External>.pas` |
+| Policy/algorithm engines | `Commons.<Domain>.Service.<Algorithm>.pas` |
+| Module shared services | `Commons.<Domain>.Service.<Operation>.pas` |
+| Message/response types | `Commons.Message.Response.pas` |
+| Audit writer/reader | `Commons.Audit.pas`, `Commons.Audit.Writer.pas`, `Commons.Audit.Reader.pas` |
+| Generic cross-cutting utilities | `Commons.Encoding.pas`, `Commons.Logging.pas`, `Commons.Parameters.pas` |
+
+**Prohibited in `Commons/`:** Repositories (only in `Modulos/Services/`), HTTP controllers (only in `Modulos/Controllers/`).
+
+---
+
+## 4. `Modulos/` subfolder structure
+
+### 4.1. Default layout (single HTTP framework) — **recommended**
+
+```
+Modulos/
+├── Services/            ← sole connection-access layer — <Domain>.Services.*
+│   ├── <Domain>.Services.<Entity>.pas
+│   └── ...
+└── Controllers/         ← sole external-access layer (HTTP endpoints)
+    ├── <Domain>.Controller.<Resource>.pas
+    ├── ...
+    └── <Domain>.Controller.ServerMain.pas
+```
+
+**Invariants:**
+- `Modulos/Services/` is the **only** layer allowed to access database connection / ORM (ProvidersORM, FireDAC, Zeos, etc.).
+- `Modulos/Controllers/` is the **only** layer allowed to handle HTTP (rota, parse, serialize). No SQL, no connection, no domain rules.
+- The HTTP framework (Horse, REST-DataWare, WebBroker, …) is chosen by the clone in `.workspace/rules/`. The pack does not prescribe a default.
+
+### 4.2. Multi-framework layout (optional, rare)
+
+When — and only when — a project genuinely needs to target two HTTP frameworks from the same codebase (e.g., migration period), `Controllers/` may gain per-framework subfolders:
+
+```
+Controllers/
+├── <Framework1>/        ← {$IFDEF USE_<FRAMEWORK1>}
+│   └── <Domain>.Controller.ServerMain.pas
+└── <Framework2>/        ← {$IFDEF USE_<FRAMEWORK2>}
+    └── <Domain>.Controller.ServerMain.<Framework2>.pas
+```
+
+Both implementations must expose the same `IServerMain` / `TServerMain`. `Core/MainService.pas` picks one via `{$IFDEF USE_<FRAMEWORK>}` in its `uses` clause only — zero `{$IFDEF}` in the body.
+
+> For single-framework projects (the usual case), **do not** create subfolders — keep `Controllers/` flat.
+
+### 4.3. Connection files naming (mandatory, V1.6.0+)
+
+**Rule:** any file that **creates or opens a connection** to a database (SQL, NoSQL) or directory service (LDAP, Active Directory) **must** include the token `Connection` in its filename using the infix pattern:
+
+```text
+<Domain>.Connection.<SubConcept>.pas                  ← implementation
+<Domain>.Connection.<SubConcept>.Interfaces.pas       ← companion interfaces
+```
+
+- `<Domain>` is the module/concept (English), matching the project naming (e.g., `Database`, `Ldap`, `Core`, `Security`).
+- `<SubConcept>` identifies the concrete provider or variant (`SqlServer`, `Mysql`, `Postgres`, `Firebird`, `Sqlite`, `ActiveDirectory`, `OpenLdap`, `Factory`, `Pool`).
+- The **companion interfaces file** declares `I<Domain>Connection<SubConcept>` (or equivalent) and sits next to the implementation.
+
+**Examples:**
+
+| File | Contains |
+|---|---|
+| `Database.Connection.SqlServer.pas` | `TDatabaseConnectionSqlServer` — creates `TFDConnection` / `IConnection` for SQL Server |
+| `Database.Connection.SqlServer.Interfaces.pas` | `IDatabaseConnectionSqlServer` (companion) |
+| `Database.Connection.Mysql.pas` | MySQL provider |
+| `Database.Connection.Postgres.pas` | PostgreSQL provider |
+| `Ldap.Connection.ActiveDirectory.pas` | `TLdapConnectionActiveDirectory` — binds AD via Synapse/ldapsend |
+| `Ldap.Connection.ActiveDirectory.Interfaces.pas` | `ILdapConnectionActiveDirectory` |
+| `Core.Connection.Factory.pas` | Factory that reads `database.ini` and chooses provider |
+| `Core.Connection.Pool.pas` | Connection pool (if applicable) |
+
+**Scope:** the rule applies **only** to files that **create or open** the connection (instantiate `TFDConnection`, `IConnection.New`, call `Connect`, LDAP `Bind`, etc.). Files that **consume** an injected `IConnection` via constructor DI (for example, `Modulos/Services/<Domain>.Services.<Entity>.pas`) do **not** need the `Connection` token — they are clients, not providers.
+
+**Discovery check:** `grep -r "TFDConnection.Create\|IConnection.New\|\.Connect\b\|ldapsend\|Bind(" projects/backend/` returns files. Each match must be inside a file whose name follows `*.Connection.*.pas`.
+
+**Rationale:**
+- Single grep pattern (`*.Connection.*.pas` or `/Connection\./`) locates every connection-creation point in the codebase.
+- Forces developers to place connection bootstrap in dedicated, well-named files — improves auditability (credentials, pooling, retry logic) and testability (fakes swap `IConnection*` interfaces).
+- Separates connection *creation* (few files, `*.Connection.*`) from connection *consumption* (many files, regular naming).
+
+---
+
+## 5. Compile-time framework directives (optional)
+
+Projects that need compile-time framework selection may define directives per-project in `dcc32.cfg` / `dcc64.cfg` / `fpc*.opts`. Examples:
+
+| Define (example) | Activates |
+|---|---|
+| `-DUSE_HORSE` | `TServerMain` → Horse framework |
+| `-DUSE_RESTDATAWARE` | `TServerMain` → REST-DataWare |
+| `-DUSE_WEBBROKER` | `TServerMain` → WebBroker |
+
+**Single-framework projects (recommended):** use one define unconditionally (e.g., `-DUSE_HORSE` in both 32/64 cfg). No `{$IFDEF}` at all in the codebase — the framework is picked by `uses` only.
+
+**Choice lives in the clone:** `.workspace/context.json.httpFrameworks.primary` + `.workspace/rules/<projectId>-*-naming_V*.mdc` dictate the active framework. The pack does not prescribe a default.
+
+---
+
+## 6. Controllers — naming convention
+
+HTTP request handlers use the `Controller` term, not `EntryPoint`:
+
+```
+<Domain>.Controller.<Resource>.pas            ← NOT <Domain>.EntryPoint.<Resource>.pas
+<Domain>.Controller.ServerMain.pas            ← TRESTDWIdServicePooler + RegisterAllControllers (RDW)
+<Domain>.Controller.ServerMain.<Framework>.pas ← THorse.Listen + RegisterAllControllers (Horse), etc.
+```
+
+Each controller has its companion: `<Domain>.Controller.<Resource>.Interfaces.pas`.
+
+---
+
+## 7. Project file naming — no module prefix
+
+All backend `.dpr`, `.dproj`, `.lpr`, `.lpi`, `.lps`, build configs live in `{BACKEND_ROOT}/` root (or per-clone convention).
+
+**No module code prefix** (`M01`, `M02`, …) in the filename:
+
+```
+<Domain>.Backend.dpr          ← NOT M01.<Domain>.Backend.dpr
+<Domain>.Backend.dproj
+dcc32.cfg                     ← generic (no project prefix)
+dcc64.cfg
+fpc32.opts
+fpc64.opts
+```
+
+The `dcc32.cfg` / `dcc64.cfg` must include `-U` paths for:
+
+- `Modulos\Services`
+- `Modulos\Controllers\<Framework1>`
+- `Modulos\Controllers\<Framework2>`
+- Frameworks listed in `.cursor/config.json._frameworks` (and eventual per-clone overrides in `.workspace/context.json._frameworks_overrides`).
+
+---
+
+## 8. Core/ encapsulation — single public facade
+
+- **Only `Core/` is publicly consumable.** `Commons/` and `Modulos/` are module-internal.
+- The `.dpr` entry point references only `Core/` units directly.
+- Controllers in `Modulos/Controllers/<Framework>/` are registered by `Core/MainService.pas` (TBootstrap) — not imported by external consumers.
+- Other backend modules consume a module via HTTP REST API — never via shared Pascal units.
+
+---
+
+## 9. `.cursor/` artifact naming
+
+Before creating any file in `.cursor/`, verify:
+
+1. **Consult the folder manifest** (`rules-pack-manifest`, `skills-pack-manifest`, `agents-pack-manifest`, etc.)
+2. **Consult the classification policy** in `.cursor/rules/artifact-placement-policy_V1.0.0.mdc` — decide whether the artefact is generic (→ `.cursor/`) or workspace-specific (→ `.workspace/`).
+3. **Confirm the name** reflects responsibility without ambiguity.
+4. **Initial version** must be V1.0.0.
+5. **Register in the folder manifest** after creation.
+6. **Run `/syncdb`** to reindex.
+
+| Artifact type | Format |
+|---|---|
+| Rules | `<kebab-name>_Vx.y.z.mdc` |
+| Skills | `<kebab-name>_Vx.y.z/SKILL.md` (versioned folder) |
+| Agents | `<kebab-name>_Vx.y.z.md` |
+| Templates | `<kebab-name>_Vx.y.z/` or `<kebab-name>_Vx.y.z.md` |
+| Workspace artefacts (`.workspace/`) | Prefixed with `<projectId>-` (e.g., `gestorerp-<kebab-name>_Vx.y.z.mdc`) |
+
+Responsible skills:
+
+- `developer-delphi-programming-oop-naming_V1.0.0` (current) / `developer-delphi-programming-oop-naming_V1.0.0` (after Onda 3 rename) — OOP class and unit naming authority.
+- `.cursor/rules/artifact-placement-policy_V1.0.0.mdc` — generic-vs-workspace classification.
+
+---
+
+## Related artifacts
+
+- `.cursor/skills/developer-delphi-programming-oop-fluent_V1.0.0/SKILL.md` (renamed in Onda 3 to `developer-delphi-programming-oop-fluent_V1.0.0`) — OOP + fluency standard.
+- `.cursor/skills/developer-delphi-programming-oop-naming_V1.0.0/SKILL.md` (renamed in Onda 3 to `developer-delphi-programming-oop-naming_V1.0.0`) — naming skill (canonical authority).
+- `.cursor/skills/developer-delphi-modular-backend-scaffold_V1.0.0/SKILL.md` (renamed in Onda 5 to `developer-delphi-modular-backend-scaffold_V1.0.0`) — module scaffold.
+- `.cursor/agents/developer-delphi-agent-orchestrator_V1.3.0.md`
+- `.cursor/agents/developer-delphi-agent-modules-orchestrator_V1.3.0.md`
+- `.workspace/rules/<projectId>-<module-pattern>-naming_V*.mdc` — concrete per-clone module map (in this clone: `.workspace/rules/activedirectoryorm-naming_V1.0.0.mdc`).
+
+## Changelog
+
+- 1.4.0 (17/04/2026): Onda 2 do refactor — SPLIT: secções com conteúdo concreto deste clone (mapa M01–M15, exemplos com `Access.Controller.*` / `Security.Services.*`, default `USE_HORSE` em `dcc32.cfg §6`, lista de pacotes instalados) migraram para `.workspace/rules/gestorerp-mxx-naming_V1.0.0.mdc`. Esta versão fica 100% genérica e aplicável a qualquer projeto Delphi/FPC modular que adopte a convenção. Globs parametrizados via `{BACKEND_ROOT}`. Paths de frameworks lidos de `.cursor/config.json._frameworks`. V1.3.0 arquivada em `.cursor/Backup/renamed-skills-20260417/rules/`.
+- 1.3.0 (15/04/2026): Added `Modulos/` subfolder structure section (`Services/`, `Controllers/RDW/`, `Controllers/Horse/`); added compile-time server selection directives; updated valid examples; added disambiguation table; updated Controllers section for RDW+Horse split; updated Commons/ prohibited list.
+- 1.2.0 (15/04/2026): Added `Commons.` prefix rule for files in `Commons/`; renamed Controllers convention (no longer `EntryPoint`); added project file naming section; updated Commons/ policy.
+- 1.1.0 (14/04/2026): Renamed "Module" → "ModuleConcept"; added compound module rule; added domain map M01–M15; added ProvidersORM interface pairing rule; added Commons/ content policy; added `.cursor/` artifact naming section.
+- 1.0.0 (14/04/2026): Created canonical naming policy for backend Pascal units in MXX modules.
