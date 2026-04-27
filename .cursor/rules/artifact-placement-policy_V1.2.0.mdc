@@ -99,6 +99,67 @@ Em `.workspace/`:
 - Agents: `<projectId>-<slug>_V<major>.<minor>.<patch>.md`.
 - Templates: pasta `<projectId>-<slug>_V<major>.<minor>.<patch>/` ou ficheiro com o mesmo padrão.
 - Context: `context.json` único (sem versão no nome).
+- Plans: `<slug>_v<major>.<minor>.plan.md` (ex.: `gdoc-delphi12-construction_v1.0.plan.md`).
+
+## Regra 4-A — Estrutura espelhada (V1.2.0+) — `.workspace/` reflete `.cursor/`
+
+A pasta `.workspace/` deve adotar o **mesmo conjunto de subpastas** de `.cursor/` quando aplicável, garantindo que cada categoria de artefacto tenha um lar previsível tanto no SSOT (genérico) quanto na instância (específico do projeto).
+
+### Estrutura espelhada obrigatória
+
+```text
+.cursor/                          ← SSOT (genérico, propagado via sync)
+├── skills/                       ← skills genéricas
+├── rules/                        ← rules genéricas
+├── agents/                       ← agents genéricos
+├── Templates/                    ← templates genéricos
+├── commands/                     ← commands genéricos
+├── plans/                        ← planos genéricos
+├── scripts/                      ← scripts genéricos
+├── README.md                     ← índice do pack
+└── VERSION.md                    ← política de versionamento
+
+.workspace/                       ← INSTÂNCIA (específico do projeto, ignorado por git/sync)
+├── skills/                       ← skills específicas do projeto
+├── rules/                        ← rules específicas do projeto
+├── agents/                       ← agents específicos do projeto
+├── Templates/                    ← templates específicos do projeto
+├── commands/                     ← commands específicos do projeto (se houver)
+├── plans/                        ← planos específicos do projeto (workflows internos)
+├── scripts/                      ← scripts específicos do projeto (se houver)
+├── README.md                     ← índice da instância (opcional)
+├── context.json                  ← contexto deste clone
+└── PROJECT_BRIEF.md              ← briefing do projeto
+```
+
+### Princípio fundamental
+
+> **Tudo que for relativo exclusivamente ao projeto fica em `.workspace/`** — replicando a mesma divisão lógica de `.cursor/` para garantir descoberta consistente.
+
+### Casos práticos por categoria
+
+| Categoria | Em `.cursor/` (genérico) | Em `.workspace/` (específico do projeto) |
+| --- | --- | --- |
+| **Skills** | `documentation-master-orchestrator` | `<projectId>-feature-spec` (ex.: `gdoc-fiscal-rules`) |
+| **Rules** | `backend-pascal-unit-naming` | `<projectId>-naming` (ex.: `activedirectoryorm-naming`) |
+| **Agents** | `developer-delphi-orchestrator` | `<projectId>-domain-expert` (ex.: `gdoc-fiscal-expert`) |
+| **Templates** | `TEMPLATE_Docs_README_Hub` | `<projectId>-PRD-template` (ex.: `gdoc-prd-template`) |
+| **Plans** | `documentation-migration-plan_V1.0.plan.md` (genérico, reusável) | `gdoc-delphi12-construction_v1.0.plan.md` (específico do projeto) |
+| **Commands** | `/syncdb`, `/consolidar` | `/<projectId>-deploy`, `/<projectId>-test` |
+| **Scripts** | `pack_index_db.py`, `validate_pack.py` | `<projectId>-build.ps1`, `<projectId>-deploy.ps1` |
+
+### Regra de criação de subpastas
+
+- Subpastas em `.workspace/` **só são criadas quando necessárias** (não criar pastas vazias com `.gitkeep`).
+- Quando a primeira instância de uma categoria for criada (ex.: primeiro plano específico do projeto), criar a subpasta `.workspace/plans/` e mover o arquivo para lá.
+- A pasta `.workspace/` na raiz pode conter ficheiros de bootstrap (`context.json`, `PROJECT_BRIEF.md`, `README.md`) sem subpasta — esses são exceções do nível raiz.
+
+### Validação
+
+`validate_pack.py` (V2.x+) deve verificar:
+
+- Toda subpasta de `.workspace/` (exceto raiz) corresponde a uma subpasta canônica de `.cursor/`.
+- Todo ficheiro dentro de `.workspace/<categoria>/` segue a convenção de nomenclatura `<projectId>-<slug>_V*.mdc/.md/.plan.md` (Regra 4).
 
 ## Regra 5 — Ao modificar artefacto existente
 
@@ -135,10 +196,11 @@ Após qualquer criação/edição/movimento/remoção de artefacto:
 
 | Campo | Valor |
 |-------|-------|
-| FileVersion | 1.1.0 |
-| Data | 18/04/2026 |
+| FileVersion | 1.2.0 |
+| Data | 26/04/2026 |
 
 ## Changelog
 
+- 1.2.0 (26/04/2026): nova **Regra 4-A — Estrutura espelhada** — `.workspace/` deve adotar o mesmo conjunto de subpastas de `.cursor/` (skills, rules, agents, Templates, commands, plans, scripts) quando aplicável; tudo que for relativo exclusivamente ao projeto fica em `.workspace/`. Adicionada categoria `Plans` na tabela de nomenclatura (Regra 4) com convenção `<slug>_v<major>.<minor>.plan.md`. Validação `validate_pack.py` deve verificar correspondência subpasta `.workspace/` ↔ `.cursor/` no V2.x+.
 - 1.1.0 (18/04/2026): introduzido dotfolder `.docs/` para documentação técnica offline (Delphi, Assembly, LDAP). Scope `project` novo no `pack_index_db.py` (base `E:\.docs\index.db`, skip silencioso se pasta ausente). Regra 2 passa a guardar pesquisa externa em `E:\.docs\<tech>\` em vez de `.cursor/Docs/<tech>/`. Escopo da rule estendido no título/description.
 - 1.0.0 (17/04/2026): rule criada na Onda 1 do refactor — estabelece política `.cursor/` vs `.workspace/`, offline-first com `pack_index_db`, nomenclatura e frontmatter obrigatórios.

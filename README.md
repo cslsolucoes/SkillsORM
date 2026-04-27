@@ -237,6 +237,7 @@ Detalhes em [`CLAUDE.md`](CLAUDE.md) §"Áreas protegidas".
 
 ## Changelog (este arquivo)
 
+- 1.3.0 (26/04/2026): **E14 — Workspace Mirror Structure**: rule `artifact-placement-policy` bumpada V1.1.0 → V1.2.0 com nova **Regra 4-A — Estrutura espelhada** (`.workspace/` adota mesmo conjunto de subpastas de `.cursor/`); manifesto rules V1.6.4 → V1.6.5; categoria `Plans` adicionada à tabela de nomenclatura.
 - 1.2.0 (26/04/2026): Manifesto bumped V1.24.0 → V1.25.0 (E13 — Documentation Quality Gates: 5 skills da família `documentation-*` bumpadas in-place com workflow obrigatório de 5 fases, parâmetros opcionais para subpastas/modos/portal, cruzamento deps↔imports stack-aware, decisões obrigatórias em `Documentation/Decisions/`, threshold de agregação dura).
 - 1.1.0 (25/04/2026): Manifesto V1.24.0 (E12 — Indy Completion: HTTP/Email enriquecidos, +2 skills indy-ftp/indy-tcp).
 - 1.0.0 (anterior): Versão inicial do README do repositório SkillsORM.

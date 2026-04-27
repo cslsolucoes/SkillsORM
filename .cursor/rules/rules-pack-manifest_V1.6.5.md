@@ -1,6 +1,6 @@
 # Versão interna — `.cursor/rules/`
 
-**FolderVersion:** 1.6.4 · **Data:** 26/04/2026
+**FolderVersion:** 1.6.5 · **Data:** 26/04/2026
 **Política:** [../VERSION.md](../VERSION.md)
 
 Rules activas (12):
@@ -14,7 +14,7 @@ Rules activas (12):
 - `scripts-nomenclature_V1.3.0.mdc` (`globs: .cursor/scripts/**`)
 - **`backend-pascal-unit-naming_V1.6.0.mdc`** (alwaysApply) — **V1.6.0: Connection files naming** — §4.3: ficheiros que criam/abrem conexão a BD ou LDAP/AD usam infixo `<Domain>.Connection.<SubConcept>.pas` + companion `.Interfaces.pas`. Escopo: só criadores (quem faz `TFDConnection.Create`, `IConnection.New`, `Bind` LDAP); consumidores via DI mantêm naming regular.
 - `backend-pascal-source-header_V1.0.0.mdc` — globs e campos parametrizados com `{BACKEND_ROOT}` / `{PACKAGES_ROOT}`; leitura de `.workspace/context.json.projectName` para placeholders.
-- **`artifact-placement-policy_V1.1.0.mdc` (alwaysApply)** — política de classificação `.cursor/` vs `.workspace/` vs `.docs/`, offline-first de consulta a `pack_index_db.py`, frontmatter obrigatório, nomenclatura `<projectId>-*` em `.workspace/`.
+- **`artifact-placement-policy_V1.2.0.mdc` (alwaysApply)** — política de classificação `.cursor/` vs `.workspace/` vs `.docs/`, offline-first de consulta a `pack_index_db.py`, frontmatter obrigatório, nomenclatura `<projectId>-*` em `.workspace/`. **V1.2.0 (26/04/2026):** nova **Regra 4-A — Estrutura espelhada** — `.workspace/` deve adotar o mesmo conjunto de subpastas de `.cursor/` (skills, rules, agents, Templates, commands, plans, scripts).
 - **`pascal-encoding-no-escapes_V1.0.0.mdc` (alwaysApply)** — **V1.0.0 (22/04/2026):** proíbe escapes `#NNN`/`#$NNNN` em strings literais Pascal; usar sempre literais UTF-8. Excepções: `#0`, `#9`, `#10`, `#13` e outros caracteres de controlo não imprimíveis. Motivação: escapes gerados automaticamente durante as ondas V1.7.3–V1.7.5.
 - **`documentation-file-versioning_V1.0.0.mdc`** — formaliza as 4 formas aceitas de versão em documentos `.md`/`.mdc` (FileVersion, internal_file_version, `**Versão**`, sufixo `_V{X.Y.Z}`); consumido por `check_docs_version`.
 - **`local_arquivos_V1.0.mdc`** — política de localização canônica de artefatos (SSOT `.cursor/`, espelhos via symlinks, proibição de edição direta em `.claude/`/`.vscode/`/`.continue/`).
@@ -36,6 +36,7 @@ Quando propagar o pack para outro clone, estas instâncias **não** são copiada
 
 ## Changelog (este arquivo)
 
+- 1.6.5 (26/04/2026): **FolderVersion** 1.6.5 — `artifact-placement-policy` bumpada V1.1.0 → V1.2.0: nova **Regra 4-A — Estrutura espelhada** — `.workspace/` deve adotar o mesmo conjunto de subpastas de `.cursor/` (skills, rules, agents, Templates, commands, plans, scripts) quando aplicável; tudo que for relativo exclusivamente ao projeto fica em `.workspace/`. Adicionada categoria `Plans` na tabela de nomenclatura (Regra 4) com convenção `<slug>_v<major>.<minor>.plan.md`. Validação `validate_pack.py` deve verificar correspondência subpasta `.workspace/` ↔ `.cursor/` no V2.x+. Inventário: 12 ficheiros `.mdc` (sem mudança).
 - 1.6.4 (26/04/2026): **FolderVersion** 1.6.4 — `project-autostart-bootstrap` bumpada V1.0.1 → V1.2.0: adicionada **FASE 2-A (Skills Project)** — quando `projectType: skills-pack` em `.workspace/context.json` ou heuristica positiva (`.cursor/skills/` populado + sem `.dpr`/`.lpr`), invoca novo script `bootstrap-skills-project.ps1` (em `.cursor/scripts/`) que materializa idempotentemente CLAUDE.md / LICENSE / privacy-policy.md / .workspace/context.json a partir de `.cursor/Templates/skills-project-bootstrap/`. Pula FASE 2/3 Delphi nesse cenário. Gatilho `/init` desativado em Skills Project. Inventário: 12 ficheiros `.mdc` (sem mudança).
 - 1.6.2 (22/04/2026): **FolderVersion** 1.6.2 — nova rule `pascal-encoding-no-escapes_V1.0.0.mdc` (`alwaysApply`): proíbe escapes `#NNN`/`#$NNNN` em strings literais Pascal; usar sempre literais UTF-8. Motivação: durante as ondas V1.7.3–V1.7.5 do ActiveDirectoryORM, o assistente gerou escapes decimais em strings portuguesas. Inventário: 10 ficheiros `.mdc` (era 9).
 - 1.6.1 (21/04/2026): **FolderVersion** 1.6.1 — destacamento do pack mãe (standalone ActiveDirectoryORM): removidas rules `workspace-gestorerp-rn-standard-format_V1.0.0` (esquema RN-MXX multi-módulo) e `rn-dependency-declaration_V1.0.0` (dependências cruzadas entre RN-MXX); rule `backend-pascal-unit-naming_V1.6.0` neutralizada (exemplos MXX → placeholder genérico); rule `artifact-placement-policy_V1.1.0` idem. Inventário: 9 ficheiros `.mdc` (era 11).
